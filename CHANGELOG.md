@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [ ] Developer guide for agent integration (WP7)
 - [ ] Deployment architecture decision (Managed Service vs Federation)
 
+### Changed (Demos — Executable Protocol Documentation)
+
+- **Match demo** (`npm run match`) — Now uses core scorer with 8 scoring dimensions (semantic, timing, capacity, surplus sensitivity, diversity, sector, trust, geographic), constraint filtering, and detailed per-dimension breakdowns for top-3 chains
+- **Trust demo** (`npm run trust`) — Shows 4-tier model (Newcomer → Probationary → Established → Anchor), vouch acceleration, newcomer exposure limits, narrative score explanations
+- **Trace demo** (`npm run trace`) — Complete rewrite with self-contained characters and 3 scenarios: happy path, counter-proposal timing negotiation, stuck flag with partial satisfaction; shows protocol messages alongside state transitions
+- **Capability demo** (`npm run capability`) — Now runs offline with 3 pre-recorded scenarios (good match, partial match, no match); interactive AI extraction moved to `npm run capability:live`
+- **Core scorer** (`src/matching/scorer.ts`) — 3 new scoring dimensions: surplus time sensitivity, relationship diversity, sector overlap; deal-breaker pattern for trust and geographic
+- **Trust module** — Added Newcomer tier to calculator and vouching system
+- **Example data** — Enriched offerings, needs, and participants with surplus context, geographic constraints, timing windows, urgency declarations
+
 ### Changed (Website)
 
 - **Comprehensive website content update** — All 8 pages reshaped to reflect "protocol is the story" framing

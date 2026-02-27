@@ -7,10 +7,10 @@
 ### What's Working
 - Core schemas compile and validate (`npm run validate`)
 - TypeScript types generated from schemas (`npm run generate:types`)
-- Matching algorithm runs (`npm run match`)
-- Trust calculation runs (`npm run trust`)
-- Chain tracing runs (`npm run trace`)
-- **Capability translation demo runs (`npm run capability`)** — NEW
+- Matching algorithm with 8-dimension scorer (`npm run match`)
+- Trust calculation with 4-tier model (`npm run trust`)
+- Protocol trace with 3 scenarios (`npm run trace`)
+- Capability translation — offline (`npm run capability`) and interactive (`npm run capability:live`)
 - All example data validates against schemas
 
 ### What's In Progress
@@ -39,6 +39,49 @@
 ---
 
 ## Recent Session Summary
+
+*Session: 2026-02-27 (demo enrichment — executable protocol documentation)*
+
+**What was done:**
+- **Executed 8-task demo enrichment plan** (`docs/plans/2026-02-27-demo-enrichment-plan.md`) across 2 sessions
+- **Task 0**: Added Newcomer tier to trust module (`src/trust/calculator.ts`, `src/trust/vouching.ts`)
+- **Task 1**: Enriched core scorer with 3 new dimensions — surplus sensitivity, relationship diversity, sector overlap (`src/matching/scorer.ts`), total 8 dimensions
+- **Task 2**: Enriched example JSON data with surplus context, geographic constraints, timing windows, urgency
+- **Task 3**: Rewrote match demo to use core scorer with constraint filtering, 8-dimension breakdowns, top-3 detailed output
+- **Task 4**: Enriched trust demo with 4-tier model, narrateTrustScore helper, newcomer exposure limits, vouch acceleration
+- **Task 5**: Rewrote trace demo with self-contained characters and 3 scenarios (happy path, counter-proposal, stuck flag) showing protocol messages alongside state transitions
+- **Task 6**: Created offline capability demo with 3 pre-recorded scenarios (good match, partial match, no match); moved interactive demo to `capability:live`
+- **Task 7**: Full verification — build, schemas, examples, all 4 demos pass
+
+**Key decisions:**
+- All demos are now self-contained executable documentation — no external dependencies or API keys needed for default runs
+- Core scorer uses deal-breaker pattern for trust and geographic dimensions (fail → score 0, not weighted average)
+- `npm run capability` now runs offline mode; `npm run capability:live` for interactive AI extraction
+
+**Files created:**
+- `src/examples/capability-offline-demo.ts`
+
+**Files modified:**
+- `src/trust/calculator.ts`, `src/trust/vouching.ts` (Newcomer tier)
+- `src/matching/scorer.ts` (3 new scoring dimensions)
+- `src/examples/match-demo.ts` (core scorer integration)
+- `src/examples/trust-demo.ts` (4-tier enrichment)
+- `src/examples/trace-chain.ts` (complete rewrite)
+- `src/examples/capability-demo.ts` (interactive mode intro)
+- `package.json` (capability script split)
+- `examples/matching/offerings.json`, `needs.json`, `participants.json` (enriched data)
+- `examples/trust/profile-newcomer.json` (new trust profile)
+
+**Issues encountered:**
+- Import naming mismatch (`Offering`/`Need` vs `ScorerOffering`/`ScorerNeed` re-exports) — fixed
+- Unused import (`validateVouch`) after trust demo refactor — fixed
+
+**Next priorities:**
+1. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+2. Developer Guide (WP7) — may be reframed given "conceptual provocation" positioning
+3. Website content review against updated diagrams
+
+---
 
 *Session: 2026-02-27 (diagram review and update)*
 
