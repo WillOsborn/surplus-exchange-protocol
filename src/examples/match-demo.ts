@@ -3,6 +3,9 @@
  *
  * Demonstrates multi-party chain discovery using the example test data.
  * Shows the full matching pipeline: graph construction → cycle detection → scoring → ranking.
+ *
+ * This demo uses the core scoreMatch function via thin data adapters, demonstrating
+ * how real implementations would integrate with the SEP matching engine.
  */
 
 import { readFileSync } from 'fs';
@@ -17,6 +20,10 @@ import {
   rankChains,
   summariseChainScore,
   getCycleStats,
+  scoreMatch,
+  type ScorerOffering,
+  type ScorerNeed,
+  type MatchScore,
 } from '../matching/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -29,10 +36,15 @@ const EXAMPLES_DIR = join(__dirname, '../../examples/matching');
 interface ParticipantData {
   id: string;
   identity: { display_name: string };
-  profile: { sectors: string[]; location: { city: string } };
-  network_position: { exchange_partners_count: number };
+  profile: { sectors: string[]; location: { city: string; region?: string; country?: string } };
+  network_position: {
+    exchange_partners_count: number;
+    repeat_partner_rate?: number;
+    chain_participation_count?: number;
+  };
   satisfaction_summary: {
     as_provider: { total: number; satisfied: number };
+    as_recipient?: { total: number; satisfied: number };
   };
   preferences?: { matching?: { max_chain_length?: number; min_partner_exchanges?: number } };
   status: string;
@@ -62,9 +74,19 @@ interface OfferingData {
   provider: string;
   title: string;
   description: string;
+  surplus_context?: {
+    why_surplus?: string;
+    alternative_fate?: string;
+    time_sensitivity?: string;
+  };
   capability_matching?: CapabilityMatchingData;
   service_details?: { capability_mapping?: Array<{ output: string }> };
   constraints?: {
+    geographic?: string[];
+    timing?: {
+      available_from?: string;
+      available_until?: string;
+    };
     chain_participation?: {
       max_chain_length?: number;
       can_be_intermediate?: boolean;
@@ -81,6 +103,30 @@ interface NeedData {
   description: string;
   capability_matching?: NeedCapabilityMatchingData;
   capability_links?: { explicit_matches?: Array<{ capability_output: string }> };
+  constraints?: {
+    geographic?: {
+      accepted_regions?: string[];
+      excluded_regions?: string[];
+    };
+    timing?: {
+      needed_by?: string;
+    };
+    provider_requirements?: {
+      min_exchanges_completed?: number;
+      verification_required?: boolean;
+    };
+  };
+  urgency?: {
+    declared_priority?: string;
+    deadline?: string;
+    deadline_type?: string;
+    flexibility_for_speed?: {
+      accept_partial?: boolean;
+      accept_less_experienced?: boolean;
+      accept_longer_chain?: boolean;
+      accept_different_format?: boolean;
+    };
+  };
 }
 
 function loadJSON<T>(filename: string): T {
@@ -101,91 +147,51 @@ function computeTrustScore(participant: ParticipantData): number {
   return providerStats.satisfied / providerStats.total;
 }
 
-/**
- * Scores how well an offering matches a need using capability_matching fields.
- *
- * This function prioritises structured capability_matching data for fast algorithmic
- * matching, falling back to keyword-based matching for legacy data.
- *
- * Scoring dimensions:
- * - Type match (0.2 weight)
- * - Capability match via capability_matching (0.4 weight)
- * - Sector overlap via capability_matching (0.2 weight)
- * - Keyword fallback (0.2 weight)
- */
-function simpleMatchScore(offering: OfferingData, need: NeedData): number {
-  let score = 0;
+// ═══════════════════════════════════════════════════════════════════════════════
+// Data Adapters — transform JSON format to core scorer interfaces
+// ═══════════════════════════════════════════════════════════════════════════════
 
-  // === Type match (0.2 weight) ===
-  if (offering.type === need.type) {
-    score += 0.2;
-  }
+function toScorerOffering(o: OfferingData): ScorerOffering {
+  return {
+    id: o.id,
+    type: o.type,
+    title: o.title,
+    description: o.description,
+    capabilities: o.capability_matching?.capability_outputs ??
+      o.service_details?.capability_mapping?.map(c => c.output) ?? [],
+    constraints: {
+      geographic: o.capability_matching?.location
+        ? [o.capability_matching.location.region, o.capability_matching.location.country].filter(Boolean) as string[]
+        : o.constraints?.geographic ?? [],
+      timing: {
+        availableFrom: o.constraints?.timing?.available_from,
+        availableUntil: o.constraints?.timing?.available_until,
+      },
+    },
+    surplusTimeSensitivity: o.surplus_context?.time_sensitivity as ScorerOffering['surplusTimeSensitivity'],
+    sectorTags: o.capability_matching?.sector_tags,
+  };
+}
 
-  // === Capability matching (preferred path) ===
-  const offeringCapabilities = offering.capability_matching?.capability_outputs ?? [];
-  const needCapabilities = need.capability_matching?.capability_sought ?? [];
-
-  if (offeringCapabilities.length > 0 && needCapabilities.length > 0) {
-    // Capability match via capability_matching (0.4 weight)
-    const offeringCapsLower = new Set(offeringCapabilities.map(c => c.toLowerCase()));
-    const matchedCapabilities = needCapabilities.filter(cap => {
-      const capLower = cap.toLowerCase();
-      // Exact match or partial match
-      return offeringCapsLower.has(capLower) ||
-        [...offeringCapsLower].some(oc => oc.includes(capLower) || capLower.includes(oc));
-    });
-
-    if (matchedCapabilities.length > 0) {
-      const capabilityScore = matchedCapabilities.length / needCapabilities.length;
-      score += 0.4 * capabilityScore;
-    }
-
-    // Sector overlap (0.2 weight)
-    const offeringSectors = new Set(
-      (offering.capability_matching?.sector_tags ?? []).map(s => s.toLowerCase())
-    );
-    const needSectors = (need.capability_matching?.sector_tags ?? []).map(s => s.toLowerCase());
-
-    if (offeringSectors.size > 0 && needSectors.length > 0) {
-      const matchedSectors = needSectors.filter(s =>
-        offeringSectors.has(s) ||
-        [...offeringSectors].some(os => os.includes(s) || s.includes(os))
-      );
-      if (matchedSectors.length > 0) {
-        score += 0.2 * (matchedSectors.length / needSectors.length);
-      }
-    } else {
-      // No sector data - neutral contribution
-      score += 0.1;
-    }
-  } else {
-    // === Fallback to legacy capability_links matching ===
-    const capabilities = offering.service_details?.capability_mapping?.map((c) =>
-      c.output.toLowerCase()
-    ) ?? [];
-    const explicitMatches = need.capability_links?.explicit_matches?.map((m) =>
-      m.capability_output.toLowerCase()
-    ) ?? [];
-
-    if (capabilities.length > 0 && explicitMatches.length > 0) {
-      for (const match of explicitMatches) {
-        if (capabilities.some((cap) => cap.includes(match) || match.includes(cap))) {
-          score += 0.4;
-          break;
-        }
-      }
-    }
-  }
-
-  // === Keyword overlap fallback (0.2 weight) ===
-  const offeringWords = new Set(
-    `${offering.title} ${offering.description}`.toLowerCase().split(/\W+/)
-  );
-  const needWords = `${need.title} ${need.description}`.toLowerCase().split(/\W+/);
-  const overlap = needWords.filter((w) => w.length > 3 && offeringWords.has(w)).length;
-  score += Math.min(0.2, overlap * 0.04);
-
-  return Math.min(1, score);
+function toScorerNeed(n: NeedData): ScorerNeed {
+  return {
+    id: n.id,
+    type: n.type,
+    title: n.title,
+    description: n.description,
+    explicitMatches: n.capability_matching?.capability_sought ??
+      n.capability_links?.explicit_matches?.map(m => m.capability_output) ?? [],
+    constraints: {
+      geographic: {
+        acceptedRegions: n.constraints?.geographic?.accepted_regions,
+      },
+      timing: {
+        neededBy: n.constraints?.timing?.needed_by,
+      },
+    },
+    sectorTags: n.capability_matching?.sector_tags,
+    urgentDeadline: n.urgency?.declared_priority === 'high',
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -196,6 +202,18 @@ function main() {
   console.log('═'.repeat(70));
   console.log('  SEP Matching Algorithm Demonstration');
   console.log('═'.repeat(70));
+  console.log();
+  console.log('  This demo shows SEP\'s core matching pipeline:');
+  console.log('  1. Build a graph of participants, offerings, and needs');
+  console.log('  2. Score each potential exchange using the core scorer');
+  console.log('  3. Discover multi-party chains via cycle detection');
+  console.log('  4. Rank chains by composite quality score');
+  console.log();
+  console.log('  The scorer evaluates 8 dimensions: semantic fit, capacity,');
+  console.log('  timing, geographic compatibility, trust threshold,');
+  console.log('  surplus time sensitivity, relationship diversity, and sector overlap.');
+  console.log('  Trust and geographic scores are deal-breakers — if either is 0,');
+  console.log('  the overall score is forced to 0 regardless of other dimensions.');
   console.log();
 
   // Load data
@@ -280,6 +298,8 @@ function main() {
   // Add edges (offerings → needs)
   let edgeCount = 0;
   const MIN_MATCH_SCORE = 0.3;
+  const filteredEdges: Array<{ from: string; to: string; offering: string; reasons: string[] }> = [];
+  const edgeScores = new Map<string, MatchScore>();
 
   for (const offering of offerings) {
     const provider = participantMap.get(offering.provider);
@@ -292,25 +312,58 @@ function main() {
       const recipient = participantMap.get(need.participant);
       if (!recipient) continue;
 
-      // Check min exchanges constraint
-      const minExchanges = recipient.preferences?.matching?.min_partner_exchanges ?? 0;
-      if (provider.network_position.exchange_partners_count < minExchanges) {
+      // ─── Constraint filtering (before scoring) ───
+
+      // Geographic exclusion check
+      const excludedRegions = need.constraints?.geographic?.excluded_regions ?? [];
+      const providerRegion = provider.profile?.location?.region;
+      if (providerRegion && excludedRegions.some(r => r.toLowerCase() === providerRegion.toLowerCase())) {
+        filteredEdges.push({
+          from: provider.identity.display_name,
+          to: recipient.identity.display_name,
+          offering: offering.title,
+          reasons: [`Geographic: excluded region '${providerRegion}'`],
+        });
         continue;
       }
 
-      // Compute match score
-      const matchScore = simpleMatchScore(offering, need);
-      if (matchScore < MIN_MATCH_SCORE) continue;
+      // Provider experience check
+      const minExchanges = need.constraints?.provider_requirements?.min_exchanges_completed ?? 0;
+      const providerExchanges = (provider.satisfaction_summary?.as_provider?.total ?? 0) +
+        (provider.satisfaction_summary?.as_recipient?.total ?? 0);
+      if (minExchanges > 0 && providerExchanges < minExchanges) {
+        filteredEdges.push({
+          from: provider.identity.display_name,
+          to: recipient.identity.display_name,
+          offering: offering.title,
+          reasons: [`Provider requirements: ${providerExchanges} exchanges < ${minExchanges} required`],
+        });
+        continue;
+      }
+
+      // ─── Core scorer ───
+      const matchResult = scoreMatch({
+        offering: toScorerOffering(offering),
+        need: toScorerNeed(need),
+        providerTrustScore: computeTrustScore(provider),
+        recipientMinTrust: 0,
+        existingPartnership: false,
+      });
+
+      if (matchResult.overall < MIN_MATCH_SCORE) continue;
+
+      const edgeId = `edge-${offering.id}-${need.id}`;
+      edgeScores.set(edgeId, matchResult);
 
       const edge: NetworkEdge = {
-        id: `edge-${offering.id}-${need.id}`,
+        id: edgeId,
         fromId: offering.provider,
         toId: need.participant,
         offeringId: offering.id,
         needId: need.id,
-        matchScore,
-        feasibility: 1.0, // Simplified for demo
-        weight: matchScore,
+        matchScore: matchResult.overall,
+        feasibility: 1.0,
+        weight: matchResult.overall,
       };
 
       graph.addEdge(edge);
@@ -319,6 +372,13 @@ function main() {
   }
 
   console.log(`  Created ${edgeCount} potential exchange edges (match score >= ${MIN_MATCH_SCORE})`);
+
+  if (filteredEdges.length > 0) {
+    console.log(`  Filtered ${filteredEdges.length} edges by constraints:`);
+    for (const f of filteredEdges) {
+      console.log(`    ✗ ${f.from} → ${f.to} (${f.offering}): ${f.reasons.join(', ')}`);
+    }
+  }
   console.log();
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -357,12 +417,14 @@ function main() {
 
   const rankedChains = rankChains(cycles, graph);
 
-  console.log(`  Top 5 chains:\n`);
+  // Detailed view for top 3
+  const detailedCount = Math.min(3, rankedChains.length);
+  console.log(`  Top ${detailedCount} chains (detailed):\n`);
 
-  for (let i = 0; i < Math.min(5, rankedChains.length); i++) {
+  for (let i = 0; i < detailedCount; i++) {
     const { cycle, score } = rankedChains[i];
 
-    console.log(`  Chain ${i + 1}:`);
+    console.log(`  ┌─ Chain ${i + 1} ─────────────────────────────────────────`);
 
     // Show participants
     const participantNames = cycle.nodeIds.map((id) => {
@@ -370,26 +432,60 @@ function main() {
       return p?.identity.display_name ?? id;
     });
 
-    console.log(`    Participants: ${participantNames.join(' → ')} → (loop)`);
+    console.log(`  │ ${participantNames.join(' → ')} → (loop)`);
+    console.log('  │');
 
-    // Show edges
-    console.log('    Exchanges:');
+    // Show edges with detailed scoring
+    console.log('  │ Exchanges:');
     for (let j = 0; j < cycle.edgeIds.length; j++) {
       const edge = graph.getEdge(cycle.edgeIds[j]);
-      if (edge) {
-        const fromP = participantMap.get(edge.fromId);
-        const toP = participantMap.get(edge.toId);
-        const offering = offerings.find((o) => o.id === edge.offeringId);
-        console.log(
-          `      ${fromP?.identity.display_name} → ${toP?.identity.display_name}: ${offering?.title} (score: ${edge.matchScore.toFixed(2)})`
-        );
+      if (!edge) continue;
+
+      const fromP = participantMap.get(edge.fromId);
+      const toP = participantMap.get(edge.toId);
+      const offering = offerings.find((o) => o.id === edge.offeringId);
+
+      console.log(`  │   ${fromP?.identity.display_name} → ${toP?.identity.display_name}`);
+      console.log(`  │     Offering: ${offering?.title}`);
+
+      // Show surplus context
+      if (offering?.surplus_context) {
+        console.log(`  │     Surplus: ${offering.surplus_context.why_surplus ?? 'not specified'}`);
+        console.log(`  │     Time sensitivity: ${offering.surplus_context.time_sensitivity ?? 'none'} | Fate if unused: ${offering.surplus_context.alternative_fate ?? 'unknown'}`);
       }
+
+      // Show per-dimension score breakdown
+      const matchResult = edgeScores.get(edge.id);
+      if (matchResult) {
+        const b = matchResult.breakdown;
+        console.log(`  │     Score: ${edge.matchScore.toFixed(2)} — semantic: ${b.semantic.toFixed(2)}, timing: ${b.timing.toFixed(2)}, capacity: ${b.capacity.toFixed(2)}, surplus: ${b.surplusSensitivity.toFixed(2)}, diversity: ${b.diversity.toFixed(2)}, sector: ${b.sector.toFixed(2)}`);
+      } else {
+        console.log(`  │     Score: ${edge.matchScore.toFixed(2)}`);
+      }
+      console.log('  │');
     }
 
-    // Show score summary
+    // Show chain score summary
+    console.log('  │ Chain score:');
+    console.log(`  │   ${summariseChainScore(score).split('\n').join('\n  │   ')}`);
+    console.log(`  └${'─'.repeat(50)}`);
     console.log();
-    console.log('    Score:');
-    console.log(`      ${summariseChainScore(score).split('\n').join('\n      ')}`);
+  }
+
+  // Brief listing for remaining chains
+  if (rankedChains.length > detailedCount) {
+    console.log(`  Remaining chains (${rankedChains.length - detailedCount}):\n`);
+    for (let i = detailedCount; i < Math.min(10, rankedChains.length); i++) {
+      const { cycle, score } = rankedChains[i];
+      const names = cycle.nodeIds.map((id) => {
+        const p = participantMap.get(id);
+        return p?.identity.display_name ?? id;
+      });
+      console.log(`    ${i + 1}. ${names.join(' → ')} → (loop)  [score: ${score.overall.toFixed(2)}]`);
+    }
+    if (rankedChains.length > 10) {
+      console.log(`    ... and ${rankedChains.length - 10} more`);
+    }
     console.log();
   }
 
