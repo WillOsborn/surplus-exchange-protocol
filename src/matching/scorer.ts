@@ -36,6 +36,12 @@ export interface MatchScoreBreakdown {
   geographic: number;
   /** Trust threshold met score (0-1) */
   trust: number;
+  /** Surplus time sensitivity alignment (0-1) */
+  surplusSensitivity: number;
+  /** Relationship diversity bonus (0-1) */
+  diversity: number;
+  /** Sector overlap (0-1) */
+  sector: number;
 }
 
 /**
@@ -88,6 +94,10 @@ export interface Offering {
   capabilities: string[];
   /** Constraints on the offering */
   constraints: OfferingConstraints;
+  /** Surplus time sensitivity — how quickly this surplus loses value */
+  surplusTimeSensitivity?: 'none' | 'weeks' | 'days' | 'hours';
+  /** Sector tags for sector-based matching */
+  sectorTags?: string[];
 }
 
 /**
@@ -132,6 +142,10 @@ export interface Need {
   explicitMatches: string[];
   /** Constraints on acceptable offerings */
   constraints: NeedConstraints;
+  /** Sector tags for sector-based matching */
+  sectorTags?: string[];
+  /** Whether the need has a tight deadline */
+  urgentDeadline?: boolean;
 }
 
 /**
@@ -146,6 +160,8 @@ export interface MatchInput {
   providerTrustScore: number;
   /** Minimum trust score required by the recipient (0-1) */
   recipientMinTrust: number;
+  /** Whether these participants have exchanged before */
+  existingPartnership?: boolean;
 }
 
 /**
@@ -449,6 +465,88 @@ function calculateTrustScore(
 }
 
 /**
+ * Calculates surplus time sensitivity alignment.
+ *
+ * Time-sensitive surplus that matches an urgent need scores highest.
+ * Non-sensitive surplus scores neutral (0.5).
+ */
+function scoreSurplusSensitivity(
+  offering: Offering,
+  need: Need
+): { score: number; reasons: string[] } {
+  const reasons: string[] = [];
+  const sensitivity = offering.surplusTimeSensitivity ?? 'none';
+
+  if (sensitivity === 'none') {
+    reasons.push('No time pressure on surplus');
+    return { score: 0.5, reasons }; // Neutral
+  }
+
+  // Time-sensitive surplus gets a boost, especially if need is also urgent
+  const sensitivityBoost: Record<string, number> = {
+    hours: 1.0,
+    days: 0.8,
+    weeks: 0.6,
+  };
+
+  let score = sensitivityBoost[sensitivity] ?? 0.5;
+
+  if (need.urgentDeadline) {
+    reasons.push(`Time-sensitive surplus (${sensitivity}) matches urgent need`);
+  } else {
+    score *= 0.7; // Slight reduction if need isn't urgent
+    reasons.push(`Time-sensitive surplus (${sensitivity}), need not urgent`);
+  }
+
+  return { score, reasons };
+}
+
+/**
+ * Calculates relationship diversity score.
+ *
+ * Prefers new partner connections over repeat exchanges.
+ */
+function scoreDiversity(
+  input: MatchInput
+): { score: number; reasons: string[] } {
+  if (input.existingPartnership) {
+    return { score: 0.3, reasons: ['Existing partnership — lower diversity value'] };
+  }
+  return { score: 1.0, reasons: ['New partnership — high diversity value'] };
+}
+
+/**
+ * Calculates sector overlap score.
+ *
+ * Compares sector tags between offering and need using substring matching.
+ */
+function scoreSectorOverlap(
+  offering: Offering,
+  need: Need
+): { score: number; reasons: string[] } {
+  const offeringSectors = new Set(
+    (offering.sectorTags ?? []).map(s => s.toLowerCase())
+  );
+  const needSectors = (need.sectorTags ?? []).map(s => s.toLowerCase());
+
+  if (offeringSectors.size === 0 || needSectors.length === 0) {
+    return { score: 0.5, reasons: ['No sector data — neutral'] };
+  }
+
+  const matched = needSectors.filter(s =>
+    offeringSectors.has(s) ||
+    [...offeringSectors].some(os => os.includes(s) || s.includes(os))
+  );
+
+  if (matched.length === 0) {
+    return { score: 0.0, reasons: ['No sector overlap'] };
+  }
+
+  const score = matched.length / needSectors.length;
+  return { score, reasons: [`Sector overlap: ${matched.join(', ')}`] };
+}
+
+/**
  * Scores how well an offering matches a need.
  *
  * Calculates scores across five dimensions (semantic, capacity, timing,
@@ -470,6 +568,9 @@ export function scoreMatch(input: MatchInput): MatchScore {
   const timing = calculateTimingScore(offering, need);
   const geographic = calculateGeographicScore(offering, need);
   const trust = calculateTrustScore(providerTrustScore, recipientMinTrust);
+  const surplusSensitivity = scoreSurplusSensitivity(offering, need);
+  const diversity = scoreDiversity(input);
+  const sector = scoreSectorOverlap(offering, need);
 
   // Collect all reasons
   allReasons.push(...semantic.reasons);
@@ -477,6 +578,9 @@ export function scoreMatch(input: MatchInput): MatchScore {
   allReasons.push(...timing.reasons);
   allReasons.push(...geographic.reasons);
   allReasons.push(...trust.reasons);
+  allReasons.push(...surplusSensitivity.reasons);
+  allReasons.push(...diversity.reasons);
+  allReasons.push(...sector.reasons);
 
   // Build breakdown
   const breakdown: MatchScoreBreakdown = {
@@ -485,6 +589,9 @@ export function scoreMatch(input: MatchInput): MatchScore {
     timing: timing.score,
     geographic: geographic.score,
     trust: trust.score,
+    surplusSensitivity: surplusSensitivity.score,
+    diversity: diversity.score,
+    sector: sector.score,
   };
 
   // Calculate overall score
@@ -498,8 +605,14 @@ export function scoreMatch(input: MatchInput): MatchScore {
     overall = 0;
     allReasons.unshift('DEAL-BREAKER: Geographic incompatibility');
   } else {
-    // Weighted combination: semantic 50%, timing 30%, capacity 20%
-    overall = semantic.score * 0.5 + timing.score * 0.3 + capacity.score * 0.2;
+    // Weighted combination of non-deal-breaker dimensions
+    overall =
+      semantic.score * 0.30 +
+      timing.score * 0.15 +
+      capacity.score * 0.10 +
+      surplusSensitivity.score * 0.15 +
+      diversity.score * 0.15 +
+      sector.score * 0.15;
   }
 
   return {
