@@ -66,7 +66,12 @@
           "available_until": "2026-04-30"
         },
         "excluded_sectors": ["gambling", "tobacco"],
-        "minimum_engagement": "3 hours"
+        "minimum_engagement": "3 hours",
+        "chain_participation": {
+          "max_chain_length": 5,
+          "can_be_intermediate": true,
+          "prefers_direct": false
+        }
       }
     },
     {
@@ -77,9 +82,9 @@
       "title": "Corporate Event Catering",
       "description": "Full-service catering for corporate events, meetings, and launches. Includes setup, service, and cleanup.",
       "surplus_context": {
-        "why_surplus": "Quieter period before wedding season, kitchen capacity underutilised",
-        "alternative_fate": "unused",
-        "time_sensitivity": "weeks"
+        "why_surplus": "Cancelled corporate booking left prepared ingredients and reserved kitchen time",
+        "alternative_fate": "disposal",
+        "time_sensitivity": "days"
       },
       "capability_matching": {
         "capability_outputs": ["corporate_catering", "event_catering"],
@@ -125,7 +130,12 @@
           "available_until": "2026-06-30",
           "blackout_periods": ["2026-03-28 to 2026-04-02"]
         },
-        "minimum_engagement": "1 event"
+        "minimum_engagement": "1 event",
+        "chain_participation": {
+          "max_chain_length": 4,
+          "can_be_intermediate": false,
+          "prefers_direct": true
+        }
       }
     },
     {
@@ -137,8 +147,8 @@
       "description": "Complete brand identity packages including logo, colour palette, typography, and brand guidelines.",
       "surplus_context": {
         "why_surplus": "Major project delivered early, team available before next retainer starts",
-        "alternative_fate": "unused",
-        "time_sensitivity": "weeks"
+        "alternative_fate": "opportunity_cost",
+        "time_sensitivity": "none"
       },
       "capability_matching": {
         "capability_outputs": ["brand_identity", "logo_design", "brand_refresh", "brand_guidelines"],
@@ -364,7 +374,7 @@
       "description": "Content strategy development, blog writing, and social media planning.",
       "surplus_context": {
         "why_surplus": "Freelance writer on retainer with unused hours this quarter",
-        "alternative_fate": "unused",
+        "alternative_fate": "opportunity_cost",
         "time_sensitivity": "weeks"
       },
       "capability_matching": {

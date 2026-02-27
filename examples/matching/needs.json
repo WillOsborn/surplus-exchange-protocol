@@ -28,8 +28,15 @@
         "delivery_preference": "remote"
       },
       "constraints": {
+        "geographic": {
+          "accepted_regions": ["UK"],
+          "excluded_regions": ["West Midlands"]
+        },
         "timing": { "needed_by": "2026-04-15" },
-        "provider_requirements": { "min_exchanges_completed": 5 }
+        "provider_requirements": {
+          "min_exchanges_completed": 5,
+          "verification_required": true
+        }
       },
       "urgency": {
         "declared_priority": "normal",
@@ -74,7 +81,13 @@
         "deadline_type": "hard",
         "contextual_factors": [
           { "factor": "blocking_other_work", "description": "Can't sign venue contracts until reviewed" }
-        ]
+        ],
+        "flexibility_for_speed": {
+          "accept_partial": true,
+          "accept_less_experienced": false,
+          "accept_longer_chain": true,
+          "accept_different_format": false
+        }
       }
     },
     {
@@ -109,7 +122,13 @@
       "urgency": {
         "declared_priority": "high",
         "deadline": "2026-03-15",
-        "deadline_type": "hard"
+        "deadline_type": "hard",
+        "flexibility_for_speed": {
+          "accept_partial": true,
+          "accept_less_experienced": true,
+          "accept_longer_chain": false,
+          "accept_different_format": true
+        }
       }
     },
     {
@@ -210,6 +229,10 @@
         "timing": {
           "needed_by": "2026-03-20",
           "needed_after": "2026-03-15"
+        },
+        "provider_requirements": {
+          "min_exchanges_completed": 3,
+          "verification_required": true
         }
       },
       "urgency": {
