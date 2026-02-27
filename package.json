@@ -17,7 +17,8 @@
     "trace": "npm run build && node dist/examples/trace-chain.js",
     "match": "npm run build && node dist/examples/match-demo.js",
     "trust": "npm run build && node dist/examples/trust-demo.js",
-    "capability": "npm run build && node dist/examples/capability-demo.js",
+    "capability": "npm run build && node dist/examples/capability-offline-demo.js",
+    "capability:live": "npm run build && node dist/examples/capability-demo.js",
     "test": "echo \"No tests yet\" && exit 0",
     "lint": "tsc --noEmit"
   },

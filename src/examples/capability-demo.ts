@@ -98,10 +98,13 @@ async function runDemo(): Promise<void> {
   let store: FeedbackStore = loadFeedbackStore(OUTPUT_PATH);
 
   console.log('\n' + '═'.repeat(70));
-  console.log('  SEP Capability Translation Demo');
+  console.log('  SEP Capability Translation Demo — Interactive Mode');
   console.log('═'.repeat(70));
-  console.log('\n  This demo walks through the capability matching flow.');
-  console.log('  You\'ll create an offering, then a need, and see how they match.\n');
+  console.log('\n  This demo uses live AI extraction to translate natural language');
+  console.log('  descriptions into structured capability terms, then matches them.');
+  console.log('  You\'ll create an offering, then a need, and see how they match.');
+  console.log('\n  Requires: ANTHROPIC_API_KEY environment variable');
+  console.log('  For offline mode (no API key): npm run capability\n');
 
   if (store.extractions.length > 0) {
     console.log('  Loaded existing feedback store:');
