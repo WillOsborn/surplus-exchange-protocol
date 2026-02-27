@@ -1,0 +1,1064 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplus-exchange-protocol.org/schemas/protocol-messages.schema.json",
+  "title": "SEP Protocol Messages",
+  "description": "Message formats for communication between participants, agents, and brokers in the Surplus Exchange Protocol. All messages follow a common header structure with type-specific payloads.",
+  "version": "1.0.0",
+
+  "$defs": {
+    "messageHeader": {
+      "type": "object",
+      "title": "Message Header",
+      "description": "Common header fields present in all SEP protocol messages. Provides identification, routing, and integrity verification.",
+      "required": ["message_id", "message_type", "timestamp", "sender_id", "protocol_version"],
+      "properties": {
+        "message_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for this message, used for idempotency and deduplication"
+        },
+        "message_type": {
+          "type": "string",
+          "description": "Discriminator field identifying the message type"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of when the message was created"
+        },
+        "sender_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier of the sending participant, agent, or broker"
+        },
+        "protocol_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$",
+          "description": "SEP protocol version (major.minor format, e.g., '1.0')"
+        },
+        "correlation_id": {
+          "type": "string",
+          "description": "Optional identifier linking related messages in a conversation or workflow"
+        },
+        "reply_to": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Message ID this is a direct response to"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Ed25519 or similar cryptographic signature of message content for integrity verification"
+        }
+      }
+    },
+
+    "edgeReference": {
+      "type": "object",
+      "title": "Edge Reference",
+      "description": "Reference to a single exchange edge within a chain, identifying provider, recipient, and the offering being exchanged",
+      "required": ["edge_id", "provider_id", "recipient_id", "offering_id"],
+      "properties": {
+        "edge_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for this edge within the chain"
+        },
+        "provider_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Participant providing the offering"
+        },
+        "recipient_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Participant receiving the offering"
+        },
+        "offering_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to the capability offering being exchanged"
+        },
+        "offering_summary": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Human-readable summary of the offering for quick comprehension"
+        }
+      }
+    },
+
+    "timingConstraints": {
+      "type": "object",
+      "title": "Timing Constraints",
+      "description": "Deadlines and scheduling information for chain confirmation and execution",
+      "properties": {
+        "confirmation_deadline": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Deadline by which all participants must confirm their participation"
+        },
+        "execution_window": {
+          "type": "object",
+          "description": "The time period during which exchanges must be executed",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date",
+              "description": "Earliest date when execution can begin"
+            },
+            "end": {
+              "type": "string",
+              "format": "date",
+              "description": "Latest date by which all exchanges must be complete"
+            }
+          },
+          "required": ["start", "end"]
+        },
+        "edge_schedules": {
+          "type": "array",
+          "description": "Specific timing constraints for individual edges",
+          "items": {
+            "type": "object",
+            "required": ["edge_id"],
+            "properties": {
+              "edge_id": {
+                "type": "string",
+                "description": "Reference to the edge these constraints apply to"
+              },
+              "earliest_start": {
+                "type": "string",
+                "format": "date",
+                "description": "Earliest date this edge can begin execution"
+              },
+              "latest_completion": {
+                "type": "string",
+                "format": "date",
+                "description": "Latest date this edge must be completed"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "satisfactionLevel": {
+      "type": "string",
+      "title": "Satisfaction Level",
+      "description": "Participant's subjective assessment of exchange quality",
+      "enum": ["satisfied", "partially_satisfied", "not_satisfied"]
+    },
+
+    "disputeType": {
+      "type": "string",
+      "title": "Dispute Type",
+      "description": "Category of dispute raised about an exchange",
+      "enum": [
+        "non_delivery",
+        "partial_delivery",
+        "quality_mismatch",
+        "timing_violation",
+        "scope_dispute",
+        "other"
+      ]
+    },
+
+    "failureReason": {
+      "type": "string",
+      "title": "Failure Reason",
+      "description": "Reason for chain failure",
+      "enum": [
+        "edge_timeout",
+        "edge_abandonment",
+        "unresolved_dispute",
+        "participant_withdrawal",
+        "cascade_failure",
+        "infrastructure_failure",
+        "other"
+      ]
+    },
+
+    "processingStatus": {
+      "type": "string",
+      "title": "Processing Status",
+      "description": "Status of message processing by the recipient",
+      "enum": ["accepted", "rejected", "pending"]
+    },
+
+    "rejectionCode": {
+      "type": "string",
+      "title": "Rejection Code",
+      "description": "Standardised codes for message rejection reasons",
+      "enum": [
+        "invalid_format",
+        "invalid_chain_id",
+        "invalid_participant",
+        "invalid_state_transition",
+        "expired",
+        "duplicate",
+        "unauthorized",
+        "other"
+      ]
+    },
+
+    "healthStatus": {
+      "type": "string",
+      "title": "Health Status",
+      "description": "Overall health assessment of a chain",
+      "enum": ["healthy", "warning", "at_risk", "failing"]
+    },
+
+    "issueSeverity": {
+      "type": "string",
+      "title": "Issue Severity",
+      "description": "Severity level for health check issues",
+      "enum": ["info", "warning", "critical"]
+    },
+
+    "matchRationale": {
+      "type": "object",
+      "title": "Match Rationale",
+      "description": "Explanation of why this chain was proposed by the matching algorithm",
+      "properties": {
+        "algorithm_version": {
+          "type": "string",
+          "description": "Version of the matching algorithm that identified this chain"
+        },
+        "match_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence score (0-1) indicating quality of the match"
+        },
+        "key_matches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Human-readable explanations of the key matches identified"
+        }
+      }
+    },
+
+    "deliveryEvidence": {
+      "type": "object",
+      "title": "Delivery Evidence",
+      "description": "Evidence supporting completion of a delivery",
+      "properties": {
+        "evidence_type": {
+          "type": "string",
+          "enum": ["document", "confirmation", "tracking", "photo", "other"],
+          "description": "Category of evidence provided"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Human-readable description of the evidence"
+        },
+        "attachments": {
+          "type": "array",
+          "description": "File attachments supporting the claim",
+          "items": {
+            "type": "object",
+            "required": ["filename", "url"],
+            "properties": {
+              "filename": {
+                "type": "string",
+                "description": "Name of the attached file"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL where the attachment can be retrieved"
+              },
+              "hash": {
+                "type": "string",
+                "description": "Cryptographic hash (SHA-256) of file contents for integrity verification"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "confirmedEdge": {
+      "type": "object",
+      "title": "Confirmed Edge",
+      "description": "Edge confirmation status with timestamps",
+      "required": ["edge_id"],
+      "properties": {
+        "edge_id": {
+          "type": "string",
+          "description": "Reference to the confirmed edge"
+        },
+        "provider_confirmed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the provider confirmed their participation"
+        },
+        "recipient_confirmed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the recipient confirmed their participation"
+        }
+      }
+    },
+
+    "participantSummary": {
+      "type": "object",
+      "title": "Participant Summary",
+      "description": "Summary of a participant's role in the chain",
+      "required": ["participant_id"],
+      "properties": {
+        "participant_id": {
+          "type": "string",
+          "description": "Identifier of the participant"
+        },
+        "provides_to": {
+          "type": "string",
+          "description": "Participant they are providing to"
+        },
+        "receives_from": {
+          "type": "string",
+          "description": "Participant they receive from"
+        }
+      }
+    },
+
+    "affectedEdge": {
+      "type": "object",
+      "title": "Affected Edge",
+      "description": "Edge status and compensation action when a chain fails",
+      "required": ["edge_id", "status_at_failure", "compensation_action"],
+      "properties": {
+        "edge_id": {
+          "type": "string",
+          "description": "Reference to the affected edge"
+        },
+        "status_at_failure": {
+          "type": "string",
+          "description": "Edge status at the time of chain failure"
+        },
+        "compensation_action": {
+          "type": "string",
+          "enum": ["completed_independently", "reversed", "compensated", "none_required"],
+          "description": "Action taken to compensate or resolve this edge"
+        }
+      }
+    },
+
+    "edgeHealthStatus": {
+      "type": "object",
+      "title": "Edge Health Status",
+      "description": "Health status of an individual edge during monitoring",
+      "required": ["edge_id", "status"],
+      "properties": {
+        "edge_id": {
+          "type": "string",
+          "description": "Reference to the edge"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current execution status of the edge"
+        },
+        "progress_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Estimated percentage completion (0-100)"
+        },
+        "on_schedule": {
+          "type": "boolean",
+          "description": "Whether the edge is progressing according to schedule"
+        }
+      }
+    },
+
+    "healthIssue": {
+      "type": "object",
+      "title": "Health Issue",
+      "description": "An identified issue during health monitoring",
+      "required": ["issue_type", "severity", "description"],
+      "properties": {
+        "issue_type": {
+          "type": "string",
+          "description": "Category of issue identified"
+        },
+        "severity": {
+          "$ref": "#/$defs/issueSeverity"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the issue"
+        },
+        "affected_edge_id": {
+          "type": "string",
+          "description": "Edge affected by this issue, if applicable"
+        }
+      }
+    },
+
+    "ChainProposal": {
+      "title": "Chain Proposal",
+      "description": "Proposes a new exchange chain to potential participants. Sent by a broker or matching algorithm when a viable chain has been identified.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edges", "timing", "match_rationale"],
+          "properties": {
+            "message_type": {
+              "const": "ChainProposal"
+            },
+            "chain_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Unique identifier for this proposed chain"
+            },
+            "edges": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "$ref": "#/$defs/edgeReference"
+              },
+              "description": "The exchanges that comprise this chain (minimum 2 for a valid cycle)"
+            },
+            "timing": {
+              "$ref": "#/$defs/timingConstraints",
+              "description": "Proposed timing for confirmation and execution"
+            },
+            "match_rationale": {
+              "$ref": "#/$defs/matchRationale",
+              "description": "Explanation of why this chain was proposed"
+            },
+            "metadata": {
+              "type": "object",
+              "description": "Additional metadata about the proposed chain",
+              "properties": {
+                "proposed_by": {
+                  "type": "string",
+                  "enum": ["algorithm", "participant", "broker"],
+                  "description": "How this chain was identified"
+                },
+                "includes_physical_goods": {
+                  "type": "boolean",
+                  "description": "Whether any edge involves physical goods requiring logistics"
+                },
+                "geographic_span": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Geographic regions involved in this chain"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "ParticipantConfirmation": {
+      "title": "Participant Confirmation",
+      "description": "A participant's response to a chain proposal. Can confirm, decline, or propose modifications.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "participant_id", "decision"],
+          "properties": {
+            "message_type": {
+              "const": "ParticipantConfirmation"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain this confirmation relates to"
+            },
+            "participant_id": {
+              "type": "string",
+              "description": "Identifier of the confirming participant"
+            },
+            "decision": {
+              "type": "string",
+              "enum": ["confirm", "decline", "counter"],
+              "description": "Participant's decision on the proposal"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Conditions attached to a confirmation (must be agreed by other parties)"
+            },
+            "decline_reason": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "Explanation for declining (required when decision is 'decline')"
+            },
+            "counter_proposal": {
+              "type": "object",
+              "description": "Proposed modifications when decision is 'counter'",
+              "properties": {
+                "timing_adjustment": {
+                  "$ref": "#/$defs/timingConstraints",
+                  "description": "Proposed changes to timing"
+                },
+                "edge_modifications": {
+                  "type": "array",
+                  "description": "Proposed changes to specific edges",
+                  "items": {
+                    "type": "object",
+                    "required": ["edge_id", "modification"],
+                    "properties": {
+                      "edge_id": {
+                        "type": "string",
+                        "description": "Edge to modify"
+                      },
+                      "modification": {
+                        "type": "string",
+                        "description": "Description of proposed modification"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "ChainCommitment": {
+      "title": "Chain Commitment",
+      "description": "Notification that all participants have confirmed and the chain is now binding. Marks transition from 'confirming' to 'committed' status.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "confirmed_edges", "final_timing", "commitment_hash"],
+          "properties": {
+            "message_type": {
+              "const": "ChainCommitment"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain that is now committed"
+            },
+            "confirmed_edges": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "$ref": "#/$defs/confirmedEdge"
+              },
+              "description": "All edges with their confirmation timestamps"
+            },
+            "final_timing": {
+              "$ref": "#/$defs/timingConstraints",
+              "description": "Agreed timing constraints after any negotiation"
+            },
+            "commitment_hash": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+:[a-f0-9]+$",
+              "description": "Cryptographic hash of the committed chain state (format: algorithm:hash)"
+            },
+            "participants_summary": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/participantSummary"
+              },
+              "description": "Summary of each participant's role in the chain"
+            }
+          }
+        }
+      ]
+    },
+
+    "ExecutionStart": {
+      "title": "Execution Start",
+      "description": "Provider signals they have begun executing their edge of the exchange.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "started_at"],
+          "properties": {
+            "message_type": {
+              "const": "ExecutionStart"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain this execution belongs to"
+            },
+            "edge_id": {
+              "type": "string",
+              "description": "Edge being executed"
+            },
+            "started_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When execution began"
+            },
+            "expected_completion": {
+              "type": "string",
+              "format": "date",
+              "description": "Provider's estimated completion date"
+            },
+            "notes": {
+              "type": "string",
+              "maxLength": 500,
+              "description": "Optional notes about the execution plan or approach"
+            }
+          }
+        }
+      ]
+    },
+
+    "ExecutionCompletion": {
+      "title": "Execution Completion",
+      "description": "Provider signals they have completed delivery of their offering.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "completed_at"],
+          "properties": {
+            "message_type": {
+              "const": "ExecutionCompletion"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain this completion belongs to"
+            },
+            "edge_id": {
+              "type": "string",
+              "description": "Edge that was completed"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When delivery was completed"
+            },
+            "delivery_evidence": {
+              "$ref": "#/$defs/deliveryEvidence",
+              "description": "Evidence supporting the completion claim"
+            },
+            "notes": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "Additional notes about the delivery"
+            }
+          }
+        }
+      ]
+    },
+
+    "SatisfactionSignal": {
+      "title": "Satisfaction Signal",
+      "description": "Recipient's subjective assessment of the delivery quality. Core to the subjective value ledger concept.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "signal"],
+          "properties": {
+            "message_type": {
+              "const": "SatisfactionSignal"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain this signal relates to"
+            },
+            "edge_id": {
+              "type": "string",
+              "description": "Edge being assessed"
+            },
+            "signal": {
+              "$ref": "#/$defs/satisfactionLevel",
+              "description": "Participant's satisfaction level"
+            },
+            "feedback": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "Optional qualitative feedback about the exchange"
+            },
+            "partial_satisfaction_details": {
+              "type": "object",
+              "description": "Detailed breakdown when signal is 'partially_satisfied'",
+              "properties": {
+                "what_was_good": {
+                  "type": "string",
+                  "maxLength": 500,
+                  "description": "Aspects of the delivery that met expectations"
+                },
+                "what_was_missing": {
+                  "type": "string",
+                  "maxLength": 500,
+                  "description": "Aspects that fell short of expectations"
+                },
+                "suggested_resolution": {
+                  "type": "string",
+                  "maxLength": 500,
+                  "description": "What would make the recipient fully satisfied"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "DisputeRaised": {
+      "title": "Dispute Raised",
+      "description": "Initiates a formal dispute about an edge, triggering the dispute resolution process.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "dispute_type", "description"],
+          "properties": {
+            "message_type": {
+              "const": "DisputeRaised"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain containing the disputed edge"
+            },
+            "edge_id": {
+              "type": "string",
+              "description": "Edge being disputed"
+            },
+            "dispute_type": {
+              "$ref": "#/$defs/disputeType",
+              "description": "Category of dispute"
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 2000,
+              "description": "Detailed description of the dispute and circumstances"
+            },
+            "evidence": {
+              "type": "array",
+              "description": "Evidence supporting the dispute",
+              "items": {
+                "type": "object",
+                "required": ["evidence_type", "description"],
+                "properties": {
+                  "evidence_type": {
+                    "type": "string",
+                    "description": "Type of evidence"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the evidence"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL to access the evidence"
+                  }
+                }
+              }
+            },
+            "requested_resolution": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "What outcome the disputing party is seeking"
+            },
+            "willing_to_mediate": {
+              "type": "boolean",
+              "default": true,
+              "description": "Whether the party is open to third-party mediation"
+            }
+          }
+        }
+      ]
+    },
+
+    "ChainCompletion": {
+      "title": "Chain Completion",
+      "description": "Notification that all edges have been satisfied and the chain is complete. Triggers trust metric updates.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "completed_at", "summary"],
+          "properties": {
+            "message_type": {
+              "const": "ChainCompletion"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain that completed"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the final edge was satisfied"
+            },
+            "summary": {
+              "type": "object",
+              "description": "Summary statistics for the completed chain",
+              "required": ["total_edges", "satisfied_edges"],
+              "properties": {
+                "total_edges": {
+                  "type": "integer",
+                  "minimum": 2,
+                  "description": "Total number of edges in the chain"
+                },
+                "satisfied_edges": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Number of edges with 'satisfied' signal"
+                },
+                "partially_satisfied_edges": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Number of edges with 'partially_satisfied' signal"
+                },
+                "execution_duration_days": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Days from first execution start to final satisfaction"
+                },
+                "within_schedule": {
+                  "type": "boolean",
+                  "description": "Whether all edges completed within their scheduled windows"
+                }
+              }
+            },
+            "trust_updates": {
+              "type": "array",
+              "description": "Summary of trust metric changes resulting from this chain",
+              "items": {
+                "type": "object",
+                "required": ["participant_id", "update_type"],
+                "properties": {
+                  "participant_id": {
+                    "type": "string",
+                    "description": "Participant whose trust metrics were updated"
+                  },
+                  "update_type": {
+                    "type": "string",
+                    "enum": ["positive", "neutral", "negative"],
+                    "description": "Direction of trust update"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "ChainFailure": {
+      "title": "Chain Failure",
+      "description": "Notification that a chain has failed, including compensation and resolution information.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "failed_at", "failure_reason"],
+          "properties": {
+            "message_type": {
+              "const": "ChainFailure"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain that failed"
+            },
+            "failed_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the failure was determined"
+            },
+            "failure_reason": {
+              "$ref": "#/$defs/failureReason",
+              "description": "Category of failure"
+            },
+            "failed_edge_id": {
+              "type": "string",
+              "description": "Edge that triggered the failure, if applicable"
+            },
+            "affected_edges": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/affectedEdge"
+              },
+              "description": "Status and compensation action for each edge"
+            },
+            "compensation_plan": {
+              "type": "object",
+              "description": "Plan for compensating affected participants",
+              "properties": {
+                "strategy": {
+                  "type": "string",
+                  "enum": ["restructure", "partial_complete", "full_unwind", "settle_externally"],
+                  "description": "Overall compensation strategy"
+                },
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Specific actions to be taken"
+                },
+                "requires_approval": {
+                  "type": "boolean",
+                  "description": "Whether participants must approve the compensation plan"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "MessageAcknowledgment": {
+      "title": "Message Acknowledgment",
+      "description": "Acknowledges receipt and processing of a message. Used for delivery confirmation and error reporting.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["original_message_id", "received_at", "processing_status"],
+          "properties": {
+            "message_type": {
+              "const": "MessageAcknowledgment"
+            },
+            "original_message_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "ID of the message being acknowledged"
+            },
+            "received_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the original message was received"
+            },
+            "processing_status": {
+              "$ref": "#/$defs/processingStatus",
+              "description": "Status of processing the original message"
+            },
+            "rejection_reason": {
+              "type": "string",
+              "maxLength": 500,
+              "description": "Human-readable explanation for rejection"
+            },
+            "rejection_code": {
+              "$ref": "#/$defs/rejectionCode",
+              "description": "Standardised code for rejection reason"
+            }
+          }
+        }
+      ]
+    },
+
+    "HealthCheck": {
+      "title": "Health Check",
+      "description": "Periodic health check message for monitoring chain progress and identifying issues.",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "check_type", "status"],
+          "properties": {
+            "message_type": {
+              "const": "HealthCheck"
+            },
+            "chain_id": {
+              "type": "string",
+              "description": "Chain being monitored"
+            },
+            "check_type": {
+              "type": "string",
+              "enum": ["scheduled", "triggered", "manual"],
+              "description": "What initiated this health check"
+            },
+            "status": {
+              "$ref": "#/$defs/healthStatus",
+              "description": "Overall health assessment"
+            },
+            "health_score": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Numeric health score (0 = critical, 1 = perfect)"
+            },
+            "edge_statuses": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/edgeHealthStatus"
+              },
+              "description": "Health status of each edge in the chain"
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/healthIssue"
+              },
+              "description": "Identified issues requiring attention"
+            },
+            "recommendations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Suggested actions to address issues"
+            }
+          }
+        }
+      ]
+    }
+  },
+
+  "oneOf": [
+    {
+      "$ref": "#/$defs/ChainProposal"
+    },
+    {
+      "$ref": "#/$defs/ParticipantConfirmation"
+    },
+    {
+      "$ref": "#/$defs/ChainCommitment"
+    },
+    {
+      "$ref": "#/$defs/ExecutionStart"
+    },
+    {
+      "$ref": "#/$defs/ExecutionCompletion"
+    },
+    {
+      "$ref": "#/$defs/SatisfactionSignal"
+    },
+    {
+      "$ref": "#/$defs/DisputeRaised"
+    },
+    {
+      "$ref": "#/$defs/ChainCompletion"
+    },
+    {
+      "$ref": "#/$defs/ChainFailure"
+    },
+    {
+      "$ref": "#/$defs/MessageAcknowledgment"
+    },
+    {
+      "$ref": "#/$defs/HealthCheck"
+    }
+  ],
+
+  "discriminator": {
+    "propertyName": "message_type",
+    "mapping": {
+      "ChainProposal": "#/$defs/ChainProposal",
+      "ParticipantConfirmation": "#/$defs/ParticipantConfirmation",
+      "ChainCommitment": "#/$defs/ChainCommitment",
+      "ExecutionStart": "#/$defs/ExecutionStart",
+      "ExecutionCompletion": "#/$defs/ExecutionCompletion",
+      "SatisfactionSignal": "#/$defs/SatisfactionSignal",
+      "DisputeRaised": "#/$defs/DisputeRaised",
+      "ChainCompletion": "#/$defs/ChainCompletion",
+      "ChainFailure": "#/$defs/ChainFailure",
+      "MessageAcknowledgment": "#/$defs/MessageAcknowledgment",
+      "HealthCheck": "#/$defs/HealthCheck"
+    }
+  }
+}

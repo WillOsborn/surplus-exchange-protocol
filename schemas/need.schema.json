@@ -1,0 +1,745 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplus-exchange-protocol.org/schemas/need.schema.json",
+  "title": "Need",
+  "description": "Describes a participant's need that could be fulfilled through activated surplus. The recipient assesses subjective value—is receiving this better than not receiving it? There are no exchange rates; each party decides independently whether the exchange is worthwhile.",
+  "type": "object",
+  "required": ["id", "type", "participant", "status", "description", "capability_matching"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this need"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["service", "physical_good", "access", "space"],
+      "description": "Category of need (mirrors offering types for matching)"
+    },
+    "participant": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the participant who has this need"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "partially_fulfilled", "fulfilled", "expired", "withdrawn"],
+      "description": "Current status of the need"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Short, human-readable title for the need"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 2000,
+      "description": "Detailed description of what is needed and why (supports AI interpretation)"
+    },
+    "outcome_sought": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "What the participant wants to achieve (outcome focus, not resource focus)"
+    },
+    "capability_links": {
+      "$ref": "#/$defs/capabilityLinks",
+      "description": "Links to known capability outputs that could fulfil this need"
+    },
+    "service_need_details": {
+      "$ref": "#/$defs/serviceNeedDetails",
+      "description": "Details specific to service needs"
+    },
+    "physical_need_details": {
+      "$ref": "#/$defs/physicalNeedDetails",
+      "description": "Details specific to physical goods needs"
+    },
+    "access_need_details": {
+      "$ref": "#/$defs/accessNeedDetails",
+      "description": "Details specific to access/expertise needs"
+    },
+    "constraints": {
+      "$ref": "#/$defs/constraints",
+      "description": "Hard constraints that must be met (deal-breakers)"
+    },
+    "preferences": {
+      "$ref": "#/$defs/preferences",
+      "description": "Soft preferences that improve match quality but aren't required"
+    },
+    "urgency": {
+      "$ref": "#/$defs/urgency",
+      "description": "Time-sensitivity of the need"
+    },
+    "fulfilment_history": {
+      "$ref": "#/$defs/fulfilmentHistory",
+      "description": "Record of partial or complete fulfilment attempts"
+    },
+    "inferred_signals": {
+      "$ref": "#/$defs/inferredSignals",
+      "description": "AI-derived signals that enrich matching (populated over time)"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the need was first declared"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the need was last modified"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": ["public", "network_only", "agent_only"],
+      "default": "network_only",
+      "description": "Who can see this need (public = browsable, network_only = authenticated members, agent_only = AI matching only)"
+    },
+    "capability_matching": {
+      "$ref": "#/$defs/capabilityMatching",
+      "description": "Structured data for algorithmic capability matching (required at search time, can be AI-enriched from human input). Note: This is SEP's matching engine, not external AI agents."
+    }
+  },
+  "$defs": {
+    "capabilityLinks": {
+      "type": "object",
+      "description": "Links between this need and known capability outputs from offerings",
+      "additionalProperties": false,
+      "properties": {
+        "explicit_matches": {
+          "type": "array",
+          "description": "Capability outputs the participant explicitly identified as fulfilling this need",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["capability_output"],
+            "properties": {
+              "capability_output": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name of the capability output (e.g., 'pitch deck design', 'monthly bookkeeping')"
+              },
+              "fit_notes": {
+                "type": "string",
+                "maxLength": 500,
+                "description": "Why this capability fits the need"
+              }
+            }
+          }
+        },
+        "inferred_matches": {
+          "type": "array",
+          "description": "Capability outputs AI agents have identified as potential matches",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["capability_output", "confidence"],
+            "properties": {
+              "capability_output": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name of the capability output"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "AI confidence in this match (0 = no confidence, 1 = certain match)"
+              },
+              "reasoning": {
+                "type": "string",
+                "maxLength": 500,
+                "description": "Why AI believes this capability could fulfil the need"
+              },
+              "participant_confirmed": {
+                "type": "boolean",
+                "description": "Whether participant has confirmed or rejected this inference"
+              }
+            }
+          }
+        },
+        "excluded_capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Capability outputs that explicitly do NOT fit this need (refines future matching)"
+        }
+      }
+    },
+    "serviceNeedDetails": {
+      "type": "object",
+      "description": "Details for service-type needs",
+      "additionalProperties": false,
+      "properties": {
+        "scope_description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "What the service should accomplish"
+        },
+        "estimated_effort": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Participant's estimate of effort required (e.g., '10-20 hours')"
+        },
+        "deliverables_expected": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Specific deliverables the participant expects"
+        },
+        "inputs_available": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "What the participant can provide to support delivery"
+        },
+        "delivery_preference": {
+          "type": "string",
+          "enum": ["remote", "onsite", "hybrid", "no_preference"],
+          "description": "How the service should be delivered"
+        },
+        "collaboration_level": {
+          "type": "string",
+          "enum": ["hands_off", "light_touch", "collaborative", "embedded"],
+          "description": "How much interaction is expected during delivery"
+        }
+      }
+    },
+    "physicalNeedDetails": {
+      "type": "object",
+      "description": "Details for physical goods needs",
+      "additionalProperties": false,
+      "properties": {
+        "quantity": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Amount needed (e.g., '50 units', '2 pallets')"
+        },
+        "specifications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "attribute": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Name of the specification attribute"
+              },
+              "requirement": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Required value or range for this attribute"
+              },
+              "flexibility": {
+                "type": "string",
+                "enum": ["exact", "approximate", "flexible"],
+                "description": "How strict this specification is"
+              }
+            }
+          },
+          "description": "Technical specifications for the goods"
+        },
+        "condition_accepted": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["new", "like_new", "good", "fair", "any"]
+          },
+          "description": "Acceptable condition levels"
+        },
+        "delivery_location": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "City name"
+            },
+            "region": {
+              "type": "string",
+              "description": "Region or county"
+            },
+            "country": {
+              "type": "string",
+              "description": "Country name"
+            },
+            "postcode": {
+              "type": "string",
+              "description": "Postal code for delivery"
+            }
+          },
+          "description": "Where goods should be delivered"
+        },
+        "can_collect": {
+          "type": "boolean",
+          "description": "Whether participant can collect goods themselves"
+        },
+        "collection_radius_km": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Maximum distance participant will travel for collection (in kilometres)"
+        },
+        "storage_constraints": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Any storage limitations (size, temperature, timing)"
+        }
+      }
+    },
+    "accessNeedDetails": {
+      "type": "object",
+      "description": "Details for access/expertise needs",
+      "additionalProperties": false,
+      "properties": {
+        "access_type_sought": {
+          "type": "string",
+          "enum": ["advisory", "mentoring", "consulting", "usage_rights", "introduction"],
+          "description": "Nature of access needed"
+        },
+        "domain": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Areas of expertise or access needed"
+        },
+        "frequency": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "How often access is needed (e.g., 'weekly', 'ad-hoc', 'one-off')"
+        },
+        "duration": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "How long access is needed (e.g., '3 months', 'ongoing')"
+        },
+        "format_preference": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Preferred interaction format (e.g., 'video calls', 'in-person', 'async')"
+        },
+        "specific_questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Specific questions or topics to address (helps matching)"
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "description": "Hard constraints (deal-breakers) - offerings must meet these to match",
+      "additionalProperties": false,
+      "properties": {
+        "geographic": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "accepted_regions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Regions from which offerings are acceptable"
+            },
+            "excluded_regions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Regions explicitly excluded"
+            }
+          },
+          "description": "Geographic constraints for acceptable offerings"
+        },
+        "timing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "needed_by": {
+              "type": "string",
+              "format": "date",
+              "description": "Latest acceptable fulfilment date"
+            },
+            "needed_after": {
+              "type": "string",
+              "format": "date",
+              "description": "Earliest acceptable start date"
+            },
+            "blackout_periods": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Periods when participant cannot receive"
+            }
+          },
+          "description": "Timing constraints for fulfilment"
+        },
+        "provider_requirements": {
+          "type": "object",
+          "description": "Requirements for acceptable providers",
+          "additionalProperties": false,
+          "properties": {
+            "min_exchanges_completed": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Minimum exchange history required"
+            },
+            "min_satisfaction_rating": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Minimum satisfaction rating required (0-5 scale)"
+            },
+            "verification_required": {
+              "type": "boolean",
+              "description": "Whether provider must be verified"
+            },
+            "required_certifications": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Professional certifications required"
+            }
+          }
+        },
+        "excluded_sectors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Sectors the participant won't receive from"
+        },
+        "excluded_participants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Specific participant IDs to exclude"
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "description": "Soft preferences - improve match quality but aren't required",
+      "additionalProperties": false,
+      "properties": {
+        "preferred_sectors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Sectors preferred for matching"
+        },
+        "preferred_experience_level": {
+          "type": "string",
+          "enum": ["any", "junior", "mid", "senior", "expert"],
+          "description": "Preferred experience level of provider"
+        },
+        "relationship_preference": {
+          "type": "string",
+          "enum": ["new_connection", "existing_partner", "vouched_only", "no_preference"],
+          "description": "Preference for existing vs new exchange partners"
+        },
+        "chain_participation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_chain_length": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 10,
+              "description": "Maximum multi-party chain length acceptable"
+            },
+            "prefer_direct": {
+              "type": "boolean",
+              "description": "Whether to prefer direct over chain matches"
+            }
+          },
+          "description": "Preferences for multi-party exchange chains"
+        },
+        "communication_style": {
+          "type": "string",
+          "enum": ["formal", "casual", "no_preference"],
+          "description": "Preferred communication style with provider"
+        }
+      }
+    },
+    "urgency": {
+      "type": "object",
+      "description": "Time-sensitivity representation (combines explicit and contextual factors)",
+      "additionalProperties": false,
+      "properties": {
+        "declared_priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "critical"],
+          "description": "Self-declared priority level (treat with caution - gaming risk)"
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date",
+          "description": "Hard deadline if one exists"
+        },
+        "deadline_type": {
+          "type": "string",
+          "enum": ["hard", "soft", "preferred"],
+          "description": "How firm the deadline is"
+        },
+        "contextual_factors": {
+          "type": "array",
+          "description": "Objective factors that indicate urgency (used by AI to compute urgency score)",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "factor": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Type of factor (e.g., 'linked_to_perishable', 'blocking_other_work', 'seasonal_window')"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 500,
+                "description": "Details about the factor"
+              }
+            }
+          }
+        },
+        "flexibility_for_speed": {
+          "type": "object",
+          "description": "What participant will trade off for faster fulfilment",
+          "additionalProperties": false,
+          "properties": {
+            "accept_partial": {
+              "type": "boolean",
+              "description": "Will accept partial fulfilment"
+            },
+            "accept_less_experienced": {
+              "type": "boolean",
+              "description": "Will accept less experienced providers"
+            },
+            "accept_longer_chain": {
+              "type": "boolean",
+              "description": "Will accept longer multi-party chains"
+            },
+            "accept_different_format": {
+              "type": "boolean",
+              "description": "Will accept different delivery format"
+            }
+          }
+        },
+        "computed_urgency_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "AI-computed urgency score combining all factors (not self-reported, 0 = not urgent, 1 = extremely urgent)"
+        }
+      }
+    },
+    "fulfilmentHistory": {
+      "type": "object",
+      "description": "Record of attempts to fulfil this need",
+      "additionalProperties": false,
+      "properties": {
+        "total_fulfilled_percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "How much of the need has been fulfilled (0-100%)"
+        },
+        "fulfilment_events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "exchange_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "ID of the exchange that provided fulfilment"
+              },
+              "fulfilled_at": {
+                "type": "string",
+                "format": "date",
+                "description": "Date when fulfilment occurred"
+              },
+              "portion_fulfilled": {
+                "type": "string",
+                "maxLength": 200,
+                "description": "What portion this exchange fulfilled"
+              },
+              "satisfaction": {
+                "type": "string",
+                "enum": ["satisfied", "partially_satisfied", "not_satisfied"],
+                "description": "Participant's satisfaction with this fulfilment"
+              }
+            }
+          },
+          "description": "Individual fulfilment events"
+        },
+        "declined_matches": {
+          "type": "array",
+          "description": "Matches that were proposed but declined (informs future matching)",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "offering_id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "ID of the declined offering"
+              },
+              "declined_at": {
+                "type": "string",
+                "format": "date",
+                "description": "Date when match was declined"
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 500,
+                "description": "Why the match was declined"
+              }
+            }
+          }
+        }
+      }
+    },
+    "inferredSignals": {
+      "type": "object",
+      "description": "AI-derived signals that enrich matching over time",
+      "additionalProperties": false,
+      "properties": {
+        "similar_needs_pattern": {
+          "type": "array",
+          "description": "Other needs this participant has posted that suggest patterns",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Need IDs with similar characteristics"
+          }
+        },
+        "sector_affinity": {
+          "type": "array",
+          "description": "Sectors this participant frequently exchanges with",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "sector": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Sector name"
+              },
+              "affinity_score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Affinity score (0 = no affinity, 1 = strong affinity)"
+              }
+            }
+          }
+        },
+        "timing_patterns": {
+          "type": "object",
+          "description": "Patterns in when participant posts needs",
+          "additionalProperties": false,
+          "properties": {
+            "typical_lead_time": {
+              "type": "string",
+              "maxLength": 100,
+              "description": "How far in advance participant typically posts needs"
+            },
+            "seasonal_patterns": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Seasonal patterns in need posting"
+            }
+          }
+        },
+        "quality_sensitivity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Inferred sensitivity to provider quality vs availability (0 = availability-focused, 1 = quality-focused)"
+        },
+        "last_inference_update": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When these signals were last computed"
+        }
+      }
+    },
+    "capabilityMatching": {
+      "type": "object",
+      "description": "Structured data for algorithmic capability matching against offerings. Human-readable fields (title, description) are for confirmation/scoping after match discovery. This block can be AI-enriched from human input and context. Note: 'capability_matching' refers to SEP's matching engine, not external AI agents.",
+      "required": ["capability_sought"],
+      "properties": {
+        "capability_sought": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Capability outputs that would fulfil this need (e.g., ['pitch_deck', 'brand_identity'])"
+        },
+        "sector_tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sectors relevant to this need"
+        },
+        "constraint_flags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Quick-filter constraint flags (e.g., ['remote_acceptable', 'uk_only', 'urgent'])"
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" },
+            "region": { "type": "string" },
+            "country": { "type": "string" }
+          },
+          "description": "Location for geographic matching (especially for physical goods)"
+        },
+        "chain_acceptable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether fulfilment via multi-party chain is acceptable"
+        },
+        "max_chain_length": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 10,
+          "default": 6,
+          "description": "Maximum chain length acceptable if chain_acceptable is true"
+        },
+        "transport_acceptable": {
+          "type": "boolean",
+          "default": true,
+          "description": "For physical goods: whether third-party transport surplus can be matched to deliver"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,282 @@
+[
+  {
+    "id": "participant-studio-abc",
+    "type": "organisation",
+    "status": "active",
+    "joined_at": "2025-06-15",
+    "identity": {
+      "display_name": "Studio ABC",
+      "legal_name": "Studio ABC Design Ltd",
+      "verification_status": "verified",
+      "verification_method": "companies_house",
+      "verified_at": "2025-06-16",
+      "registration_number": "12345678",
+      "jurisdiction": "UK"
+    },
+    "profile": {
+      "headline": "Brand and visual design studio specialising in professional services",
+      "description": "We help professional services firms communicate their value through compelling visual design. 15 years experience in branding, print, and digital design for law firms, accountancies, and consultancies.",
+      "sectors": ["design", "professional_services"],
+      "location": {
+        "city": "Manchester",
+        "region": "North West",
+        "country": "UK"
+      },
+      "website": "https://example.com/studio-abc",
+      "contact": {
+        "primary_name": "Sarah Chen",
+        "primary_role": "Founder"
+      }
+    },
+    "network_position": {
+      "exchange_partners_count": 8,
+      "repeat_partner_rate": 0.38,
+      "partner_diversity": {
+        "sector_count": 4,
+        "offering_type_distribution": {
+          "service": 0.75,
+          "access": 0.25
+        }
+      },
+      "network_reach": 23,
+      "exchanges_as_provider": 12,
+      "exchanges_as_recipient": 9,
+      "chain_participation_count": 2,
+      "last_exchange_at": "2026-01-28",
+      "metrics_updated_at": "2026-02-05T08:00:00Z"
+    },
+    "satisfaction_summary": {
+      "as_provider": {
+        "total": 12,
+        "satisfied": 11,
+        "partially_satisfied": 1,
+        "not_satisfied": 0
+      },
+      "as_recipient": {
+        "total": 9,
+        "satisfied": 8,
+        "partially_satisfied": 1,
+        "not_satisfied": 0
+      },
+      "response_rate": 1.0
+    },
+    "vouching": {
+      "vouched_by": [
+        {
+          "participant_id": "participant-firm-xyz",
+          "vouched_at": "2025-06-15",
+          "relationship": "former client"
+        }
+      ],
+      "vouches_given": [
+        {
+          "participant_id": "participant-newdesign-001",
+          "vouched_at": "2025-11-20",
+          "outcome": "active"
+        }
+      ],
+      "vouching_capacity": 2
+    },
+    "preferences": {
+      "matching": {
+        "max_chain_length": 5,
+        "min_partner_exchanges": 0,
+        "preferred_sectors": ["professional_services", "technology"],
+        "excluded_sectors": ["gambling", "tobacco", "weapons"]
+      },
+      "communication": {
+        "match_notification": "daily_digest",
+        "preferred_channels": ["email", "platform_message"]
+      }
+    }
+  },
+  {
+    "id": "participant-firm-xyz",
+    "type": "partnership",
+    "status": "active",
+    "joined_at": "2025-03-01",
+    "identity": {
+      "display_name": "Thompson & Associates",
+      "legal_name": "Thompson & Associates LLP",
+      "verification_status": "verified",
+      "verification_method": "professional_body",
+      "verified_at": "2025-03-02",
+      "registration_number": "OC123456",
+      "professional_memberships": [
+        {
+          "body": "ICAEW",
+          "membership_id": "C12345",
+          "verified": true
+        }
+      ],
+      "jurisdiction": "UK"
+    },
+    "profile": {
+      "headline": "Chartered accountants for creative and professional services businesses",
+      "description": "We specialise in helping creative agencies and professional services firms with their accounting, tax, and advisory needs. Our team understands the unique challenges of project-based businesses.",
+      "sectors": ["accounting", "professional_services"],
+      "location": {
+        "city": "Leeds",
+        "region": "Yorkshire",
+        "country": "UK"
+      },
+      "website": "https://example.com/thompson-associates",
+      "contact": {
+        "primary_name": "James Thompson",
+        "primary_role": "Managing Partner"
+      }
+    },
+    "network_position": {
+      "exchange_partners_count": 15,
+      "repeat_partner_rate": 0.47,
+      "partner_diversity": {
+        "sector_count": 6,
+        "offering_type_distribution": {
+          "service": 0.85,
+          "access": 0.10,
+          "physical_good": 0.05
+        }
+      },
+      "network_reach": 42,
+      "exchanges_as_provider": 18,
+      "exchanges_as_recipient": 14,
+      "chain_participation_count": 5,
+      "last_exchange_at": "2026-02-01",
+      "metrics_updated_at": "2026-02-05T08:00:00Z"
+    },
+    "satisfaction_summary": {
+      "as_provider": {
+        "total": 18,
+        "satisfied": 17,
+        "partially_satisfied": 1,
+        "not_satisfied": 0
+      },
+      "as_recipient": {
+        "total": 14,
+        "satisfied": 12,
+        "partially_satisfied": 2,
+        "not_satisfied": 0
+      },
+      "response_rate": 0.94
+    },
+    "vouching": {
+      "vouched_by": [],
+      "vouches_given": [
+        {
+          "participant_id": "participant-studio-abc",
+          "vouched_at": "2025-06-15",
+          "outcome": "active"
+        },
+        {
+          "participant_id": "participant-legal-002",
+          "vouched_at": "2025-09-10",
+          "outcome": "active"
+        }
+      ],
+      "vouching_capacity": 1
+    },
+    "preferences": {
+      "matching": {
+        "max_chain_length": 6,
+        "min_partner_exchanges": 0,
+        "preferred_sectors": ["professional_services", "creative", "technology"],
+        "excluded_sectors": []
+      },
+      "communication": {
+        "match_notification": "immediate",
+        "preferred_channels": ["email"]
+      }
+    }
+  },
+  {
+    "id": "participant-newco-2026",
+    "type": "organisation",
+    "status": "probationary",
+    "joined_at": "2026-01-20",
+    "identity": {
+      "display_name": "Bright Legal",
+      "legal_name": "Bright Legal Services Ltd",
+      "verification_status": "verified",
+      "verification_method": "companies_house",
+      "verified_at": "2026-01-21",
+      "registration_number": "87654321",
+      "professional_memberships": [
+        {
+          "body": "Law Society",
+          "membership_id": "LS98765",
+          "verified": true
+        }
+      ],
+      "jurisdiction": "UK"
+    },
+    "profile": {
+      "headline": "Commercial law firm for SMEs and startups",
+      "description": "We provide practical commercial legal advice to small and medium businesses. Specialising in contracts, employment, and intellectual property.",
+      "sectors": ["legal", "professional_services"],
+      "location": {
+        "city": "Birmingham",
+        "region": "West Midlands",
+        "country": "UK"
+      },
+      "website": "https://example.com/bright-legal",
+      "contact": {
+        "primary_name": "Priya Sharma",
+        "primary_role": "Director"
+      }
+    },
+    "network_position": {
+      "exchange_partners_count": 1,
+      "repeat_partner_rate": 0,
+      "partner_diversity": {
+        "sector_count": 1,
+        "offering_type_distribution": {
+          "service": 1.0
+        }
+      },
+      "network_reach": 8,
+      "exchanges_as_provider": 1,
+      "exchanges_as_recipient": 0,
+      "chain_participation_count": 0,
+      "last_exchange_at": "2026-02-03",
+      "metrics_updated_at": "2026-02-05T08:00:00Z"
+    },
+    "satisfaction_summary": {
+      "as_provider": {
+        "total": 1,
+        "satisfied": 1,
+        "partially_satisfied": 0,
+        "not_satisfied": 0
+      },
+      "as_recipient": {
+        "total": 0,
+        "satisfied": 0,
+        "partially_satisfied": 0,
+        "not_satisfied": 0
+      },
+      "response_rate": 1.0
+    },
+    "vouching": {
+      "vouched_by": [
+        {
+          "participant_id": "participant-firm-xyz",
+          "vouched_at": "2026-01-19",
+          "relationship": "professional contact"
+        }
+      ],
+      "vouches_given": [],
+      "vouching_capacity": 0
+    },
+    "preferences": {
+      "matching": {
+        "max_chain_length": 3,
+        "min_partner_exchanges": 3,
+        "preferred_sectors": ["professional_services", "technology"],
+        "excluded_sectors": []
+      },
+      "communication": {
+        "match_notification": "immediate",
+        "preferred_channels": ["email", "platform_message"]
+      }
+    }
+  }
+]

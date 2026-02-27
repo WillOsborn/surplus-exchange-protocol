@@ -1,0 +1,455 @@
+[
+  {
+    "_comment": "Example 1: Service need - Design work for a startup pitch",
+    "id": "need-pitch-design-2026-01",
+    "type": "service",
+    "participant": "participant-startup-alpha",
+    "status": "active",
+    "title": "Pitch Deck Design for Series A Fundraise",
+    "description": "We're a fintech startup preparing for Series A and need our pitch deck redesigned. Current deck is content-complete but visually weak. Looking for someone who understands B2B fintech and can make complex financial concepts accessible. We've raised seed funding and have strong traction metrics to visualise.",
+    "outcome_sought": "A visually compelling pitch deck that helps us stand out in investor meetings and clearly communicates our value proposition and traction.",
+    "capability_links": {
+      "explicit_matches": [
+        {
+          "capability_output": "pitch deck design",
+          "fit_notes": "Direct match - this is exactly what we need"
+        }
+      ],
+      "inferred_matches": [
+        {
+          "capability_output": "investor presentation design",
+          "confidence": 0.85,
+          "reasoning": "Similar output type with investor-focused framing",
+          "participant_confirmed": false
+        },
+        {
+          "capability_output": "data visualisation",
+          "confidence": 0.6,
+          "reasoning": "Traction metrics need strong visualisation",
+          "participant_confirmed": false
+        }
+      ],
+      "excluded_capabilities": []
+    },
+    "service_need_details": {
+      "scope_description": "Redesign existing 15-slide pitch deck with new visual identity, improved data visualisation, and professional polish",
+      "estimated_effort": "8-15 hours",
+      "deliverables_expected": [
+        "Redesigned presentation file (PowerPoint or Keynote)",
+        "Source files for key graphics",
+        "Template for future updates"
+      ],
+      "inputs_available": [
+        "Current deck content",
+        "Brand guidelines",
+        "Raw data for charts",
+        "Competitor deck examples we admire"
+      ],
+      "delivery_preference": "remote",
+      "collaboration_level": "light_touch"
+    },
+    "constraints": {
+      "geographic": {
+        "accepted_regions": ["UK", "Europe", "North America"],
+        "excluded_regions": []
+      },
+      "timing": {
+        "needed_by": "2026-03-15",
+        "needed_after": "2026-02-10"
+      },
+      "provider_requirements": {
+        "min_exchanges_completed": 3,
+        "min_satisfaction_rating": 4.0,
+        "verification_required": false
+      }
+    },
+    "preferences": {
+      "preferred_sectors": ["fintech", "B2B SaaS", "professional services"],
+      "preferred_experience_level": "senior",
+      "relationship_preference": "no_preference",
+      "chain_participation": {
+        "max_chain_length": 4,
+        "prefer_direct": true
+      }
+    },
+    "urgency": {
+      "declared_priority": "high",
+      "deadline": "2026-03-15",
+      "deadline_type": "soft",
+      "contextual_factors": [
+        {
+          "factor": "blocking_other_work",
+          "description": "Investor meetings scheduled for late March"
+        },
+        {
+          "factor": "seasonal_window",
+          "description": "Q1 is key fundraising period"
+        }
+      ],
+      "flexibility_for_speed": {
+        "accept_partial": false,
+        "accept_less_experienced": false,
+        "accept_longer_chain": true,
+        "accept_different_format": true
+      },
+      "computed_urgency_score": 0.72
+    },
+    "fulfilment_history": {
+      "total_fulfilled_percentage": 0,
+      "fulfilment_events": [],
+      "declined_matches": []
+    },
+    "inferred_signals": {
+      "sector_affinity": [
+        { "sector": "design", "affinity_score": 0.8 },
+        { "sector": "marketing", "affinity_score": 0.6 }
+      ],
+      "quality_sensitivity": 0.85,
+      "last_inference_update": "2026-02-05T10:00:00Z"
+    },
+    "created_at": "2026-02-05T09:30:00Z",
+    "updated_at": "2026-02-05T09:30:00Z",
+    "visibility": "network_only"
+  },
+  {
+    "_comment": "Example 2: Physical good need - Office furniture for expanding team",
+    "id": "need-desks-2026-01",
+    "type": "physical_good",
+    "participant": "participant-agency-beta",
+    "status": "active",
+    "title": "Standing Desks for Office Expansion",
+    "description": "We're expanding our Manchester office and need standing desks for 8 new team members. Open to used/refurbished in good condition. Electric height-adjustable preferred but not required. Need delivered or available for collection within 30 miles of Manchester.",
+    "outcome_sought": "Furnished workstations for new hires starting in March without capital outlay.",
+    "capability_links": {
+      "explicit_matches": [],
+      "inferred_matches": [
+        {
+          "capability_output": "office furniture",
+          "confidence": 0.9,
+          "reasoning": "Direct category match",
+          "participant_confirmed": true
+        }
+      ],
+      "excluded_capabilities": []
+    },
+    "physical_need_details": {
+      "quantity": "8 units",
+      "specifications": [
+        {
+          "attribute": "type",
+          "requirement": "standing desk / height adjustable",
+          "flexibility": "exact"
+        },
+        {
+          "attribute": "width",
+          "requirement": "minimum 120cm",
+          "flexibility": "approximate"
+        },
+        {
+          "attribute": "mechanism",
+          "requirement": "electric height adjustment",
+          "flexibility": "flexible"
+        }
+      ],
+      "condition_accepted": ["new", "like_new", "good"],
+      "delivery_location": {
+        "city": "Manchester",
+        "region": "Greater Manchester",
+        "country": "UK",
+        "postcode": "M1"
+      },
+      "can_collect": true,
+      "collection_radius_km": 50,
+      "storage_constraints": "Can receive immediately, have storage space ready"
+    },
+    "constraints": {
+      "geographic": {
+        "accepted_regions": ["North West England", "Yorkshire", "Midlands"],
+        "excluded_regions": []
+      },
+      "timing": {
+        "needed_by": "2026-03-01"
+      },
+      "provider_requirements": {
+        "min_exchanges_completed": 1
+      }
+    },
+    "preferences": {
+      "preferred_sectors": ["manufacturing", "office supplies", "any"],
+      "relationship_preference": "no_preference",
+      "chain_participation": {
+        "max_chain_length": 5,
+        "prefer_direct": false
+      }
+    },
+    "urgency": {
+      "declared_priority": "normal",
+      "deadline": "2026-03-01",
+      "deadline_type": "soft",
+      "contextual_factors": [
+        {
+          "factor": "linked_to_business_event",
+          "description": "New hires starting first week of March"
+        }
+      ],
+      "flexibility_for_speed": {
+        "accept_partial": true,
+        "accept_less_experienced": true,
+        "accept_longer_chain": true,
+        "accept_different_format": false
+      },
+      "computed_urgency_score": 0.55
+    },
+    "fulfilment_history": {
+      "total_fulfilled_percentage": 0,
+      "fulfilment_events": [],
+      "declined_matches": []
+    },
+    "created_at": "2026-02-03T14:00:00Z",
+    "updated_at": "2026-02-03T14:00:00Z",
+    "visibility": "network_only"
+  },
+  {
+    "_comment": "Example 3: Access need - Strategic pricing advice",
+    "id": "need-pricing-advisory-2026-01",
+    "type": "access",
+    "participant": "participant-saas-gamma",
+    "status": "active",
+    "title": "SaaS Pricing Strategy Advisory",
+    "description": "We're a B2B SaaS company (~50 employees) looking to revise our pricing model. Currently on a simple per-seat model but considering value-based or usage-based pricing. Need someone with experience in SaaS pricing transformations who can advise on strategy, help us model scenarios, and guide implementation.",
+    "outcome_sought": "A clear pricing strategy recommendation with implementation roadmap, supported by someone who has done this before.",
+    "capability_links": {
+      "explicit_matches": [
+        {
+          "capability_output": "pricing strategy advisory",
+          "fit_notes": "Exact match to our need"
+        },
+        {
+          "capability_output": "SaaS pricing models",
+          "fit_notes": "Specific domain expertise we need"
+        }
+      ],
+      "inferred_matches": [
+        {
+          "capability_output": "business model advisory",
+          "confidence": 0.7,
+          "reasoning": "Pricing is core to business model",
+          "participant_confirmed": false
+        }
+      ]
+    },
+    "access_need_details": {
+      "access_type_sought": "advisory",
+      "domain": [
+        "SaaS pricing",
+        "value-based pricing",
+        "pricing transformation",
+        "B2B software"
+      ],
+      "frequency": "weekly initially, then ad-hoc",
+      "duration": "3-4 months",
+      "format_preference": "video calls with async follow-up",
+      "specific_questions": [
+        "How do we transition existing customers to new pricing without churn?",
+        "What metrics should drive a usage-based model for our product type?",
+        "How do we price enterprise vs SMB segments differently?"
+      ]
+    },
+    "constraints": {
+      "geographic": {
+        "accepted_regions": ["English-speaking markets"]
+      },
+      "timing": {
+        "needed_after": "2026-02-15"
+      },
+      "provider_requirements": {
+        "min_satisfaction_rating": 4.5,
+        "verification_required": true
+      },
+      "excluded_sectors": ["direct competitors"]
+    },
+    "preferences": {
+      "preferred_sectors": ["consulting", "SaaS", "fintech"],
+      "preferred_experience_level": "expert",
+      "relationship_preference": "vouched_only",
+      "chain_participation": {
+        "max_chain_length": 3,
+        "prefer_direct": true
+      }
+    },
+    "urgency": {
+      "declared_priority": "normal",
+      "deadline": "2026-06-01",
+      "deadline_type": "preferred",
+      "contextual_factors": [
+        {
+          "factor": "strategic_initiative",
+          "description": "Board has approved pricing review for H1 2026"
+        }
+      ],
+      "flexibility_for_speed": {
+        "accept_partial": true,
+        "accept_less_experienced": false,
+        "accept_longer_chain": false,
+        "accept_different_format": true
+      },
+      "computed_urgency_score": 0.4
+    },
+    "fulfilment_history": {
+      "total_fulfilled_percentage": 0,
+      "fulfilment_events": [],
+      "declined_matches": []
+    },
+    "inferred_signals": {
+      "sector_affinity": [
+        { "sector": "consulting", "affinity_score": 0.7 },
+        { "sector": "fintech", "affinity_score": 0.5 }
+      ],
+      "quality_sensitivity": 0.95
+    },
+    "created_at": "2026-02-01T11:00:00Z",
+    "updated_at": "2026-02-05T09:00:00Z",
+    "visibility": "network_only"
+  },
+  {
+    "_comment": "Example 4: Partially fulfilled need showing lifecycle",
+    "id": "need-bookkeeping-2026-01",
+    "type": "service",
+    "participant": "participant-consultancy-delta",
+    "status": "partially_fulfilled",
+    "title": "Ongoing Bookkeeping Support",
+    "description": "Small consultancy (5 partners) needs monthly bookkeeping support. We use Xero. Looking for someone to handle transaction categorisation, bank reconciliation, and prepare monthly management accounts. Currently doing this ourselves but it's taking too much partner time.",
+    "outcome_sought": "Reliable monthly financial administration that frees up partner time for client work.",
+    "capability_links": {
+      "explicit_matches": [
+        {
+          "capability_output": "monthly bookkeeping",
+          "fit_notes": "Core need"
+        },
+        {
+          "capability_output": "quarterly management accounts",
+          "fit_notes": "Part of monthly close process"
+        }
+      ]
+    },
+    "service_need_details": {
+      "scope_description": "Monthly bookkeeping and management accounts preparation",
+      "estimated_effort": "4-6 hours per month ongoing",
+      "deliverables_expected": [
+        "Reconciled Xero accounts",
+        "Monthly P&L and balance sheet",
+        "Brief commentary on variances"
+      ],
+      "inputs_available": [
+        "Full Xero access",
+        "Bank statement access",
+        "Invoice/receipt uploads"
+      ],
+      "delivery_preference": "remote",
+      "collaboration_level": "hands_off"
+    },
+    "constraints": {
+      "geographic": {
+        "accepted_regions": ["UK"]
+      },
+      "provider_requirements": {
+        "min_exchanges_completed": 2,
+        "required_certifications": ["ACCA", "ACA", "AAT"]
+      }
+    },
+    "preferences": {
+      "preferred_sectors": ["accounting", "professional services"],
+      "preferred_experience_level": "mid",
+      "relationship_preference": "existing_partner"
+    },
+    "urgency": {
+      "declared_priority": "normal",
+      "deadline_type": "soft",
+      "contextual_factors": [
+        {
+          "factor": "recurring_need",
+          "description": "Monthly cycle - first of each month"
+        }
+      ],
+      "computed_urgency_score": 0.35
+    },
+    "fulfilment_history": {
+      "total_fulfilled_percentage": 25,
+      "fulfilment_events": [
+        {
+          "exchange_id": "exchange-bk-jan-2026",
+          "fulfilled_at": "2026-01-31",
+          "portion_fulfilled": "January 2026 bookkeeping",
+          "satisfaction": "satisfied"
+        }
+      ],
+      "declined_matches": [
+        {
+          "offering_id": "offer-bk-overseas-123",
+          "declined_at": "2026-01-15",
+          "reason": "Provider not UK-based, potential compliance issues"
+        }
+      ]
+    },
+    "inferred_signals": {
+      "similar_needs_pattern": ["need-vat-2025-q4"],
+      "sector_affinity": [
+        { "sector": "accounting", "affinity_score": 0.9 }
+      ],
+      "timing_patterns": {
+        "typical_lead_time": "2 weeks before month-end",
+        "seasonal_patterns": ["Year-end January more complex"]
+      },
+      "quality_sensitivity": 0.7
+    },
+    "created_at": "2025-12-15T10:00:00Z",
+    "updated_at": "2026-02-01T08:00:00Z",
+    "visibility": "network_only"
+  },
+  {
+    "_comment": "Example 5: Minimal need - demonstrating low-friction entry point",
+    "id": "need-transport-2026-01",
+    "type": "service",
+    "participant": "participant-manufacturer-epsilon",
+    "status": "active",
+    "title": "Local Delivery Capacity Needed",
+    "description": "Need to move 10 pallets of finished goods from our Leeds warehouse to a customer in Sheffield. Looking for someone with spare van/truck capacity on Yorkshire routes.",
+    "outcome_sought": "Goods delivered to customer by end of next week.",
+    "service_need_details": {
+      "scope_description": "Collection from Leeds, delivery to Sheffield",
+      "deliverables_expected": ["Goods delivered", "Proof of delivery"]
+    },
+    "physical_need_details": {
+      "quantity": "10 pallets",
+      "specifications": [
+        {
+          "attribute": "weight",
+          "requirement": "approximately 500kg total",
+          "flexibility": "exact"
+        }
+      ],
+      "delivery_location": {
+        "city": "Sheffield",
+        "region": "South Yorkshire",
+        "country": "UK"
+      }
+    },
+    "constraints": {
+      "geographic": {
+        "accepted_regions": ["Yorkshire"]
+      },
+      "timing": {
+        "needed_by": "2026-02-14"
+      }
+    },
+    "urgency": {
+      "declared_priority": "normal",
+      "deadline": "2026-02-14",
+      "deadline_type": "hard",
+      "computed_urgency_score": 0.5
+    },
+    "created_at": "2026-02-05T08:00:00Z",
+    "updated_at": "2026-02-05T08:00:00Z",
+    "visibility": "network_only"
+  }
+]

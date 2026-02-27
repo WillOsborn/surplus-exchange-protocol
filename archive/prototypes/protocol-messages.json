@@ -1,0 +1,892 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplus-exchange-protocol.org/schemas/protocol-messages.schema.json",
+  "title": "SEP Protocol Messages",
+  "description": "Draft message formats for SEP protocol communication. Status: Draft prototype.",
+  "version": "0.1.0",
+  "created": "2026-02-05",
+
+  "$defs": {
+    "messageHeader": {
+      "type": "object",
+      "description": "Common header for all SEP protocol messages",
+      "required": ["message_id", "message_type", "timestamp", "sender_id", "protocol_version"],
+      "properties": {
+        "message_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for this message (for idempotency)"
+        },
+        "message_type": {
+          "type": "string",
+          "description": "Type of message"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the message was created"
+        },
+        "sender_id": {
+          "type": "string",
+          "description": "Identifier of the sending participant or agent"
+        },
+        "protocol_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+$",
+          "description": "SEP protocol version (e.g., '1.0')"
+        },
+        "correlation_id": {
+          "type": "string",
+          "description": "Links related messages (e.g., request and response)"
+        },
+        "reply_to": {
+          "type": "string",
+          "description": "Message ID this is replying to"
+        },
+        "signature": {
+          "type": "string",
+          "description": "Cryptographic signature of message content"
+        }
+      }
+    },
+
+    "edgeReference": {
+      "type": "object",
+      "required": ["edge_id", "provider_id", "recipient_id", "offering_id"],
+      "properties": {
+        "edge_id": {
+          "type": "string",
+          "description": "Unique identifier for this edge"
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Participant providing the offering"
+        },
+        "recipient_id": {
+          "type": "string",
+          "description": "Participant receiving the offering"
+        },
+        "offering_id": {
+          "type": "string",
+          "description": "Reference to the capability offering"
+        },
+        "offering_summary": {
+          "type": "string",
+          "description": "Human-readable summary of the offering"
+        }
+      }
+    },
+
+    "timingConstraints": {
+      "type": "object",
+      "properties": {
+        "confirmation_deadline": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When all confirmations must be received"
+        },
+        "execution_window": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date",
+              "description": "When execution can begin"
+            },
+            "end": {
+              "type": "string",
+              "format": "date",
+              "description": "When all execution must complete"
+            }
+          }
+        },
+        "edge_schedules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "edge_id": { "type": "string" },
+              "earliest_start": { "type": "string", "format": "date" },
+              "latest_completion": { "type": "string", "format": "date" }
+            }
+          }
+        }
+      }
+    },
+
+    "satisfactionSignal": {
+      "type": "string",
+      "enum": ["satisfied", "partially_satisfied", "not_satisfied"],
+      "description": "Participant's satisfaction with an exchange"
+    },
+
+    "disputeType": {
+      "type": "string",
+      "enum": [
+        "non_delivery",
+        "partial_delivery",
+        "quality_mismatch",
+        "timing_violation",
+        "scope_dispute",
+        "other"
+      ]
+    }
+  },
+
+  "messages": {
+    "ChainProposal": {
+      "description": "Propose a new exchange chain to participants",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edges", "timing", "match_rationale"],
+          "properties": {
+            "message_type": { "const": "ChainProposal" },
+            "chain_id": {
+              "type": "string",
+              "description": "Unique identifier for this chain"
+            },
+            "edges": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "$ref": "#/$defs/edgeReference" },
+              "description": "The exchanges that make up this chain"
+            },
+            "timing": {
+              "$ref": "#/$defs/timingConstraints"
+            },
+            "match_rationale": {
+              "type": "object",
+              "properties": {
+                "algorithm_version": { "type": "string" },
+                "match_score": { "type": "number", "minimum": 0, "maximum": 1 },
+                "key_matches": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Human-readable explanation of key matches"
+                }
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "proposed_by": {
+                  "type": "string",
+                  "enum": ["algorithm", "participant", "broker"]
+                },
+                "includes_physical_goods": { "type": "boolean" },
+                "geographic_span": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-001-abc",
+        "message_type": "ChainProposal",
+        "timestamp": "2026-02-05T14:30:00Z",
+        "sender_id": "broker-001",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "edges": [
+          {
+            "edge_id": "edge-001",
+            "provider_id": "participant-A",
+            "recipient_id": "participant-B",
+            "offering_id": "offering-A1",
+            "offering_summary": "Legal contract review (10 hours)"
+          },
+          {
+            "edge_id": "edge-002",
+            "provider_id": "participant-B",
+            "recipient_id": "participant-C",
+            "offering_id": "offering-B1",
+            "offering_summary": "Catering for 50 people"
+          },
+          {
+            "edge_id": "edge-003",
+            "provider_id": "participant-C",
+            "recipient_id": "participant-A",
+            "offering_id": "offering-C1",
+            "offering_summary": "Marketing campaign design"
+          }
+        ],
+        "timing": {
+          "confirmation_deadline": "2026-02-07T14:30:00Z",
+          "execution_window": {
+            "start": "2026-02-10",
+            "end": "2026-03-10"
+          }
+        },
+        "match_rationale": {
+          "algorithm_version": "1.2.0",
+          "match_score": 0.87,
+          "key_matches": [
+            "A needs marketing, C offers marketing",
+            "B needs legal, A offers legal",
+            "C needs catering, B offers catering"
+          ]
+        },
+        "metadata": {
+          "proposed_by": "algorithm",
+          "includes_physical_goods": false,
+          "geographic_span": ["London", "Manchester"]
+        }
+      }
+    },
+
+    "ParticipantConfirmation": {
+      "description": "Participant's response to a chain proposal",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "participant_id", "decision"],
+          "properties": {
+            "message_type": { "const": "ParticipantConfirmation" },
+            "chain_id": { "type": "string" },
+            "participant_id": { "type": "string" },
+            "decision": {
+              "type": "string",
+              "enum": ["confirm", "decline", "counter"]
+            },
+            "conditions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Conditions attached to confirmation"
+            },
+            "decline_reason": {
+              "type": "string",
+              "description": "Reason for declining (if decision = decline)"
+            },
+            "counter_proposal": {
+              "type": "object",
+              "description": "Modified terms if decision = counter",
+              "properties": {
+                "timing_adjustment": { "$ref": "#/$defs/timingConstraints" },
+                "edge_modifications": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "edge_id": { "type": "string" },
+                      "modification": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-002-def",
+        "message_type": "ParticipantConfirmation",
+        "timestamp": "2026-02-06T09:15:00Z",
+        "sender_id": "participant-A",
+        "protocol_version": "1.0",
+        "reply_to": "msg-001-abc",
+        "chain_id": "chain-123",
+        "participant_id": "participant-A",
+        "decision": "confirm",
+        "conditions": [
+          "Execution must complete by end of Q1"
+        ]
+      }
+    },
+
+    "ChainCommitment": {
+      "description": "Notification that all participants confirmed; chain is now binding",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "confirmed_edges", "final_timing", "commitment_hash"],
+          "properties": {
+            "message_type": { "const": "ChainCommitment" },
+            "chain_id": { "type": "string" },
+            "confirmed_edges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "edge_id": { "type": "string" },
+                  "provider_confirmed_at": { "type": "string", "format": "date-time" },
+                  "recipient_confirmed_at": { "type": "string", "format": "date-time" }
+                }
+              }
+            },
+            "final_timing": { "$ref": "#/$defs/timingConstraints" },
+            "commitment_hash": {
+              "type": "string",
+              "description": "Cryptographic hash of the committed chain state"
+            },
+            "participants_summary": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "participant_id": { "type": "string" },
+                  "provides_to": { "type": "string" },
+                  "receives_from": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-005-ghi",
+        "message_type": "ChainCommitment",
+        "timestamp": "2026-02-07T10:00:00Z",
+        "sender_id": "broker-001",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "confirmed_edges": [
+          {
+            "edge_id": "edge-001",
+            "provider_confirmed_at": "2026-02-06T09:15:00Z",
+            "recipient_confirmed_at": "2026-02-06T11:30:00Z"
+          }
+        ],
+        "final_timing": {
+          "confirmation_deadline": "2026-02-07T14:30:00Z",
+          "execution_window": {
+            "start": "2026-02-10",
+            "end": "2026-03-10"
+          }
+        },
+        "commitment_hash": "sha256:abc123def456...",
+        "participants_summary": [
+          {
+            "participant_id": "participant-A",
+            "provides_to": "participant-B",
+            "receives_from": "participant-C"
+          }
+        ]
+      }
+    },
+
+    "ExecutionStart": {
+      "description": "Provider signals they have begun executing an edge",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "started_at"],
+          "properties": {
+            "message_type": { "const": "ExecutionStart" },
+            "chain_id": { "type": "string" },
+            "edge_id": { "type": "string" },
+            "started_at": { "type": "string", "format": "date-time" },
+            "expected_completion": { "type": "string", "format": "date" },
+            "notes": {
+              "type": "string",
+              "maxLength": 500,
+              "description": "Optional notes about execution plan"
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-010-jkl",
+        "message_type": "ExecutionStart",
+        "timestamp": "2026-02-11T09:00:00Z",
+        "sender_id": "participant-A",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "edge_id": "edge-001",
+        "started_at": "2026-02-11T09:00:00Z",
+        "expected_completion": "2026-02-18",
+        "notes": "Beginning contract review, will provide initial feedback within 3 days"
+      }
+    },
+
+    "ExecutionCompletion": {
+      "description": "Provider signals they have completed delivery",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "completed_at"],
+          "properties": {
+            "message_type": { "const": "ExecutionCompletion" },
+            "chain_id": { "type": "string" },
+            "edge_id": { "type": "string" },
+            "completed_at": { "type": "string", "format": "date-time" },
+            "delivery_evidence": {
+              "type": "object",
+              "description": "Evidence of delivery completion",
+              "properties": {
+                "evidence_type": {
+                  "type": "string",
+                  "enum": ["document", "confirmation", "tracking", "photo", "other"]
+                },
+                "description": { "type": "string" },
+                "attachments": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "filename": { "type": "string" },
+                      "url": { "type": "string", "format": "uri" },
+                      "hash": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "notes": {
+              "type": "string",
+              "maxLength": 1000
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-015-mno",
+        "message_type": "ExecutionCompletion",
+        "timestamp": "2026-02-17T16:00:00Z",
+        "sender_id": "participant-A",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "edge_id": "edge-001",
+        "completed_at": "2026-02-17T16:00:00Z",
+        "delivery_evidence": {
+          "evidence_type": "document",
+          "description": "Completed contract review with annotated comments",
+          "attachments": [
+            {
+              "filename": "contract-review-final.pdf",
+              "url": "https://files.example.com/contract-review-final.pdf",
+              "hash": "sha256:xyz789..."
+            }
+          ]
+        },
+        "notes": "Review complete. Found 3 areas requiring attention, documented in attached PDF."
+      }
+    },
+
+    "SatisfactionSignal": {
+      "description": "Recipient's assessment of delivery quality",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "signal"],
+          "properties": {
+            "message_type": { "const": "SatisfactionSignal" },
+            "chain_id": { "type": "string" },
+            "edge_id": { "type": "string" },
+            "signal": { "$ref": "#/$defs/satisfactionSignal" },
+            "feedback": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "Optional feedback about the exchange"
+            },
+            "partial_satisfaction_details": {
+              "type": "object",
+              "description": "Details if signal = partially_satisfied",
+              "properties": {
+                "what_was_good": { "type": "string" },
+                "what_was_missing": { "type": "string" },
+                "suggested_resolution": { "type": "string" }
+              }
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-020-pqr",
+        "message_type": "SatisfactionSignal",
+        "timestamp": "2026-02-18T10:00:00Z",
+        "sender_id": "participant-B",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "edge_id": "edge-001",
+        "signal": "satisfied",
+        "feedback": "Thorough review, very helpful annotations. Would exchange again."
+      }
+    },
+
+    "DisputeRaised": {
+      "description": "Initiate a dispute about an edge",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "edge_id", "dispute_type", "description"],
+          "properties": {
+            "message_type": { "const": "DisputeRaised" },
+            "chain_id": { "type": "string" },
+            "edge_id": { "type": "string" },
+            "dispute_type": { "$ref": "#/$defs/disputeType" },
+            "description": {
+              "type": "string",
+              "maxLength": 2000,
+              "description": "Detailed description of the dispute"
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "evidence_type": { "type": "string" },
+                  "description": { "type": "string" },
+                  "url": { "type": "string", "format": "uri" }
+                }
+              }
+            },
+            "requested_resolution": {
+              "type": "string",
+              "description": "What the disputing party seeks"
+            },
+            "willing_to_mediate": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-025-stu",
+        "message_type": "DisputeRaised",
+        "timestamp": "2026-02-19T14:00:00Z",
+        "sender_id": "participant-B",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "edge_id": "edge-001",
+        "dispute_type": "partial_delivery",
+        "description": "The contract review covered only 2 of the 3 contracts specified in the offering. The third contract (supplier agreement) was not reviewed.",
+        "evidence": [
+          {
+            "evidence_type": "document",
+            "description": "Original offering specifying 3 contracts",
+            "url": "https://files.example.com/original-offering.pdf"
+          }
+        ],
+        "requested_resolution": "Complete review of the third contract, or adjustment to satisfaction signal",
+        "willing_to_mediate": true
+      }
+    },
+
+    "ChainCompletion": {
+      "description": "All edges satisfied; chain is complete",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "completed_at", "summary"],
+          "properties": {
+            "message_type": { "const": "ChainCompletion" },
+            "chain_id": { "type": "string" },
+            "completed_at": { "type": "string", "format": "date-time" },
+            "summary": {
+              "type": "object",
+              "properties": {
+                "total_edges": { "type": "integer" },
+                "satisfied_edges": { "type": "integer" },
+                "partially_satisfied_edges": { "type": "integer" },
+                "execution_duration_days": { "type": "integer" },
+                "within_schedule": { "type": "boolean" }
+              }
+            },
+            "trust_updates": {
+              "type": "array",
+              "description": "Summary of trust metric updates",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "participant_id": { "type": "string" },
+                  "update_type": {
+                    "type": "string",
+                    "enum": ["positive", "neutral", "negative"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-050-vwx",
+        "message_type": "ChainCompletion",
+        "timestamp": "2026-03-05T12:00:00Z",
+        "sender_id": "broker-001",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "completed_at": "2026-03-05T12:00:00Z",
+        "summary": {
+          "total_edges": 3,
+          "satisfied_edges": 3,
+          "partially_satisfied_edges": 0,
+          "execution_duration_days": 23,
+          "within_schedule": true
+        },
+        "trust_updates": [
+          { "participant_id": "participant-A", "update_type": "positive" },
+          { "participant_id": "participant-B", "update_type": "positive" },
+          { "participant_id": "participant-C", "update_type": "positive" }
+        ]
+      }
+    },
+
+    "ChainFailure": {
+      "description": "Chain has failed; includes compensation information",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "failed_at", "failure_reason"],
+          "properties": {
+            "message_type": { "const": "ChainFailure" },
+            "chain_id": { "type": "string" },
+            "failed_at": { "type": "string", "format": "date-time" },
+            "failure_reason": {
+              "type": "string",
+              "enum": [
+                "edge_timeout",
+                "edge_abandonment",
+                "unresolved_dispute",
+                "participant_withdrawal",
+                "cascade_failure",
+                "infrastructure_failure",
+                "other"
+              ]
+            },
+            "failed_edge_id": {
+              "type": "string",
+              "description": "Which edge triggered the failure (if applicable)"
+            },
+            "affected_edges": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "edge_id": { "type": "string" },
+                  "status_at_failure": { "type": "string" },
+                  "compensation_action": {
+                    "type": "string",
+                    "enum": ["completed_independently", "reversed", "compensated", "none_required"]
+                  }
+                }
+              }
+            },
+            "compensation_plan": {
+              "type": "object",
+              "properties": {
+                "strategy": {
+                  "type": "string",
+                  "enum": ["restructure", "partial_complete", "full_unwind", "settle_externally"]
+                },
+                "actions": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "requires_approval": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "msg-060-yza",
+        "message_type": "ChainFailure",
+        "timestamp": "2026-03-01T09:00:00Z",
+        "sender_id": "broker-001",
+        "protocol_version": "1.0",
+        "chain_id": "chain-456",
+        "failed_at": "2026-03-01T09:00:00Z",
+        "failure_reason": "edge_timeout",
+        "failed_edge_id": "edge-002",
+        "affected_edges": [
+          {
+            "edge_id": "edge-001",
+            "status_at_failure": "SATISFIED",
+            "compensation_action": "completed_independently"
+          },
+          {
+            "edge_id": "edge-002",
+            "status_at_failure": "IN_PROGRESS",
+            "compensation_action": "compensated"
+          },
+          {
+            "edge_id": "edge-003",
+            "status_at_failure": "CONFIRMED",
+            "compensation_action": "none_required"
+          }
+        ],
+        "compensation_plan": {
+          "strategy": "partial_complete",
+          "actions": [
+            "Edge-001 completed successfully, no action needed",
+            "Edge-002 provider receives reputation adjustment",
+            "Edge-003 recipient offered priority in next chain"
+          ],
+          "requires_approval": false
+        }
+      }
+    },
+
+    "MessageAcknowledgment": {
+      "description": "Acknowledge receipt and processing of a message",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["original_message_id", "received_at", "processing_status"],
+          "properties": {
+            "message_type": { "const": "MessageAcknowledgment" },
+            "original_message_id": {
+              "type": "string",
+              "description": "ID of the message being acknowledged"
+            },
+            "received_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "processing_status": {
+              "type": "string",
+              "enum": ["accepted", "rejected", "pending"]
+            },
+            "rejection_reason": {
+              "type": "string",
+              "description": "Why the message was rejected (if applicable)"
+            },
+            "rejection_code": {
+              "type": "string",
+              "enum": [
+                "invalid_format",
+                "invalid_chain_id",
+                "invalid_participant",
+                "invalid_state_transition",
+                "expired",
+                "duplicate",
+                "unauthorized",
+                "other"
+              ]
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "ack-001-abc",
+        "message_type": "MessageAcknowledgment",
+        "timestamp": "2026-02-05T14:30:05Z",
+        "sender_id": "participant-A",
+        "protocol_version": "1.0",
+        "original_message_id": "msg-001-abc",
+        "received_at": "2026-02-05T14:30:02Z",
+        "processing_status": "accepted"
+      }
+    },
+
+    "HealthCheck": {
+      "description": "Periodic health check for chain monitoring",
+      "allOf": [
+        { "$ref": "#/$defs/messageHeader" },
+        {
+          "type": "object",
+          "required": ["chain_id", "check_type", "status"],
+          "properties": {
+            "message_type": { "const": "HealthCheck" },
+            "chain_id": { "type": "string" },
+            "check_type": {
+              "type": "string",
+              "enum": ["scheduled", "triggered", "manual"]
+            },
+            "status": {
+              "type": "string",
+              "enum": ["healthy", "warning", "at_risk", "failing"]
+            },
+            "health_score": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "edge_statuses": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "edge_id": { "type": "string" },
+                  "status": { "type": "string" },
+                  "progress_percent": { "type": "number" },
+                  "on_schedule": { "type": "boolean" }
+                }
+              }
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "issue_type": { "type": "string" },
+                  "severity": {
+                    "type": "string",
+                    "enum": ["info", "warning", "critical"]
+                  },
+                  "description": { "type": "string" },
+                  "affected_edge_id": { "type": "string" }
+                }
+              }
+            },
+            "recommendations": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      ],
+      "example": {
+        "message_id": "health-001",
+        "message_type": "HealthCheck",
+        "timestamp": "2026-02-20T00:00:00Z",
+        "sender_id": "monitor-001",
+        "protocol_version": "1.0",
+        "chain_id": "chain-123",
+        "check_type": "scheduled",
+        "status": "warning",
+        "health_score": 0.65,
+        "edge_statuses": [
+          {
+            "edge_id": "edge-001",
+            "status": "SATISFIED",
+            "progress_percent": 100,
+            "on_schedule": true
+          },
+          {
+            "edge_id": "edge-002",
+            "status": "IN_PROGRESS",
+            "progress_percent": 40,
+            "on_schedule": false
+          }
+        ],
+        "issues": [
+          {
+            "issue_type": "schedule_delay",
+            "severity": "warning",
+            "description": "Edge-002 is 3 days behind schedule",
+            "affected_edge_id": "edge-002"
+          }
+        ],
+        "recommendations": [
+          "Contact participant-B to verify execution progress",
+          "Consider extending execution window if delay persists"
+        ]
+      }
+    }
+  },
+
+  "notes": [
+    "This is a draft prototype - message formats may change significantly",
+    "All messages should be transmitted over TLS-encrypted connections",
+    "Message signatures should use Ed25519 or similar modern algorithm",
+    "Implementations must handle message_id deduplication",
+    "Consider adding compression for large attachment references"
+  ]
+}

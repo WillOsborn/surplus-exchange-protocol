@@ -1,0 +1,49 @@
+{
+  "name": "sep-reference",
+  "version": "0.1.0",
+  "description": "Surplus Exchange Protocol - Reference Implementation",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "validate": "ajv compile -s 'schemas/*.schema.json' --spec=draft2020 -c ajv-formats --strict=false",
+    "validate:examples": "npm run validate:needs && npm run validate:chains && npm run validate:messages && npm run validate:trust",
+    "validate:needs": "ajv validate -s schemas/need.schema.json -d 'examples/needs/*.json' --spec=draft2020 -c ajv-formats --strict=false",
+    "validate:chains": "ajv validate -s schemas/exchange-chain.schema.json -d 'examples/chains/*.json' --spec=draft2020 -c ajv-formats --strict=false",
+    "validate:messages": "ajv validate -s schemas/protocol-messages.schema.json -d 'examples/messages/*.json' --spec=draft2020 -c ajv-formats --strict=false",
+    "validate:trust": "ajv validate -s schemas/trust-profile.schema.json -d 'examples/trust/*.json' --spec=draft2020 -c ajv-formats --strict=false",
+    "generate:types": "json2ts -i schemas -o src/schemas --cwd schemas",
+    "trace": "npm run build && node dist/examples/trace-chain.js",
+    "match": "npm run build && node dist/examples/match-demo.js",
+    "trust": "npm run build && node dist/examples/trust-demo.js",
+    "capability": "npm run build && node dist/examples/capability-demo.js",
+    "test": "echo \"No tests yet\" && exit 0",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "surplus",
+    "exchange",
+    "protocol",
+    "barter",
+    "multi-party",
+    "agentic"
+  ],
+  "author": "Will Osborn",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@types/node": "^22.0.0",
+    "ajv-cli": "^5.0.0",
+    "json-schema-to-typescript": "^15.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

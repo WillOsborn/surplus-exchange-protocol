@@ -1,0 +1,422 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplus-exchange-protocol.org/schemas/exchange-chain.schema.json",
+  "title": "Exchange Chain",
+  "description": "Represents a multi-party exchange cycle where all participants both give and receive",
+  "type": "object",
+  "required": ["id", "status", "edges", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this chain"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "proposed", "confirming", "committed", "executing", "completed", "discarded", "abandoned", "declined", "cancelled", "failed"],
+      "description": "Current state of the chain lifecycle: draft (not yet proposed), proposed (sent to participants), confirming (awaiting confirmations), committed (all confirmed), executing (exchanges in progress), completed (all satisfied), or terminal failure states"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this chain was proposed"
+    },
+    "edges": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/chainEdge"
+      },
+      "description": "The exchanges that make up this chain, in order"
+    },
+    "timing": {
+      "$ref": "#/$defs/chainTiming",
+      "description": "Timing constraints and schedule for the chain"
+    },
+    "metadata": {
+      "$ref": "#/$defs/chainMetadata",
+      "description": "Computed metadata about the chain"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chainEvent"
+      },
+      "description": "Audit trail of state changes"
+    },
+    "failure_info": {
+      "$ref": "#/$defs/failureInfo",
+      "description": "Details about chain failure if status is failed, abandoned, or cancelled"
+    },
+    "compensation_plan": {
+      "$ref": "#/$defs/compensationPlan",
+      "description": "Overall compensation strategy for the chain if it fails"
+    }
+  },
+  "$defs": {
+    "chainEdge": {
+      "type": "object",
+      "description": "A single exchange within the chain",
+      "required": ["id", "provider_id", "recipient_id", "offering_id", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this edge"
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Participant providing the offering"
+        },
+        "recipient_id": {
+          "type": "string",
+          "description": "Participant receiving the offering"
+        },
+        "offering_id": {
+          "type": "string",
+          "description": "Reference to the capability offering being exchanged"
+        },
+        "offering_snapshot": {
+          "type": "object",
+          "description": "Copy of relevant offering details at time of chain creation"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["proposed", "provider_confirmed", "recipient_confirmed", "both_confirmed", "in_progress", "delivered", "satisfied", "skipped", "disputed", "resolved"],
+          "description": "Current state of this edge: confirmation states, execution states, or terminal states (satisfied, skipped if restructured out, disputed, resolved)"
+        },
+        "confirmation": {
+          "type": "object",
+          "properties": {
+            "provider_confirmed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "recipient_confirmed_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "execution": {
+          "type": "object",
+          "properties": {
+            "started_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "notes": {
+              "type": "string",
+              "description": "Any notes about the execution"
+            }
+          }
+        },
+        "satisfaction": {
+          "type": "object",
+          "properties": {
+            "provider_signal": {
+              "type": "string",
+              "enum": ["satisfied", "partially_satisfied", "not_satisfied"],
+              "description": "Provider's satisfaction with the exchange"
+            },
+            "recipient_signal": {
+              "type": "string",
+              "enum": ["satisfied", "partially_satisfied", "not_satisfied"],
+              "description": "Recipient's satisfaction with what they received"
+            },
+            "provider_feedback": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "recipient_feedback": {
+              "type": "string",
+              "maxLength": 500
+            }
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Edge IDs that must complete before this edge can start"
+        },
+        "compensation": {
+          "type": "object",
+          "description": "Compensation details if this edge fails or is skipped",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": ["none_required", "completed_independently", "reversed", "compensated", "pending"],
+              "description": "Compensation action taken or required"
+            },
+            "compensation_edge_id": {
+              "type": "string",
+              "description": "ID of compensating exchange if one was created"
+            },
+            "notes": {
+              "type": "string",
+              "maxLength": 500,
+              "description": "Details about the compensation arrangement"
+            }
+          }
+        },
+        "dispute_details": {
+          "type": "object",
+          "description": "Details when edge is in disputed or resolved state",
+          "properties": {
+            "dispute_type": {
+              "type": "string",
+              "enum": ["non_delivery", "partial_delivery", "quality_mismatch", "timing_violation", "scope_dispute", "other"],
+              "description": "Category of dispute"
+            },
+            "raised_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the dispute was raised"
+            },
+            "raised_by": {
+              "type": "string",
+              "description": "Participant ID who raised the dispute"
+            },
+            "resolved_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the dispute was resolved"
+            },
+            "resolution": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "Description of how the dispute was resolved"
+            }
+          }
+        }
+      }
+    },
+    "chainTiming": {
+      "type": "object",
+      "description": "Timing constraints for the chain",
+      "properties": {
+        "confirmation_deadline": {
+          "type": "string",
+          "format": "date-time",
+          "description": "All participants must confirm by this time"
+        },
+        "execution_window": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date",
+              "description": "Earliest date execution can begin"
+            },
+            "end": {
+              "type": "string",
+              "format": "date",
+              "description": "Latest date all exchanges must complete"
+            }
+          }
+        },
+        "edge_schedules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "edge_id": { "type": "string" },
+              "scheduled_start": { "type": "string", "format": "date" },
+              "scheduled_completion": { "type": "string", "format": "date" }
+            }
+          },
+          "description": "Specific timing for each edge"
+        },
+        "circuit_breaker": {
+          "type": "object",
+          "description": "Circuit breaker configuration for automatic failure handling",
+          "properties": {
+            "edge_timeout_days": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Days after scheduled completion before edge is considered timed out"
+            },
+            "max_disputes_before_failure": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of disputed edges that triggers automatic chain failure"
+            },
+            "health_check_interval_hours": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Hours between automated health checks"
+            },
+            "auto_restructure_enabled": {
+              "type": "boolean",
+              "description": "Whether to attempt automatic chain restructuring on edge failure"
+            }
+          }
+        }
+      }
+    },
+    "chainMetadata": {
+      "type": "object",
+      "description": "Computed information about the chain",
+      "properties": {
+        "participant_count": {
+          "type": "integer",
+          "minimum": 2,
+          "description": "Number of participants in the chain"
+        },
+        "includes_physical_goods": {
+          "type": "boolean",
+          "description": "Whether any edge involves physical goods"
+        },
+        "geographic_span": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Regions involved in the chain"
+        },
+        "proposed_by": {
+          "type": "string",
+          "enum": ["algorithm", "participant", "broker"],
+          "description": "How this chain was identified"
+        },
+        "match_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Algorithm's confidence in this chain"
+        },
+        "risk_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Estimated probability of chain failure"
+        }
+      }
+    },
+    "chainEvent": {
+      "type": "object",
+      "description": "An event in the chain's history",
+      "required": ["timestamp", "event_type"],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "created",
+            "submitted",
+            "participant_confirmed",
+            "participant_declined",
+            "all_confirmed",
+            "execution_started",
+            "edge_started",
+            "edge_completed",
+            "edge_satisfied",
+            "edge_skipped",
+            "edge_disputed",
+            "edge_resolved",
+            "chain_restructured",
+            "chain_completed",
+            "chain_failed",
+            "chain_cancelled",
+            "chain_abandoned",
+            "health_check",
+            "timeout_warning"
+          ]
+        },
+        "participant_id": {
+          "type": "string",
+          "description": "Participant involved in this event (if applicable)"
+        },
+        "edge_id": {
+          "type": "string",
+          "description": "Edge involved in this event (if applicable)"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional context"
+        }
+      }
+    },
+    "failureInfo": {
+      "type": "object",
+      "description": "Details about why a chain failed",
+      "properties": {
+        "failed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the failure was determined"
+        },
+        "failure_reason": {
+          "type": "string",
+          "enum": ["edge_timeout", "edge_abandonment", "unresolved_dispute", "participant_withdrawal", "cascade_failure", "infrastructure_failure", "confirmation_timeout", "other"],
+          "description": "Category of failure"
+        },
+        "failed_edge_id": {
+          "type": "string",
+          "description": "Edge that triggered the failure, if applicable"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Human-readable description of what went wrong"
+        }
+      }
+    },
+    "compensationPlan": {
+      "type": "object",
+      "description": "Strategy for compensating participants when chain fails",
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["restructure", "partial_complete", "full_unwind", "settle_externally", "no_action"],
+          "description": "Overall compensation approach"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["proposed", "approved", "executing", "completed", "rejected"],
+          "description": "Current status of compensation plan"
+        },
+        "requires_approval": {
+          "type": "boolean",
+          "description": "Whether participants must approve the compensation plan"
+        },
+        "approved_by": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Participant IDs who have approved the plan"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "edge_id": {
+                "type": "string",
+                "description": "Edge this action applies to"
+              },
+              "action": {
+                "type": "string",
+                "enum": ["complete_independently", "reverse", "compensate", "skip", "no_action"],
+                "description": "Action to take for this edge"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 500,
+                "description": "Details of the compensation action"
+              }
+            }
+          },
+          "description": "Specific actions for each affected edge"
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Additional notes about the compensation plan"
+        }
+      }
+    }
+  }
+}

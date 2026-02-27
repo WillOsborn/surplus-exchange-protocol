@@ -1,0 +1,439 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplus-exchange-protocol.org/schemas/capability-offering.schema.json",
+  "title": "Surplus Offering",
+  "description": "Describes otherwise-wasted capacity (surplus) and what value it could create if activated. SEP matches surplus to needs—the baseline is 'better than nothing', not 'fair market value'. Any activation of surplus is a win.",
+  "type": "object",
+  "required": ["id", "type", "provider", "status", "capability_matching"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this offering"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["service", "physical_good", "access", "space"],
+      "description": "Category of surplus being offered"
+    },
+    "provider": {
+      "type": "string",
+      "description": "Identifier of the participant offering this surplus"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["available", "partially_committed", "unavailable"],
+      "description": "Current availability status"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Short, human-readable title (for confirmation/scoping after match discovery)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Detailed description (for humans reviewing proposed matches)"
+    },
+    "surplus_context": {
+      "$ref": "#/$defs/surplusContext",
+      "description": "Context establishing this as otherwise-wasted capacity"
+    },
+    "capability_matching": {
+      "$ref": "#/$defs/capabilityMatching",
+      "description": "Structured data for algorithmic capability matching (required at search time, can be AI-enriched from human input). Note: This is SEP's matching engine, not external AI agents."
+    },
+    "service_details": {
+      "$ref": "#/$defs/serviceDetails",
+      "description": "Details specific to service offerings"
+    },
+    "physical_details": {
+      "$ref": "#/$defs/physicalDetails",
+      "description": "Details specific to physical goods"
+    },
+    "access_details": {
+      "$ref": "#/$defs/accessDetails",
+      "description": "Details specific to access/expertise offerings"
+    },
+    "constraints": {
+      "$ref": "#/$defs/constraints",
+      "description": "Limitations on when/how this can be exchanged"
+    }
+  },
+  "$defs": {
+    "surplusContext": {
+      "type": "object",
+      "description": "Context establishing this as otherwise-wasted capacity, not market inventory",
+      "properties": {
+        "why_surplus": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Why this capacity would otherwise go unused (e.g., 'Designer between projects', 'Excess stock from cancelled order', 'Vehicle returning empty')"
+        },
+        "alternative_fate": {
+          "type": "string",
+          "enum": ["unused", "discounted_sale", "disposal", "depreciation", "opportunity_cost"],
+          "description": "What would happen to this capacity without SEP"
+        },
+        "time_sensitivity": {
+          "type": "string",
+          "enum": ["none", "weeks", "days", "hours"],
+          "description": "How quickly this surplus loses value if not activated"
+        }
+      }
+    },
+    "capabilityMatching": {
+      "type": "object",
+      "description": "Structured data optimised for algorithmic capability matching. Human-readable fields (title, description) are for confirmation/scoping after match discovery. This block can be AI-enriched from human input and context. Note: 'capability_matching' refers to SEP's matching engine, not external AI agents.",
+      "required": ["capability_outputs", "capacity_available"],
+      "properties": {
+        "capability_outputs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Normalised list of outputs this surplus can produce (e.g., ['pitch_deck', 'brand_identity', 'goods_transport'])"
+        },
+        "capacity_available": {
+          "type": "object",
+          "required": ["amount", "unit"],
+          "properties": {
+            "amount": { "type": "number", "minimum": 0 },
+            "unit": { "type": "string", "enum": ["hours", "days", "units", "projects", "trips", "sessions"] }
+          },
+          "description": "Quantified available capacity"
+        },
+        "sector_tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sectors this surplus applies to (e.g., ['professional_services', 'creative', 'logistics'])"
+        },
+        "constraint_flags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Quick-filter flags (e.g., ['remote_only', 'uk_only', 'perishable', 'transport_required'])"
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" },
+            "region": { "type": "string" },
+            "country": { "type": "string" },
+            "coordinates": {
+              "type": "object",
+              "properties": {
+                "lat": { "type": "number" },
+                "lon": { "type": "number" }
+              }
+            }
+          },
+          "description": "Location for geographic matching"
+        }
+      }
+    },
+    "serviceDetails": {
+      "type": "object",
+      "description": "Details for service-type offerings (including transport as a service)",
+      "properties": {
+        "available_capacity": {
+          "type": "string",
+          "description": "Human-readable capacity description (e.g., '20 hours', '5 projects')"
+        },
+        "capability_mapping": {
+          "type": "array",
+          "description": "What this surplus can translate into for recipients",
+          "items": {
+            "type": "object",
+            "required": ["output"],
+            "properties": {
+              "output": {
+                "type": "string",
+                "description": "What the recipient gets (e.g., 'pitch_deck', 'goods_transport')"
+              },
+              "capacity_consumption": {
+                "$ref": "#/$defs/capacityConsumption",
+                "description": "Estimated capacity required for this output"
+              },
+              "requirements": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "What provider needs from recipient to deliver"
+              },
+              "deliverables": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "What recipient receives upon completion"
+              },
+              "transport_route": {
+                "$ref": "#/$defs/transportRoute",
+                "description": "For goods_transport capability: the route this transport covers"
+              }
+            }
+          }
+        },
+        "skillset_boundaries": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "What this capacity CANNOT translate into"
+        },
+        "delivery_method": {
+          "type": "string",
+          "enum": ["remote", "onsite", "hybrid"],
+          "description": "How the service is delivered"
+        },
+        "lead_time": {
+          "type": "string",
+          "description": "Notice required before starting (e.g., '2 weeks')"
+        }
+      }
+    },
+    "capacityConsumption": {
+      "type": "object",
+      "description": "Estimated capacity required to produce an output. Used by agents for feasibility matching, NOT for valuation. Subject to human confirmation before any commitment is made.",
+      "properties": {
+        "estimate": {
+          "type": "string",
+          "description": "Human-readable estimate (e.g., '4-8 hours', '1 trip')"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Numeric amount for computation (use midpoint of range)"
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["hours", "days", "units", "projects", "trips", "sessions"],
+          "description": "Unit matching the offering's capacity unit"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["exact", "typical", "estimated", "variable"],
+          "default": "typical",
+          "description": "How confident is this estimate"
+        },
+        "requires_confirmation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether human must confirm capacity-to-output translation before commitment (almost always true)"
+        }
+      }
+    },
+    "transportRoute": {
+      "type": "object",
+      "description": "Route information for transport-type service offerings",
+      "properties": {
+        "from": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" },
+            "region": { "type": "string" },
+            "country": { "type": "string" }
+          }
+        },
+        "to": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" },
+            "region": { "type": "string" },
+            "country": { "type": "string" }
+          }
+        },
+        "route_type": {
+          "type": "string",
+          "enum": ["point_to_point", "corridor", "regional", "national"],
+          "description": "Type of route coverage"
+        },
+        "frequency": {
+          "type": "string",
+          "description": "How often this route runs (e.g., 'twice weekly', 'daily', 'on demand')"
+        },
+        "capacity_per_trip": {
+          "type": "object",
+          "properties": {
+            "weight": { "type": "string", "description": "Weight capacity (e.g., '500kg')" },
+            "volume": { "type": "string", "description": "Volume capacity (e.g., '2 cubic metres')" },
+            "units": { "type": "string", "description": "Unit capacity (e.g., '4 pallets')" }
+          }
+        }
+      }
+    },
+    "physicalDetails": {
+      "type": "object",
+      "description": "Details for physical goods offerings",
+      "properties": {
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" },
+            "region": { "type": "string" },
+            "country": { "type": "string" },
+            "coordinates": {
+              "type": "object",
+              "properties": {
+                "lat": { "type": "number" },
+                "lon": { "type": "number" }
+              }
+            }
+          }
+        },
+        "quantity": {
+          "type": "string",
+          "description": "Amount available (e.g., '500 units', '2 tonnes')"
+        },
+        "weight": {
+          "type": "string",
+          "description": "Total weight for transport planning"
+        },
+        "dimensions": {
+          "type": "string",
+          "description": "Size for transport/storage planning"
+        },
+        "perishability": {
+          "type": "string",
+          "enum": ["none", "weeks", "days", "hours"],
+          "description": "Time sensitivity of the goods"
+        },
+        "condition": {
+          "type": "string",
+          "enum": ["new", "like_new", "good", "fair"],
+          "description": "Condition of the goods"
+        },
+        "storage_available_until": {
+          "type": "string",
+          "format": "date",
+          "description": "How long provider can hold the goods"
+        },
+        "transport_included": {
+          "type": "boolean",
+          "description": "Whether provider will handle transport"
+        },
+        "transport_matching": {
+          "$ref": "#/$defs/physicalTransportMatching",
+          "description": "Information for matching transport surplus to move these goods"
+        }
+      }
+    },
+    "physicalTransportMatching": {
+      "type": "object",
+      "description": "Enables matching third-party transport surplus to physical goods offerings",
+      "properties": {
+        "transport_required": {
+          "type": "boolean",
+          "description": "Whether transport to recipient is needed (vs collection)"
+        },
+        "transport_matchable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether a third-party transport surplus can be matched to move these goods"
+        },
+        "transport_requirements": {
+          "type": "object",
+          "properties": {
+            "weight": { "type": "string" },
+            "volume": { "type": "string" },
+            "handling": {
+              "type": "string",
+              "enum": ["standard", "fragile", "temperature_controlled", "hazardous"]
+            },
+            "timing_flexibility": {
+              "type": "string",
+              "description": "How flexible timing is (e.g., 'within 2 weeks', 'specific date required')"
+            }
+          }
+        }
+      }
+    },
+    "accessDetails": {
+      "type": "object",
+      "description": "Details for access/expertise offerings",
+      "properties": {
+        "access_type": {
+          "type": "string",
+          "enum": ["advisory", "mentoring", "consulting", "usage_rights"],
+          "description": "Nature of the access being offered"
+        },
+        "availability": {
+          "type": "string",
+          "description": "How much time is available (e.g., '2 hours/week ongoing')"
+        },
+        "domain": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Areas of expertise covered"
+        },
+        "format": {
+          "type": "string",
+          "description": "How access is delivered (e.g., 'video calls', 'async messaging')"
+        },
+        "duration": {
+          "type": "string",
+          "description": "How long access is offered (e.g., '3 months', 'ongoing')"
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "description": "Limitations on the offering",
+      "properties": {
+        "geographic": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Geographic limitations (e.g., ['UK only', 'Europe'])"
+        },
+        "timing": {
+          "type": "object",
+          "properties": {
+            "available_from": { "type": "string", "format": "date" },
+            "available_until": { "type": "string", "format": "date" },
+            "blackout_periods": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "excluded_sectors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Industries provider won't work with"
+        },
+        "minimum_engagement": {
+          "type": "string",
+          "description": "Smallest viable exchange (e.g., '4 hours minimum')"
+        },
+        "maximum_engagement": {
+          "type": "string",
+          "description": "Largest single exchange accepted"
+        },
+        "chain_participation": {
+          "$ref": "#/$defs/chainParticipation",
+          "description": "Preferences for multi-party exchange chain participation"
+        }
+      }
+    },
+    "chainParticipation": {
+      "type": "object",
+      "description": "Preferences for multi-party exchange chain participation",
+      "properties": {
+        "max_chain_length": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 10,
+          "default": 6,
+          "description": "Maximum chain length this offering can participate in"
+        },
+        "min_chain_length": {
+          "type": "integer",
+          "minimum": 2,
+          "default": 2,
+          "description": "Minimum chain length (2 = direct exchange acceptable)"
+        },
+        "can_be_intermediate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this offering can be matched as an intermediate step in a chain"
+        },
+        "prefers_direct": {
+          "type": "boolean",
+          "default": false,
+          "description": "Preference for direct over chain matches (chains still acceptable)"
+        }
+      }
+    }
+  }
+}

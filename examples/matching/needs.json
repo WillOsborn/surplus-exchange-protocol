@@ -1,0 +1,289 @@
+{
+  "$comment": "Example needs for matching algorithm testing. These create viable chains with the offerings.",
+  "needs": [
+    {
+      "id": "need-alice-branding",
+      "type": "service",
+      "participant": "participant-alice-legal",
+      "status": "active",
+      "title": "Brand refresh for law firm",
+      "description": "Our brand identity is 10 years old and needs updating. Looking for a modern refresh of logo, colours, and marketing materials while maintaining professional credibility.",
+      "outcome_sought": "Updated brand that appeals to startup clients while maintaining trust with established businesses",
+      "capability_matching": {
+        "capability_sought": ["brand_refresh", "logo_design", "brand_identity", "brand_guidelines"],
+        "sector_tags": ["creative", "design", "professional_services"],
+        "constraint_flags": ["remote_acceptable"],
+        "chain_acceptable": true,
+        "max_chain_length": 4
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Brand refresh", "fit_notes": "Exactly what we need" },
+          { "capability_output": "Logo design only", "fit_notes": "Would be partial solution" }
+        ]
+      },
+      "service_need_details": {
+        "scope_description": "Logo refresh, new colour palette, updated brand guidelines",
+        "deliverables_expected": ["New logo", "Brand guidelines", "Letterhead template"],
+        "delivery_preference": "remote"
+      },
+      "constraints": {
+        "timing": { "needed_by": "2026-04-15" },
+        "provider_requirements": { "min_exchanges_completed": 5 }
+      },
+      "urgency": {
+        "declared_priority": "normal",
+        "deadline": "2026-04-15",
+        "deadline_type": "soft"
+      }
+    },
+    {
+      "id": "need-bob-legal",
+      "type": "service",
+      "participant": "participant-bob-catering",
+      "status": "active",
+      "title": "Contract review for new venue partnerships",
+      "description": "Expanding to new venues and need contracts reviewed. Have 3 venue partnership agreements that need legal review before signing.",
+      "outcome_sought": "Confidence that contracts protect our interests and identify any problematic clauses",
+      "capability_matching": {
+        "capability_sought": ["contract_review", "contract_drafting", "legal_review"],
+        "sector_tags": ["legal", "professional_services"],
+        "constraint_flags": ["remote_acceptable", "uk_only"],
+        "location": { "country": "UK" },
+        "chain_acceptable": true,
+        "max_chain_length": 4
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Contract review with annotated comments", "fit_notes": "Perfect match" }
+        ]
+      },
+      "service_need_details": {
+        "scope_description": "Review 3 venue partnership contracts, identify risks, suggest amendments",
+        "estimated_effort": "6-10 hours",
+        "deliverables_expected": ["Annotated contracts", "Summary of concerns"],
+        "delivery_preference": "remote"
+      },
+      "constraints": {
+        "geographic": { "accepted_regions": ["UK"] },
+        "timing": { "needed_by": "2026-03-31" }
+      },
+      "urgency": {
+        "declared_priority": "high",
+        "deadline": "2026-03-31",
+        "deadline_type": "hard",
+        "contextual_factors": [
+          { "factor": "blocking_other_work", "description": "Can't sign venue contracts until reviewed" }
+        ]
+      }
+    },
+    {
+      "id": "need-carol-accounting",
+      "type": "service",
+      "participant": "participant-carol-design",
+      "status": "active",
+      "title": "Bookkeeping catch-up and setup",
+      "description": "Behind on bookkeeping for the past quarter. Need someone to catch up and set up a better system going forward.",
+      "outcome_sought": "Clean books, better process, ready for year-end",
+      "capability_matching": {
+        "capability_sought": ["bookkeeping", "management_accounts", "bank_reconciliation"],
+        "sector_tags": ["accounting", "finance", "professional_services"],
+        "constraint_flags": ["remote_acceptable"],
+        "chain_acceptable": true,
+        "max_chain_length": 4
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Monthly bookkeeping", "fit_notes": "Ongoing need" },
+          { "capability_output": "Quarterly management accounts", "fit_notes": "Would help understand business" }
+        ]
+      },
+      "service_need_details": {
+        "scope_description": "Catch up Q4 2025, set up Q1 2026, create process",
+        "estimated_effort": "12-20 hours",
+        "inputs_available": ["Bank statements", "Invoices in Dropbox", "Xero access"]
+      },
+      "constraints": {
+        "timing": { "needed_by": "2026-03-15" }
+      },
+      "urgency": {
+        "declared_priority": "high",
+        "deadline": "2026-03-15",
+        "deadline_type": "hard"
+      }
+    },
+    {
+      "id": "need-dan-marketing",
+      "type": "service",
+      "participant": "participant-dan-accounting",
+      "status": "active",
+      "title": "Content marketing for accountancy firm",
+      "description": "Want to improve online presence with regular blog content about tax tips, business finance, and accounting advice for SMEs.",
+      "outcome_sought": "Regular content that positions us as thought leaders and improves SEO",
+      "capability_matching": {
+        "capability_sought": ["content_strategy", "blog_posts", "seo_content"],
+        "sector_tags": ["marketing", "content", "digital"],
+        "constraint_flags": ["remote_acceptable"],
+        "chain_acceptable": true,
+        "max_chain_length": 4
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Content strategy document", "fit_notes": "Good starting point" },
+          { "capability_output": "Blog post package (5 posts)", "fit_notes": "Exactly what we need" }
+        ]
+      },
+      "service_need_details": {
+        "scope_description": "Strategy plus initial content creation",
+        "deliverables_expected": ["Content strategy", "5+ blog posts", "Social media calendar"]
+      },
+      "constraints": {
+        "timing": { "needed_by": "2026-05-01" }
+      },
+      "urgency": {
+        "declared_priority": "normal"
+      }
+    },
+    {
+      "id": "need-eve-website",
+      "type": "service",
+      "participant": "participant-eve-marketing",
+      "status": "active",
+      "title": "Website rebuild",
+      "description": "Current WordPress site is slow and outdated. Need a modern, fast website that showcases our case studies and services.",
+      "outcome_sought": "Professional website that converts visitors to leads",
+      "capability_matching": {
+        "capability_sought": ["web_application", "website_development", "frontend_development"],
+        "sector_tags": ["technology", "software", "digital"],
+        "constraint_flags": ["remote_acceptable"],
+        "chain_acceptable": true,
+        "max_chain_length": 4
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Small web application", "fit_notes": "Could work as marketing site" }
+        ]
+      },
+      "service_need_details": {
+        "scope_description": "5-7 page marketing website with case studies, contact form, blog",
+        "estimated_effort": "30-40 hours",
+        "deliverables_expected": ["Deployed website", "CMS for blog", "Contact form integration"],
+        "inputs_available": ["Content", "Brand guidelines", "Hosting account"]
+      },
+      "constraints": {
+        "timing": { "needed_by": "2026-04-30" }
+      },
+      "urgency": {
+        "declared_priority": "normal",
+        "deadline": "2026-04-30",
+        "deadline_type": "soft"
+      }
+    },
+    {
+      "id": "need-frank-catering",
+      "type": "service",
+      "participant": "participant-frank-it",
+      "status": "active",
+      "title": "Team event catering",
+      "description": "Planning a team away day in March. Need catering for 25 people for lunch and afternoon tea.",
+      "outcome_sought": "Good food for team morale event",
+      "capability_matching": {
+        "capability_sought": ["corporate_catering", "event_catering"],
+        "sector_tags": ["hospitality", "events", "catering"],
+        "constraint_flags": ["onsite_required", "north_england"],
+        "location": { "city": "Manchester", "region": "Greater Manchester", "country": "UK" },
+        "chain_acceptable": true,
+        "max_chain_length": 3
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Catering for 20-50 people", "fit_notes": "Perfect size" }
+        ]
+      },
+      "service_need_details": {
+        "scope_description": "Lunch and afternoon tea for 25",
+        "deliverables_expected": ["Menu planning", "Food service", "Setup/cleanup"],
+        "inputs_available": ["Venue booked in Manchester"]
+      },
+      "constraints": {
+        "geographic": { "accepted_regions": ["Greater Manchester"] },
+        "timing": {
+          "needed_by": "2026-03-20",
+          "needed_after": "2026-03-15"
+        }
+      },
+      "urgency": {
+        "declared_priority": "normal",
+        "deadline": "2026-03-20",
+        "deadline_type": "hard"
+      }
+    },
+    {
+      "id": "need-grace-design",
+      "type": "service",
+      "participant": "participant-grace-printing",
+      "status": "active",
+      "title": "Marketing materials design",
+      "description": "Need professional design for our new brochure and business cards. We can print ourselves but need the artwork.",
+      "outcome_sought": "Print-ready artwork that looks professional",
+      "capability_matching": {
+        "capability_sought": ["brochure_design", "pitch_deck", "marketing_design"],
+        "sector_tags": ["creative", "design", "marketing"],
+        "constraint_flags": ["remote_acceptable"],
+        "chain_acceptable": true,
+        "max_chain_length": 4
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Brochure design", "fit_notes": "Primary need" }
+        ]
+      },
+      "service_need_details": {
+        "scope_description": "Brochure design (A4 tri-fold) and business card design",
+        "estimated_effort": "10-15 hours",
+        "deliverables_expected": ["Print-ready brochure PDF", "Business card artwork"]
+      },
+      "constraints": {
+        "timing": { "needed_by": "2026-03-31" }
+      },
+      "urgency": {
+        "declared_priority": "normal"
+      }
+    },
+    {
+      "id": "need-frank-printing",
+      "type": "physical_good",
+      "participant": "participant-frank-it",
+      "status": "active",
+      "title": "Conference materials",
+      "description": "Attending a tech conference in April. Need pull-up banner and brochures printed.",
+      "outcome_sought": "Professional materials for conference booth",
+      "capability_matching": {
+        "capability_sought": ["banner_printing", "brochure_printing", "business_cards"],
+        "sector_tags": ["printing", "marketing", "manufacturing"],
+        "constraint_flags": ["physical_goods", "uk_delivery"],
+        "location": { "city": "London", "country": "UK" },
+        "chain_acceptable": true,
+        "max_chain_length": 4,
+        "transport_acceptable": true
+      },
+      "capability_links": {
+        "explicit_matches": [
+          { "capability_output": "Pull-up banner", "fit_notes": "Needed" },
+          { "capability_output": "Brochure printing (200)", "fit_notes": "Needed" }
+        ]
+      },
+      "physical_need_details": {
+        "quantity": "1 banner + 200 brochures",
+        "delivery_location": { "city": "London", "country": "UK" },
+        "condition_accepted": ["new"]
+      },
+      "constraints": {
+        "timing": { "needed_by": "2026-04-01" }
+      },
+      "urgency": {
+        "declared_priority": "normal"
+      }
+    }
+  ]
+}

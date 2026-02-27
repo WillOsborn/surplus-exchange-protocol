@@ -1,0 +1,158 @@
+{
+  "$schema": "../../schemas/exchange-chain.schema.json",
+  "id": "chain-2026-02-05-abc123",
+  "status": "completed",
+  "created_at": "2026-02-05T14:30:00Z",
+  "edges": [
+    {
+      "id": "edge-001",
+      "provider_id": "participant-hartley-legal",
+      "recipient_id": "participant-brighton-catering",
+      "offering_id": "offering-hartley-contract-review",
+      "status": "satisfied",
+      "confirmation": {
+        "provider_confirmed_at": "2026-02-06T11:45:00Z",
+        "recipient_confirmed_at": "2026-02-07T09:20:00Z"
+      },
+      "execution": {
+        "started_at": "2026-02-12T09:00:00Z",
+        "completed_at": "2026-02-25T17:30:00Z",
+        "notes": "Contract review completed 3 days ahead of schedule"
+      },
+      "satisfaction": {
+        "provider_signal": "satisfied",
+        "recipient_signal": "satisfied",
+        "provider_feedback": "Clear brief and responsive communication",
+        "recipient_feedback": "Thorough review with excellent attention to detail"
+      }
+    },
+    {
+      "id": "edge-002",
+      "provider_id": "participant-brighton-catering",
+      "recipient_id": "participant-creative-solutions",
+      "offering_id": "offering-brighton-corporate-event",
+      "status": "satisfied",
+      "confirmation": {
+        "provider_confirmed_at": "2026-02-07T09:20:00Z",
+        "recipient_confirmed_at": "2026-02-07T14:15:00Z"
+      },
+      "execution": {
+        "started_at": "2026-02-28T08:00:00Z",
+        "completed_at": "2026-02-28T18:00:00Z",
+        "notes": "Full-day corporate event catering for 50 guests"
+      },
+      "satisfaction": {
+        "provider_signal": "satisfied",
+        "recipient_signal": "satisfied",
+        "provider_feedback": "Well-organised event with clear requirements",
+        "recipient_feedback": "Exceptional food quality and professional service"
+      }
+    },
+    {
+      "id": "edge-003",
+      "provider_id": "participant-creative-solutions",
+      "recipient_id": "participant-hartley-legal",
+      "offering_id": "offering-creative-brand-refresh",
+      "status": "satisfied",
+      "confirmation": {
+        "provider_confirmed_at": "2026-02-07T14:15:00Z",
+        "recipient_confirmed_at": "2026-02-06T11:45:00Z"
+      },
+      "execution": {
+        "started_at": "2026-02-15T10:00:00Z",
+        "completed_at": "2026-03-10T16:00:00Z",
+        "notes": "Brand identity refresh including logo, colours, and style guide"
+      },
+      "satisfaction": {
+        "provider_signal": "satisfied",
+        "recipient_signal": "satisfied",
+        "provider_feedback": "Engaged client with clear vision",
+        "recipient_feedback": "Creative work exceeded our expectations"
+      }
+    }
+  ],
+  "timing": {
+    "confirmation_deadline": "2026-02-08T18:00:00Z",
+    "execution_window": {
+      "start": "2026-02-12",
+      "end": "2026-03-15"
+    },
+    "edge_schedules": [
+      {
+        "edge_id": "edge-001",
+        "scheduled_start": "2026-02-12",
+        "scheduled_completion": "2026-02-28"
+      },
+      {
+        "edge_id": "edge-002",
+        "scheduled_start": "2026-02-20",
+        "scheduled_completion": "2026-03-05"
+      },
+      {
+        "edge_id": "edge-003",
+        "scheduled_start": "2026-02-15",
+        "scheduled_completion": "2026-03-15"
+      }
+    ]
+  },
+  "metadata": {
+    "participant_count": 3,
+    "includes_physical_goods": false,
+    "geographic_span": ["London", "Brighton"],
+    "proposed_by": "algorithm",
+    "match_score": 0.89,
+    "risk_score": 0.12
+  },
+  "history": [
+    {
+      "timestamp": "2026-02-05T14:30:00Z",
+      "event_type": "created",
+      "notes": "Chain proposed by matching algorithm"
+    },
+    {
+      "timestamp": "2026-02-06T11:45:00Z",
+      "event_type": "participant_confirmed",
+      "participant_id": "participant-hartley-legal"
+    },
+    {
+      "timestamp": "2026-02-07T09:20:00Z",
+      "event_type": "participant_confirmed",
+      "participant_id": "participant-brighton-catering"
+    },
+    {
+      "timestamp": "2026-02-07T14:15:00Z",
+      "event_type": "participant_confirmed",
+      "participant_id": "participant-creative-solutions"
+    },
+    {
+      "timestamp": "2026-02-07T14:15:00Z",
+      "event_type": "all_confirmed",
+      "notes": "All three participants confirmed"
+    },
+    {
+      "timestamp": "2026-02-12T09:00:00Z",
+      "event_type": "execution_started",
+      "notes": "Execution window opened"
+    },
+    {
+      "timestamp": "2026-02-25T17:30:00Z",
+      "event_type": "edge_completed",
+      "edge_id": "edge-001"
+    },
+    {
+      "timestamp": "2026-02-28T18:00:00Z",
+      "event_type": "edge_completed",
+      "edge_id": "edge-002"
+    },
+    {
+      "timestamp": "2026-03-10T16:00:00Z",
+      "event_type": "edge_completed",
+      "edge_id": "edge-003"
+    },
+    {
+      "timestamp": "2026-03-12T10:00:00Z",
+      "event_type": "chain_completed",
+      "notes": "All edges satisfied, chain completed successfully"
+    }
+  ]
+}

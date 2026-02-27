@@ -1,0 +1,534 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplus-exchange-protocol.org/schemas/participant.schema.json",
+  "title": "Participant",
+  "description": "Describes a participant in the surplus exchange network, including identity, trust metrics, and network position",
+  "type": "object",
+  "required": ["id", "type", "identity", "status", "joined_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this participant"
+    },
+    "type": {
+      "$ref": "#/$defs/participantType",
+      "description": "Participant type classification including category and sub-type"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["probationary", "active", "suspended", "withdrawn"],
+      "description": "Current standing in the network"
+    },
+    "joined_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Date participant joined the network"
+    },
+    "identity": {
+      "$ref": "#/$defs/identity",
+      "description": "Verified identity information (Layer 1 trust)"
+    },
+    "profile": {
+      "$ref": "#/$defs/profile",
+      "description": "Public-facing profile information"
+    },
+    "network_position": {
+      "$ref": "#/$defs/networkPosition",
+      "description": "Metrics derived from exchange activity (Layer 2 trust)"
+    },
+    "satisfaction_summary": {
+      "$ref": "#/$defs/satisfactionSummary",
+      "description": "Aggregated satisfaction signals (Layer 3 trust)"
+    },
+    "vouching": {
+      "$ref": "#/$defs/vouching",
+      "description": "Sponsorship relationships"
+    },
+    "preferences": {
+      "$ref": "#/$defs/preferences",
+      "description": "Matching and communication preferences"
+    },
+    "delegation": {
+      "$ref": "#/$defs/delegation",
+      "description": "Agent delegation configuration (Phase 2+). Null or absent for Phase 1 human-only participants."
+    },
+    "accountability": {
+      "$ref": "#/$defs/accountability",
+      "description": "Accountability chain linking participant to responsible human/legal entity"
+    }
+  },
+  "$defs": {
+    "participantType": {
+      "type": "object",
+      "description": "Participant type classification supporting humans, organisations, and agents",
+      "required": ["category"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["human", "organisation", "agent"],
+          "description": "Primary category of participant"
+        },
+        "sub_type": {
+          "type": "string",
+          "description": "Specific type within category",
+          "oneOf": [
+            {
+              "enum": ["individual_consumer", "individual_professional"],
+              "description": "Human sub-types"
+            },
+            {
+              "enum": ["sole_trader", "small_business", "medium_business", "large_enterprise", "non_profit", "cooperative", "public_sector"],
+              "description": "Organisation sub-types"
+            },
+            {
+              "enum": ["delegated_agent", "autonomous_buyer", "multi_agent_network"],
+              "description": "Agent sub-types (Phase 2+)"
+            }
+          ]
+        },
+        "employee_count_band": {
+          "type": "string",
+          "enum": ["1", "2-10", "11-50", "51-250", "250+"],
+          "description": "Employee count for organisations"
+        }
+      }
+    },
+    "delegation": {
+      "type": "object",
+      "description": "Agent delegation configuration (Phase 2+). Defines bounds within which delegated agents can act.",
+      "properties": {
+        "uses_delegated_agents": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this participant uses delegated AI agents"
+        },
+        "agent_identifiers": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Identifiers of registered delegated agents"
+        },
+        "bounds": {
+          "$ref": "#/$defs/delegationBounds",
+          "description": "Limits on what delegated agents can do"
+        },
+        "enabled_since": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When delegation was enabled"
+        }
+      }
+    },
+    "delegationBounds": {
+      "type": "object",
+      "description": "Defines what delegated agents are permitted to do",
+      "properties": {
+        "offering_creation": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "permitted_categories": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Offering categories agent can create"
+            },
+            "require_human_review": { "type": "boolean", "default": true },
+            "review_window_hours": { "type": "integer", "default": 4 }
+          }
+        },
+        "need_creation": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "permitted_categories": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "require_human_review": { "type": "boolean", "default": true }
+          }
+        },
+        "match_confirmation": {
+          "type": "object",
+          "properties": {
+            "auto_confirm_enabled": { "type": "boolean", "default": false },
+            "conditions": {
+              "type": "object",
+              "properties": {
+                "max_chain_length": { "type": "integer", "default": 3 },
+                "require_established_partners": { "type": "boolean", "default": true },
+                "min_partner_trust_score": { "type": "number", "minimum": 0, "maximum": 1 },
+                "excluded_categories": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            },
+            "override_window_hours": { "type": "integer", "default": 4 }
+          }
+        },
+        "satisfaction_signals": {
+          "type": "object",
+          "properties": {
+            "agent_can_draft": { "type": "boolean", "default": true },
+            "agent_can_submit": { "type": "boolean", "default": false }
+          }
+        }
+      }
+    },
+    "accountability": {
+      "type": "object",
+      "description": "Links participant to accountable human/legal entity. Required for all participants.",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["self", "principal", "operator", "legal_entity"],
+          "description": "How accountability is established"
+        },
+        "primary_human_id": {
+          "type": "string",
+          "description": "ID of primary accountable human (for agent participants)"
+        },
+        "legal_entity_id": {
+          "type": "string",
+          "description": "ID of accountable legal entity"
+        },
+        "legal_entity_name": {
+          "type": "string",
+          "description": "Name of accountable legal entity"
+        },
+        "escalation_contacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "email": { "type": "string", "format": "email" },
+              "phone": { "type": "string" }
+            }
+          },
+          "description": "Human contacts for escalation/disputes"
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "description": "Verified business identity (Layer 1 trust)",
+      "required": ["display_name", "verification_status"],
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Name shown to other participants"
+        },
+        "legal_name": {
+          "type": "string",
+          "description": "Registered legal name (may differ from display name)"
+        },
+        "verification_status": {
+          "type": "string",
+          "enum": ["unverified", "pending", "verified", "lapsed"],
+          "description": "Current verification state"
+        },
+        "verification_method": {
+          "type": "string",
+          "enum": ["companies_house", "professional_body", "kyb_provider", "manual_review"],
+          "description": "How identity was verified"
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Date verification was completed"
+        },
+        "registration_number": {
+          "type": "string",
+          "description": "Company registration number (if applicable)"
+        },
+        "professional_memberships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "body": {
+                "type": "string",
+                "description": "Professional body name (e.g., 'ICAEW', 'Law Society')"
+              },
+              "membership_id": {
+                "type": "string",
+                "description": "Membership or registration number"
+              },
+              "verified": {
+                "type": "boolean",
+                "description": "Whether membership has been verified"
+              }
+            }
+          },
+          "description": "Professional body memberships"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "description": "Primary legal jurisdiction (e.g., 'UK', 'Ireland')"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "description": "Public-facing profile information",
+      "properties": {
+        "headline": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Brief description of the business"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Detailed description of the business and what they offer"
+        },
+        "sectors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Industry sectors the participant operates in"
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "city": { "type": "string" },
+            "region": { "type": "string" },
+            "country": { "type": "string" }
+          }
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "Business website"
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "primary_name": {
+              "type": "string",
+              "description": "Name of primary contact person"
+            },
+            "primary_role": {
+              "type": "string",
+              "description": "Role of primary contact"
+            }
+          }
+        }
+      }
+    },
+    "networkPosition": {
+      "type": "object",
+      "description": "Metrics derived from exchange activity (Layer 2 trust). Computed by the network, not self-reported.",
+      "properties": {
+        "exchange_partners_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of distinct participants exchanged with"
+        },
+        "repeat_partner_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of partners exchanged with more than once"
+        },
+        "partner_diversity": {
+          "type": "object",
+          "description": "Distribution of partners across sectors",
+          "properties": {
+            "sector_count": {
+              "type": "integer",
+              "description": "Number of distinct sectors exchanged with"
+            },
+            "offering_type_distribution": {
+              "type": "object",
+              "description": "Breakdown by offering type (service, physical_good, access, space)",
+              "additionalProperties": { "type": "number" }
+            }
+          }
+        },
+        "network_reach": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of participants reachable within 2 degrees of connection"
+        },
+        "exchanges_as_provider": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of exchanges where this participant provided"
+        },
+        "exchanges_as_recipient": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of exchanges where this participant received"
+        },
+        "chain_participation_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of multi-party chains participated in"
+        },
+        "last_exchange_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of most recent completed exchange"
+        },
+        "metrics_updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When these metrics were last computed"
+        }
+      }
+    },
+    "satisfactionSummary": {
+      "type": "object",
+      "description": "Aggregated satisfaction signals from exchange partners (Layer 3 trust)",
+      "properties": {
+        "as_provider": {
+          "$ref": "#/$defs/satisfactionBreakdown",
+          "description": "Satisfaction signals received when providing"
+        },
+        "as_recipient": {
+          "$ref": "#/$defs/satisfactionBreakdown",
+          "description": "Satisfaction signals received when receiving"
+        },
+        "response_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of exchanges where this participant provided satisfaction signal"
+        }
+      }
+    },
+    "satisfactionBreakdown": {
+      "type": "object",
+      "description": "Breakdown of satisfaction signals",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total signals received"
+        },
+        "satisfied": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of 'satisfied' signals"
+        },
+        "partially_satisfied": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of 'partially satisfied' signals"
+        },
+        "not_satisfied": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of 'not satisfied' signals"
+        }
+      }
+    },
+    "vouching": {
+      "type": "object",
+      "description": "Sponsorship relationships for newcomer trust pathway",
+      "properties": {
+        "vouched_by": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "participant_id": {
+                "type": "string",
+                "description": "ID of the vouching participant"
+              },
+              "vouched_at": {
+                "type": "string",
+                "format": "date",
+                "description": "Date vouch was given"
+              },
+              "relationship": {
+                "type": "string",
+                "description": "Nature of relationship (e.g., 'former client', 'professional contact')"
+              }
+            }
+          },
+          "description": "Participants who have vouched for this participant"
+        },
+        "vouches_given": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "participant_id": {
+                "type": "string",
+                "description": "ID of participant vouched for"
+              },
+              "vouched_at": {
+                "type": "string",
+                "format": "date"
+              },
+              "outcome": {
+                "type": "string",
+                "enum": ["active", "suspended", "withdrawn"],
+                "description": "Current status of vouched participant (affects voucher reputation)"
+              }
+            }
+          },
+          "description": "Participants this participant has vouched for"
+        },
+        "vouching_capacity": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How many more newcomers this participant can vouch for"
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "description": "Matching and communication preferences",
+      "properties": {
+        "matching": {
+          "type": "object",
+          "properties": {
+            "max_chain_length": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 10,
+              "description": "Maximum multi-party chain length willing to participate in"
+            },
+            "min_partner_exchanges": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Minimum exchange count required from potential partners"
+            },
+            "preferred_sectors": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Sectors preferred for matching"
+            },
+            "excluded_sectors": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Sectors to exclude from matching"
+            }
+          }
+        },
+        "communication": {
+          "type": "object",
+          "properties": {
+            "match_notification": {
+              "type": "string",
+              "enum": ["immediate", "daily_digest", "weekly_digest"],
+              "description": "How to notify of potential matches"
+            },
+            "preferred_channels": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["email", "platform_message", "webhook"]
+              },
+              "description": "Preferred communication channels"
+            }
+          }
+        }
+      }
+    }
+  }
+}

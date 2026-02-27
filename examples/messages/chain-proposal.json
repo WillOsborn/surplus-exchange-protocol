@@ -1,0 +1,73 @@
+{
+  "$schema": "../../schemas/protocol-messages.schema.json",
+  "message_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "message_type": "ChainProposal",
+  "timestamp": "2026-02-05T14:30:00Z",
+  "sender_id": "broker-london-001",
+  "protocol_version": "1.0",
+  "chain_id": "chain-2026-02-05-abc123",
+  "edges": [
+    {
+      "edge_id": "edge-001",
+      "provider_id": "participant-hartley-legal",
+      "recipient_id": "participant-brighton-catering",
+      "offering_id": "offering-hartley-contract-review",
+      "offering_summary": "Contract review and advisory (10 hours) - employment agreements"
+    },
+    {
+      "edge_id": "edge-002",
+      "provider_id": "participant-brighton-catering",
+      "recipient_id": "participant-creative-solutions",
+      "offering_id": "offering-brighton-corporate-event",
+      "offering_summary": "Corporate catering for 50 people - full day event"
+    },
+    {
+      "edge_id": "edge-003",
+      "provider_id": "participant-creative-solutions",
+      "recipient_id": "participant-hartley-legal",
+      "offering_id": "offering-creative-brand-refresh",
+      "offering_summary": "Brand identity refresh - logo, colours, and style guide"
+    }
+  ],
+  "timing": {
+    "confirmation_deadline": "2026-02-08T18:00:00Z",
+    "execution_window": {
+      "start": "2026-02-12",
+      "end": "2026-03-15"
+    },
+    "edge_schedules": [
+      {
+        "edge_id": "edge-001",
+        "earliest_start": "2026-02-12",
+        "latest_completion": "2026-02-28"
+      },
+      {
+        "edge_id": "edge-002",
+        "earliest_start": "2026-02-20",
+        "latest_completion": "2026-03-05"
+      },
+      {
+        "edge_id": "edge-003",
+        "earliest_start": "2026-02-15",
+        "latest_completion": "2026-03-15"
+      }
+    ]
+  },
+  "match_rationale": {
+    "algorithm_version": "1.2.0",
+    "match_score": 0.89,
+    "key_matches": [
+      "Hartley Legal needs brand refresh; Creative Solutions offers design services",
+      "Brighton Catering needs legal review of new employment contracts; Hartley offers legal services",
+      "Creative Solutions has upcoming client event; Brighton Catering has spare capacity"
+    ]
+  },
+  "metadata": {
+    "proposed_by": "algorithm",
+    "includes_physical_goods": false,
+    "geographic_span": [
+      "London",
+      "Brighton"
+    ]
+  }
+}

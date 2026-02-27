@@ -1,0 +1,17 @@
+{
+  "$schema": "../../schemas/protocol-messages.schema.json",
+  "message_id": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+  "message_type": "ParticipantConfirmation",
+  "timestamp": "2026-02-06T11:45:00Z",
+  "sender_id": "participant-hartley-legal",
+  "protocol_version": "1.0",
+  "reply_to": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "correlation_id": "chain-2026-02-05-abc123",
+  "chain_id": "chain-2026-02-05-abc123",
+  "participant_id": "participant-hartley-legal",
+  "decision": "confirm",
+  "conditions": [
+    "Contract documents must be provided at least 5 working days before review deadline",
+    "Review scope limited to employment agreements only"
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplus-exchange-protocol.org/schemas/trust-profile.schema.json",
+  "title": "Trust Profile",
+  "description": "Comprehensive trust profile for a participant in the surplus exchange network, tracking tier status, track record, vouching relationships, and exposure limits",
+  "type": "object",
+  "required": ["participant_id", "current_tier", "track_record", "limits", "timestamps"],
+  "properties": {
+    "participant_id": {
+      "type": "string",
+      "description": "Unique identifier linking to participant.schema.json"
+    },
+    "current_tier": {
+      "$ref": "#/$defs/trustTier",
+      "description": "Current trust tier determining exposure limits and capabilities"
+    },
+    "track_record": {
+      "$ref": "#/$defs/trackRecord",
+      "description": "Historical performance metrics for this participant"
+    },
+    "tier_history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tierChange"
+      },
+      "description": "Chronological record of tier changes with reasons"
+    },
+    "vouching": {
+      "$ref": "#/$defs/vouchingRecord",
+      "description": "Complete vouching relationships (given and received)"
+    },
+    "limits": {
+      "$ref": "#/$defs/exposureLimits",
+      "description": "Current exposure limits based on tier and track record"
+    },
+    "timestamps": {
+      "$ref": "#/$defs/profileTimestamps",
+      "description": "Key dates for this participant's trust profile"
+    }
+  },
+  "$defs": {
+    "trustTier": {
+      "type": "string",
+      "enum": ["probationary", "established", "anchor"],
+      "description": "Trust tier levels: PROBATIONARY (new, limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)"
+    },
+    "trackRecord": {
+      "type": "object",
+      "description": "Performance metrics derived from completed exchanges",
+      "required": ["chains_completed", "chains_failed"],
+      "properties": {
+        "chains_completed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of exchange chains successfully completed"
+        },
+        "chains_failed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of chains that failed due to this participant's action or inaction"
+        },
+        "chains_in_progress": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of chains currently executing"
+        },
+        "satisfaction_received": {
+          "$ref": "#/$defs/satisfactionMetrics",
+          "description": "Aggregated satisfaction signals received from exchange partners"
+        },
+        "on_time_rate": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of commitments delivered within agreed timeframe. Null when no deliveries yet."
+        },
+        "average_chain_size": {
+          "type": ["number", "null"],
+          "minimum": 2,
+          "description": "Average number of participants in chains this participant has joined"
+        },
+        "total_value_exchanged": {
+          "type": "object",
+          "description": "Aggregate of subjective value exchanged (for tier assessment only, not shared publicly)",
+          "properties": {
+            "as_provider": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Count of exchanges where this participant provided value"
+            },
+            "as_recipient": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Count of exchanges where this participant received value"
+            }
+          }
+        }
+      }
+    },
+    "satisfactionMetrics": {
+      "type": "object",
+      "description": "Breakdown of satisfaction signals from exchange partners",
+      "properties": {
+        "total_signals": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of satisfaction signals received"
+        },
+        "satisfied_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of 'satisfied' signals"
+        },
+        "partially_satisfied_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of 'partially satisfied' signals"
+        },
+        "not_satisfied_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of 'not satisfied' signals"
+        },
+        "satisfaction_rate": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Proportion of signals that were 'satisfied' (computed: satisfied_count / total_signals). Null when no signals received."
+        }
+      }
+    },
+    "tierChange": {
+      "type": "object",
+      "description": "Record of a tier change event",
+      "required": ["from_tier", "to_tier", "changed_at", "reason"],
+      "properties": {
+        "from_tier": {
+          "oneOf": [
+            { "$ref": "#/$defs/trustTier" },
+            { "type": "null" }
+          ],
+          "description": "Previous tier (null for initial assignment)"
+        },
+        "to_tier": {
+          "$ref": "#/$defs/trustTier",
+          "description": "New tier after the change"
+        },
+        "changed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the tier change occurred"
+        },
+        "reason": {
+          "$ref": "#/$defs/tierChangeReason",
+          "description": "Reason for the tier change"
+        },
+        "details": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Additional context for the tier change"
+        },
+        "changed_by": {
+          "type": "string",
+          "enum": ["system", "admin", "automatic_promotion", "automatic_demotion"],
+          "description": "What triggered the tier change"
+        }
+      }
+    },
+    "tierChangeReason": {
+      "type": "string",
+      "enum": [
+        "initial_join",
+        "track_record_threshold",
+        "time_in_network",
+        "vouching_qualification",
+        "network_contribution",
+        "failed_chain",
+        "low_satisfaction",
+        "inactivity",
+        "dispute_resolution",
+        "manual_review"
+      ],
+      "description": "Standardised reasons for tier changes"
+    },
+    "vouchingRecord": {
+      "type": "object",
+      "description": "Complete record of vouching relationships",
+      "properties": {
+        "vouched_by": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/vouchReceived"
+          },
+          "description": "Vouches this participant has received from others"
+        },
+        "vouched_for": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/vouchGiven"
+          },
+          "description": "Vouches this participant has given to others"
+        },
+        "vouching_capacity": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How many more participants this member can currently vouch for"
+        },
+        "vouching_reputation": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Track record of vouching quality (based on outcomes of vouched participants)"
+        }
+      }
+    },
+    "vouchReceived": {
+      "type": "object",
+      "description": "Record of a vouch received from another participant",
+      "required": ["voucher_id", "vouched_at"],
+      "properties": {
+        "voucher_id": {
+          "type": "string",
+          "description": "Participant ID of the vouching member"
+        },
+        "voucher_tier_at_time": {
+          "$ref": "#/$defs/trustTier",
+          "description": "Tier of the voucher at the time they vouched"
+        },
+        "vouched_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the vouch was given"
+        },
+        "relationship": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Nature of the relationship (e.g., 'former client', 'industry peer', 'professional contact')"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "withdrawn", "expired"],
+          "description": "Current status of this vouch"
+        }
+      }
+    },
+    "vouchGiven": {
+      "type": "object",
+      "description": "Record of a vouch given to another participant",
+      "required": ["vouchee_id", "vouched_at"],
+      "properties": {
+        "vouchee_id": {
+          "type": "string",
+          "description": "Participant ID of the member being vouched for"
+        },
+        "vouched_at": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the vouch was given"
+        },
+        "relationship": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Nature of the relationship"
+        },
+        "vouchee_current_status": {
+          "type": "string",
+          "enum": ["active", "suspended", "withdrawn"],
+          "description": "Current status of the vouched participant (affects voucher's reputation)"
+        },
+        "vouchee_current_tier": {
+          "$ref": "#/$defs/trustTier",
+          "description": "Current tier of the vouched participant"
+        },
+        "outcome_assessment": {
+          "type": "string",
+          "enum": ["positive", "neutral", "negative"],
+          "description": "Assessment of whether this vouch was well-placed"
+        }
+      }
+    },
+    "exposureLimits": {
+      "type": "object",
+      "description": "Current exposure limits based on tier and track record",
+      "required": ["max_chain_size", "max_execution_window_days", "max_concurrent_chains"],
+      "properties": {
+        "max_chain_size": {
+          "type": ["integer", "null"],
+          "minimum": 2,
+          "description": "Maximum number of participants in chains this member can join"
+        },
+        "max_execution_window_days": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Maximum days allowed for chain execution. Null indicates no limit (anchor tier)."
+        },
+        "max_concurrent_chains": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Maximum number of chains this participant can be active in simultaneously"
+        },
+        "can_vouch": {
+          "type": "boolean",
+          "description": "Whether this participant can vouch for new members"
+        },
+        "requires_vouching": {
+          "type": "boolean",
+          "description": "Whether this participant requires a vouch to participate"
+        },
+        "limits_overridden": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether limits have been manually adjusted from tier defaults"
+        },
+        "override_reason": {
+          "type": ["string", "null"],
+          "maxLength": 500,
+          "description": "Reason for manual limit override (if applicable)"
+        }
+      }
+    },
+    "profileTimestamps": {
+      "type": "object",
+      "description": "Key timestamps for the trust profile",
+      "required": ["joined_at"],
+      "properties": {
+        "joined_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the participant joined the network"
+        },
+        "tier_updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the current tier was assigned"
+        },
+        "last_activity_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Most recent exchange activity (chain joined, completed, or satisfaction given)"
+        },
+        "last_vouched_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When this participant last vouched for someone (if applicable)"
+        },
+        "profile_updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this trust profile was last recalculated"
+        }
+      }
+    }
+  }
+}

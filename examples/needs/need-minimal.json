@@ -1,0 +1,10 @@
+{
+  "id": "need-2026-001",
+  "type": "service",
+  "participant": "participant-startup-abc",
+  "status": "active",
+  "description": "We need help with our investor pitch deck. Looking for design support to make our existing content more visually compelling before our Series A round.",
+  "capability_matching": {
+    "capability_sought": ["pitch_deck", "presentation_design"]
+  }
+}

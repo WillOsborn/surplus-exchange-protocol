@@ -1,0 +1,72 @@
+{
+  "id": "need-2026-042",
+  "type": "service",
+  "participant": "participant-agency-xyz",
+  "status": "active",
+  "title": "Bookkeeping Support Needed",
+  "description": "Growing creative agency needs monthly bookkeeping support. We've been managing in-house but are behind on reconciliations and need someone to bring us up to date and then maintain monthly. Using Xero, approximately 200 transactions per month.",
+  "outcome_sought": "Accurate, up-to-date financial records that let us focus on client work and make informed business decisions",
+  "capability_links": {
+    "explicit_matches": [
+      {
+        "capability_output": "monthly bookkeeping",
+        "fit_notes": "Need ongoing monthly support matching our transaction volume"
+      }
+    ]
+  },
+  "service_need_details": {
+    "scope_description": "Bring 3 months of bookkeeping up to date, then provide ongoing monthly reconciliation and reporting",
+    "estimated_effort": "10-15 hours initial catch-up, then 4-6 hours monthly",
+    "deliverables_expected": [
+      "Reconciled Xero accounts",
+      "Monthly financial summary",
+      "VAT return preparation support"
+    ],
+    "inputs_available": [
+      "Full Xero access",
+      "Bank statement access",
+      "Receipt documentation"
+    ],
+    "delivery_preference": "remote",
+    "collaboration_level": "light_touch"
+  },
+  "constraints": {
+    "geographic": {
+      "accepted_regions": ["UK"]
+    },
+    "timing": {
+      "needed_by": "2026-03-31"
+    },
+    "provider_requirements": {
+      "min_exchanges_completed": 3,
+      "min_satisfaction_rating": 4.0,
+      "verification_required": true
+    }
+  },
+  "preferences": {
+    "preferred_sectors": ["professional services", "creative industries"],
+    "preferred_experience_level": "mid",
+    "relationship_preference": "no_preference",
+    "communication_style": "casual"
+  },
+  "urgency": {
+    "declared_priority": "high",
+    "deadline": "2026-03-31",
+    "deadline_type": "soft",
+    "contextual_factors": [
+      {
+        "factor": "blocking_other_work",
+        "description": "Cannot complete year-end accounts without up-to-date bookkeeping"
+      }
+    ]
+  },
+  "created_at": "2026-02-01T09:30:00Z",
+  "visibility": "network_only",
+  "capability_matching": {
+    "capability_sought": ["monthly_bookkeeping", "vat_return_preparation", "xero_reconciliation"],
+    "sector_tags": ["professional_services", "creative_industries"],
+    "constraint_flags": ["uk_only", "remote_acceptable"],
+    "chain_acceptable": true,
+    "max_chain_length": 4
+  }
+}

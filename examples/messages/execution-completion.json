@@ -1,0 +1,29 @@
+{
+  "$schema": "../../schemas/protocol-messages.schema.json",
+  "message_id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+  "message_type": "ExecutionCompletion",
+  "timestamp": "2026-02-25T17:30:00Z",
+  "sender_id": "participant-hartley-legal",
+  "protocol_version": "1.0",
+  "correlation_id": "chain-2026-02-05-abc123",
+  "chain_id": "chain-2026-02-05-abc123",
+  "edge_id": "edge-001",
+  "completed_at": "2026-02-25T17:30:00Z",
+  "delivery_evidence": {
+    "evidence_type": "document",
+    "description": "Completed review of 4 employment contracts with detailed annotations and recommendations. Summary report included with priority items highlighted.",
+    "attachments": [
+      {
+        "filename": "employment-contracts-review-hartley-2026-02-25.pdf",
+        "url": "https://secure.hartley-legal.example/deliveries/chain-2026-02-05-abc123/review-final.pdf",
+        "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "filename": "executive-summary-recommendations.pdf",
+        "url": "https://secure.hartley-legal.example/deliveries/chain-2026-02-05-abc123/summary.pdf",
+        "hash": "sha256:d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+      }
+    ]
+  },
+  "notes": "Review completed 3 days ahead of schedule. Identified 2 clauses requiring immediate attention regarding holiday entitlement calculations. Recommend scheduling a follow-up call to discuss the priority items in the summary."
+}

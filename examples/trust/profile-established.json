@@ -1,0 +1,88 @@
+{
+  "$schema": "../../schemas/trust-profile.schema.json",
+  "participant_id": "part_3d4e5f6g7h8i",
+  "current_tier": "established",
+  "track_record": {
+    "chains_completed": 12,
+    "chains_failed": 0,
+    "chains_in_progress": 2,
+    "satisfaction_received": {
+      "total_signals": 18,
+      "satisfied_count": 16,
+      "partially_satisfied_count": 2,
+      "not_satisfied_count": 0,
+      "satisfaction_rate": 0.89
+    },
+    "on_time_rate": 0.92,
+    "average_chain_size": 3.5,
+    "total_value_exchanged": {
+      "as_provider": 14,
+      "as_recipient": 10
+    }
+  },
+  "tier_history": [
+    {
+      "from_tier": null,
+      "to_tier": "probationary",
+      "changed_at": "2025-06-01T09:00:00Z",
+      "reason": "initial_join",
+      "details": "Joined network via founding member referral programme",
+      "changed_by": "system"
+    },
+    {
+      "from_tier": "probationary",
+      "to_tier": "established",
+      "changed_at": "2025-09-15T11:30:00Z",
+      "reason": "track_record_threshold",
+      "details": "Completed 5 chains with 100% satisfaction rate over 90+ days in network",
+      "changed_by": "automatic_promotion"
+    }
+  ],
+  "vouching": {
+    "vouched_by": [
+      {
+        "voucher_id": "part_1a2b3c4d5e6f",
+        "voucher_tier_at_time": "anchor",
+        "vouched_at": "2025-06-01",
+        "relationship": "Professional network contact - met at industry conference",
+        "status": "active"
+      }
+    ],
+    "vouched_for": [
+      {
+        "vouchee_id": "part_7f8g9h0i1j2k",
+        "vouched_at": "2026-01-15",
+        "relationship": "Former client - worked together on brand identity project in 2024",
+        "vouchee_current_status": "active",
+        "vouchee_current_tier": "probationary",
+        "outcome_assessment": "neutral"
+      },
+      {
+        "vouchee_id": "part_9k0l1m2n3o4p",
+        "vouched_at": "2025-11-20",
+        "relationship": "Industry peer - collaborated on open-source project",
+        "vouchee_current_status": "active",
+        "vouchee_current_tier": "established",
+        "outcome_assessment": "positive"
+      }
+    ],
+    "vouching_capacity": 1,
+    "vouching_reputation": 0.85
+  },
+  "limits": {
+    "max_chain_size": 6,
+    "max_execution_window_days": 90,
+    "max_concurrent_chains": 5,
+    "can_vouch": true,
+    "requires_vouching": false,
+    "limits_overridden": false,
+    "override_reason": null
+  },
+  "timestamps": {
+    "joined_at": "2025-06-01T09:00:00Z",
+    "tier_updated_at": "2025-09-15T11:30:00Z",
+    "last_activity_at": "2026-02-04T16:45:00Z",
+    "last_vouched_at": "2026-01-15T10:30:00Z",
+    "profile_updated_at": "2026-02-05T09:00:00Z"
+  }
+}

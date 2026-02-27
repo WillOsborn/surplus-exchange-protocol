@@ -1,0 +1,63 @@
+{
+  "$schema": "../../schemas/trust-profile.schema.json",
+  "participant_id": "part_7f8g9h0i1j2k",
+  "current_tier": "probationary",
+  "track_record": {
+    "chains_completed": 0,
+    "chains_failed": 0,
+    "chains_in_progress": 1,
+    "satisfaction_received": {
+      "total_signals": 0,
+      "satisfied_count": 0,
+      "partially_satisfied_count": 0,
+      "not_satisfied_count": 0,
+      "satisfaction_rate": null
+    },
+    "on_time_rate": null,
+    "average_chain_size": null,
+    "total_value_exchanged": {
+      "as_provider": 0,
+      "as_recipient": 0
+    }
+  },
+  "tier_history": [
+    {
+      "from_tier": null,
+      "to_tier": "probationary",
+      "changed_at": "2026-01-15T10:30:00Z",
+      "reason": "initial_join",
+      "details": "New member joined network with vouch from established member",
+      "changed_by": "system"
+    }
+  ],
+  "vouching": {
+    "vouched_by": [
+      {
+        "voucher_id": "part_3d4e5f6g7h8i",
+        "voucher_tier_at_time": "established",
+        "vouched_at": "2026-01-15",
+        "relationship": "Former client - worked together on brand identity project in 2024",
+        "status": "active"
+      }
+    ],
+    "vouched_for": [],
+    "vouching_capacity": 0,
+    "vouching_reputation": null
+  },
+  "limits": {
+    "max_chain_size": 3,
+    "max_execution_window_days": 30,
+    "max_concurrent_chains": 2,
+    "can_vouch": false,
+    "requires_vouching": true,
+    "limits_overridden": false,
+    "override_reason": null
+  },
+  "timestamps": {
+    "joined_at": "2026-01-15T10:30:00Z",
+    "tier_updated_at": "2026-01-15T10:30:00Z",
+    "last_activity_at": "2026-02-01T14:22:00Z",
+    "last_vouched_at": null,
+    "profile_updated_at": "2026-02-05T09:00:00Z"
+  }
+}

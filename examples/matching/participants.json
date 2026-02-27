@@ -1,0 +1,260 @@
+{
+  "$comment": "Example participants for matching algorithm testing. Professional services cluster in London/Manchester.",
+  "participants": [
+    {
+      "id": "participant-alice-legal",
+      "type": { "category": "organisation", "sub_type": "llp" },
+      "status": "active",
+      "joined_at": "2025-06-15",
+      "identity": {
+        "display_name": "Harrison & Co Solicitors",
+        "legal_name": "Harrison & Co Solicitors LLP",
+        "verification_status": "verified",
+        "verification_method": "companies_house",
+        "jurisdiction": "UK"
+      },
+      "profile": {
+        "headline": "Commercial law firm specialising in contracts and IP",
+        "sectors": ["legal", "professional_services"],
+        "location": { "city": "London", "region": "Greater London", "country": "UK" }
+      },
+      "network_position": {
+        "exchange_partners_count": 12,
+        "repeat_partner_rate": 0.4,
+        "exchanges_as_provider": 18,
+        "exchanges_as_recipient": 15,
+        "chain_participation_count": 8
+      },
+      "satisfaction_summary": {
+        "as_provider": { "total": 18, "satisfied": 17, "partially_satisfied": 1, "not_satisfied": 0 },
+        "as_recipient": { "total": 15, "satisfied": 14, "partially_satisfied": 1, "not_satisfied": 0 }
+      },
+      "preferences": {
+        "matching": {
+          "max_chain_length": 5,
+          "min_partner_exchanges": 2,
+          "preferred_sectors": ["professional_services", "technology"]
+        }
+      }
+    },
+    {
+      "id": "participant-bob-catering",
+      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "status": "active",
+      "joined_at": "2025-08-01",
+      "identity": {
+        "display_name": "Savour Events Catering",
+        "legal_name": "Savour Events Ltd",
+        "verification_status": "verified",
+        "verification_method": "companies_house",
+        "jurisdiction": "UK"
+      },
+      "profile": {
+        "headline": "Corporate catering and event services",
+        "sectors": ["hospitality", "events"],
+        "location": { "city": "Manchester", "region": "Greater Manchester", "country": "UK" }
+      },
+      "network_position": {
+        "exchange_partners_count": 8,
+        "repeat_partner_rate": 0.5,
+        "exchanges_as_provider": 14,
+        "exchanges_as_recipient": 10,
+        "chain_participation_count": 5
+      },
+      "satisfaction_summary": {
+        "as_provider": { "total": 14, "satisfied": 13, "partially_satisfied": 1, "not_satisfied": 0 },
+        "as_recipient": { "total": 10, "satisfied": 9, "partially_satisfied": 1, "not_satisfied": 0 }
+      },
+      "preferences": {
+        "matching": {
+          "max_chain_length": 4,
+          "min_partner_exchanges": 1
+        }
+      }
+    },
+    {
+      "id": "participant-carol-design",
+      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "status": "active",
+      "joined_at": "2025-07-10",
+      "identity": {
+        "display_name": "Pixel & Grain Studio",
+        "legal_name": "Pixel & Grain Design Ltd",
+        "verification_status": "verified",
+        "verification_method": "companies_house",
+        "jurisdiction": "UK"
+      },
+      "profile": {
+        "headline": "Brand identity and digital design agency",
+        "sectors": ["design", "creative", "marketing"],
+        "location": { "city": "London", "region": "Greater London", "country": "UK" }
+      },
+      "network_position": {
+        "exchange_partners_count": 15,
+        "repeat_partner_rate": 0.35,
+        "exchanges_as_provider": 22,
+        "exchanges_as_recipient": 18,
+        "chain_participation_count": 10
+      },
+      "satisfaction_summary": {
+        "as_provider": { "total": 22, "satisfied": 21, "partially_satisfied": 1, "not_satisfied": 0 },
+        "as_recipient": { "total": 18, "satisfied": 17, "partially_satisfied": 1, "not_satisfied": 0 }
+      },
+      "preferences": {
+        "matching": {
+          "max_chain_length": 6,
+          "min_partner_exchanges": 0,
+          "preferred_sectors": ["technology", "professional_services", "hospitality"]
+        }
+      }
+    },
+    {
+      "id": "participant-dan-accounting",
+      "type": { "category": "organisation", "sub_type": "llp" },
+      "status": "active",
+      "joined_at": "2025-05-20",
+      "identity": {
+        "display_name": "Clearview Accountants",
+        "legal_name": "Clearview Chartered Accountants LLP",
+        "verification_status": "verified",
+        "verification_method": "professional_body",
+        "jurisdiction": "UK",
+        "professional_memberships": [
+          { "body": "ICAEW", "membership_id": "12345", "verified": true }
+        ]
+      },
+      "profile": {
+        "headline": "Chartered accountants for SMEs and startups",
+        "sectors": ["accounting", "professional_services", "finance"],
+        "location": { "city": "London", "region": "Greater London", "country": "UK" }
+      },
+      "network_position": {
+        "exchange_partners_count": 20,
+        "repeat_partner_rate": 0.45,
+        "exchanges_as_provider": 28,
+        "exchanges_as_recipient": 22,
+        "chain_participation_count": 12
+      },
+      "satisfaction_summary": {
+        "as_provider": { "total": 28, "satisfied": 27, "partially_satisfied": 1, "not_satisfied": 0 },
+        "as_recipient": { "total": 22, "satisfied": 21, "partially_satisfied": 1, "not_satisfied": 0 }
+      },
+      "preferences": {
+        "matching": {
+          "max_chain_length": 5,
+          "min_partner_exchanges": 3
+        }
+      }
+    },
+    {
+      "id": "participant-eve-marketing",
+      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "status": "active",
+      "joined_at": "2025-09-01",
+      "identity": {
+        "display_name": "Momentum Marketing",
+        "legal_name": "Momentum Digital Marketing Ltd",
+        "verification_status": "verified",
+        "verification_method": "companies_house",
+        "jurisdiction": "UK"
+      },
+      "profile": {
+        "headline": "Digital marketing and content strategy",
+        "sectors": ["marketing", "digital", "creative"],
+        "location": { "city": "Manchester", "region": "Greater Manchester", "country": "UK" }
+      },
+      "network_position": {
+        "exchange_partners_count": 6,
+        "repeat_partner_rate": 0.3,
+        "exchanges_as_provider": 9,
+        "exchanges_as_recipient": 7,
+        "chain_participation_count": 4
+      },
+      "satisfaction_summary": {
+        "as_provider": { "total": 9, "satisfied": 8, "partially_satisfied": 1, "not_satisfied": 0 },
+        "as_recipient": { "total": 7, "satisfied": 7, "partially_satisfied": 0, "not_satisfied": 0 }
+      },
+      "preferences": {
+        "matching": {
+          "max_chain_length": 4,
+          "min_partner_exchanges": 0
+        }
+      }
+    },
+    {
+      "id": "participant-frank-it",
+      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "status": "active",
+      "joined_at": "2025-04-01",
+      "identity": {
+        "display_name": "ByteForge Solutions",
+        "legal_name": "ByteForge IT Solutions Ltd",
+        "verification_status": "verified",
+        "verification_method": "companies_house",
+        "jurisdiction": "UK"
+      },
+      "profile": {
+        "headline": "IT consulting, development, and support",
+        "sectors": ["technology", "it_services", "software"],
+        "location": { "city": "London", "region": "Greater London", "country": "UK" }
+      },
+      "network_position": {
+        "exchange_partners_count": 18,
+        "repeat_partner_rate": 0.5,
+        "exchanges_as_provider": 25,
+        "exchanges_as_recipient": 20,
+        "chain_participation_count": 11
+      },
+      "satisfaction_summary": {
+        "as_provider": { "total": 25, "satisfied": 24, "partially_satisfied": 1, "not_satisfied": 0 },
+        "as_recipient": { "total": 20, "satisfied": 19, "partially_satisfied": 1, "not_satisfied": 0 }
+      },
+      "preferences": {
+        "matching": {
+          "max_chain_length": 5,
+          "min_partner_exchanges": 2,
+          "preferred_sectors": ["professional_services", "creative"]
+        }
+      }
+    },
+    {
+      "id": "participant-grace-printing",
+      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "status": "probationary",
+      "joined_at": "2026-01-15",
+      "identity": {
+        "display_name": "PrintCraft Pro",
+        "legal_name": "PrintCraft Professional Services Ltd",
+        "verification_status": "verified",
+        "verification_method": "companies_house",
+        "jurisdiction": "UK"
+      },
+      "profile": {
+        "headline": "Commercial printing and branded merchandise",
+        "sectors": ["printing", "manufacturing", "marketing"],
+        "location": { "city": "Birmingham", "region": "West Midlands", "country": "UK" }
+      },
+      "network_position": {
+        "exchange_partners_count": 2,
+        "repeat_partner_rate": 0,
+        "exchanges_as_provider": 2,
+        "exchanges_as_recipient": 1,
+        "chain_participation_count": 1
+      },
+      "satisfaction_summary": {
+        "as_provider": { "total": 2, "satisfied": 2, "partially_satisfied": 0, "not_satisfied": 0 },
+        "as_recipient": { "total": 1, "satisfied": 1, "partially_satisfied": 0, "not_satisfied": 0 }
+      },
+      "vouching": {
+        "vouched_by": [
+          { "participant_id": "participant-carol-design", "vouched_at": "2026-01-15", "relationship": "former client" }
+        ]
+      },
+      "preferences": {
+        "matching": {
+          "max_chain_length": 3
+        }
+      }
+    }
+  ]
+}

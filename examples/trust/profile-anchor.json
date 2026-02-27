@@ -1,0 +1,112 @@
+{
+  "$schema": "../../schemas/trust-profile.schema.json",
+  "participant_id": "part_1a2b3c4d5e6f",
+  "current_tier": "anchor",
+  "track_record": {
+    "chains_completed": 87,
+    "chains_failed": 1,
+    "chains_in_progress": 4,
+    "satisfaction_received": {
+      "total_signals": 142,
+      "satisfied_count": 135,
+      "partially_satisfied_count": 6,
+      "not_satisfied_count": 1,
+      "satisfaction_rate": 0.95
+    },
+    "on_time_rate": 0.97,
+    "average_chain_size": 4.2,
+    "total_value_exchanged": {
+      "as_provider": 98,
+      "as_recipient": 76
+    }
+  },
+  "tier_history": [
+    {
+      "from_tier": null,
+      "to_tier": "probationary",
+      "changed_at": "2024-03-01T08:00:00Z",
+      "reason": "initial_join",
+      "details": "Founding member - joined during pilot programme",
+      "changed_by": "system"
+    },
+    {
+      "from_tier": "probationary",
+      "to_tier": "established",
+      "changed_at": "2024-06-15T14:00:00Z",
+      "reason": "track_record_threshold",
+      "details": "Completed 8 chains with excellent satisfaction during probationary period",
+      "changed_by": "automatic_promotion"
+    },
+    {
+      "from_tier": "established",
+      "to_tier": "anchor",
+      "changed_at": "2025-01-10T10:00:00Z",
+      "reason": "network_contribution",
+      "details": "Sustained high performance over 10 months, 50+ completed chains, active vouching with positive outcomes, significant network contribution",
+      "changed_by": "automatic_promotion"
+    }
+  ],
+  "vouching": {
+    "vouched_by": [],
+    "vouched_for": [
+      {
+        "vouchee_id": "part_3d4e5f6g7h8i",
+        "vouched_at": "2025-06-01",
+        "relationship": "Professional network contact - met at industry conference",
+        "vouchee_current_status": "active",
+        "vouchee_current_tier": "established",
+        "outcome_assessment": "positive"
+      },
+      {
+        "vouchee_id": "part_5q6r7s8t9u0v",
+        "vouched_at": "2025-04-20",
+        "relationship": "Long-term business collaborator",
+        "vouchee_current_status": "active",
+        "vouchee_current_tier": "established",
+        "outcome_assessment": "positive"
+      },
+      {
+        "vouchee_id": "part_2w3x4y5z6a7b",
+        "vouched_at": "2025-08-12",
+        "relationship": "Former employee, now independent consultant",
+        "vouchee_current_status": "active",
+        "vouchee_current_tier": "established",
+        "outcome_assessment": "positive"
+      },
+      {
+        "vouchee_id": "part_8c9d0e1f2g3h",
+        "vouched_at": "2025-10-05",
+        "relationship": "Industry peer from professional association",
+        "vouchee_current_status": "active",
+        "vouchee_current_tier": "probationary",
+        "outcome_assessment": "neutral"
+      },
+      {
+        "vouchee_id": "part_4i5j6k7l8m9n",
+        "vouched_at": "2024-09-18",
+        "relationship": "Supplier relationship",
+        "vouchee_current_status": "withdrawn",
+        "vouchee_current_tier": "probationary",
+        "outcome_assessment": "negative"
+      }
+    ],
+    "vouching_capacity": 3,
+    "vouching_reputation": 0.80
+  },
+  "limits": {
+    "max_chain_size": null,
+    "max_execution_window_days": null,
+    "max_concurrent_chains": null,
+    "can_vouch": true,
+    "requires_vouching": false,
+    "limits_overridden": false,
+    "override_reason": null
+  },
+  "timestamps": {
+    "joined_at": "2024-03-01T08:00:00Z",
+    "tier_updated_at": "2025-01-10T10:00:00Z",
+    "last_activity_at": "2026-02-05T08:15:00Z",
+    "last_vouched_at": "2025-10-05T09:00:00Z",
+    "profile_updated_at": "2026-02-05T09:00:00Z"
+  }
+}

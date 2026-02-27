@@ -1,0 +1,688 @@
+{
+  "$comment": "Example offerings for matching algorithm testing. Each participant offers their surplus capacity.",
+  "offerings": [
+    {
+      "id": "offering-alice-contracts",
+      "type": "service",
+      "provider": "participant-alice-legal",
+      "status": "available",
+      "title": "Contract Review and Drafting",
+      "description": "Review and drafting of commercial contracts, NDAs, and service agreements. Includes one round of revisions.",
+      "surplus_context": {
+        "why_surplus": "Lighter client load in Q1 due to delayed corporate transactions",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["contract_review", "contract_drafting", "nda_template"],
+        "capacity_available": { "amount": 15, "unit": "hours" },
+        "sector_tags": ["legal", "professional_services"],
+        "constraint_flags": ["remote_only", "uk_only"]
+      },
+      "service_details": {
+        "available_capacity": "15 hours",
+        "capability_mapping": [
+          {
+            "output": "Contract review with annotated comments",
+            "capacity_consumption": {
+              "estimate": "3-5 hours",
+              "amount": 4,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Annotated contract PDF", "Summary memo"]
+          },
+          {
+            "output": "New contract drafting",
+            "capacity_consumption": {
+              "estimate": "8-12 hours",
+              "amount": 10,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Draft contract", "Revision based on feedback"]
+          },
+          {
+            "output": "NDA template creation",
+            "capacity_consumption": {
+              "estimate": "2-3 hours",
+              "amount": 2.5,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Customised NDA template"]
+          }
+        ],
+        "delivery_method": "remote",
+        "lead_time": "1 week"
+      },
+      "constraints": {
+        "geographic": ["UK"],
+        "timing": {
+          "available_from": "2026-02-10",
+          "available_until": "2026-04-30"
+        },
+        "excluded_sectors": ["gambling", "tobacco"],
+        "minimum_engagement": "3 hours"
+      }
+    },
+    {
+      "id": "offering-bob-catering",
+      "type": "service",
+      "provider": "participant-bob-catering",
+      "status": "available",
+      "title": "Corporate Event Catering",
+      "description": "Full-service catering for corporate events, meetings, and launches. Includes setup, service, and cleanup.",
+      "surplus_context": {
+        "why_surplus": "Quieter period before wedding season, kitchen capacity underutilised",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["corporate_catering", "event_catering"],
+        "capacity_available": { "amount": 5, "unit": "projects" },
+        "sector_tags": ["hospitality", "events"],
+        "constraint_flags": ["onsite_required", "north_england"]
+      },
+      "service_details": {
+        "available_capacity": "5 events",
+        "capability_mapping": [
+          {
+            "output": "Catering for 20-50 people",
+            "capacity_consumption": {
+              "estimate": "1 event",
+              "amount": 1,
+              "unit": "projects",
+              "confidence": "exact",
+              "requires_confirmation": true
+            },
+            "requirements": ["2 weeks notice", "Venue access"],
+            "deliverables": ["Menu planning", "Food service", "Setup/cleanup"]
+          },
+          {
+            "output": "Catering for 50-100 people",
+            "capacity_consumption": {
+              "estimate": "1 event",
+              "amount": 1,
+              "unit": "projects",
+              "confidence": "exact",
+              "requires_confirmation": true
+            },
+            "requirements": ["3 weeks notice", "Venue access", "Kitchen facilities"],
+            "deliverables": ["Menu planning", "Food service", "Staff", "Setup/cleanup"]
+          }
+        ],
+        "delivery_method": "onsite",
+        "lead_time": "2 weeks"
+      },
+      "constraints": {
+        "geographic": ["Greater Manchester", "Cheshire", "Lancashire", "West Yorkshire"],
+        "timing": {
+          "available_from": "2026-02-15",
+          "available_until": "2026-06-30",
+          "blackout_periods": ["2026-03-28 to 2026-04-02"]
+        },
+        "minimum_engagement": "1 event"
+      }
+    },
+    {
+      "id": "offering-carol-branding",
+      "type": "service",
+      "provider": "participant-carol-design",
+      "status": "available",
+      "title": "Brand Identity Design",
+      "description": "Complete brand identity packages including logo, colour palette, typography, and brand guidelines.",
+      "surplus_context": {
+        "why_surplus": "Major project delivered early, team available before next retainer starts",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["brand_identity", "logo_design", "brand_refresh", "brand_guidelines"],
+        "capacity_available": { "amount": 40, "unit": "hours" },
+        "sector_tags": ["creative", "design", "professional_services"],
+        "constraint_flags": ["remote_only"]
+      },
+      "service_details": {
+        "available_capacity": "40 hours",
+        "capability_mapping": [
+          {
+            "output": "Full brand identity",
+            "capacity_consumption": {
+              "estimate": "20-30 hours",
+              "amount": 25,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "requirements": ["Brand brief", "Competitor examples"],
+            "deliverables": ["Logo (multiple formats)", "Colour palette", "Typography spec", "Brand guidelines PDF"]
+          },
+          {
+            "output": "Logo design only",
+            "capacity_consumption": {
+              "estimate": "8-12 hours",
+              "amount": 10,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "requirements": ["Brief"],
+            "deliverables": ["Logo in multiple formats", "Usage guidelines"]
+          },
+          {
+            "output": "Brand refresh",
+            "capacity_consumption": {
+              "estimate": "15-20 hours",
+              "amount": 17.5,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "requirements": ["Existing brand assets", "Refresh objectives"],
+            "deliverables": ["Updated logo", "Revised guidelines"]
+          }
+        ],
+        "delivery_method": "remote",
+        "lead_time": "1 week"
+      },
+      "constraints": {
+        "geographic": ["UK", "EU"],
+        "timing": {
+          "available_from": "2026-02-01",
+          "available_until": "2026-05-31"
+        },
+        "minimum_engagement": "8 hours"
+      }
+    },
+    {
+      "id": "offering-carol-marketing-collateral",
+      "type": "service",
+      "provider": "participant-carol-design",
+      "status": "available",
+      "title": "Marketing Collateral Design",
+      "description": "Design of brochures, presentations, social media templates, and other marketing materials.",
+      "surplus_context": {
+        "why_surplus": "Junior designer needs project experience, senior designer can supervise",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["pitch_deck", "brochure_design", "social_media_templates"],
+        "capacity_available": { "amount": 25, "unit": "hours" },
+        "sector_tags": ["creative", "design", "marketing"],
+        "constraint_flags": ["remote_only"]
+      },
+      "service_details": {
+        "available_capacity": "25 hours",
+        "capability_mapping": [
+          {
+            "output": "Pitch deck design",
+            "capacity_consumption": {
+              "estimate": "6-10 hours",
+              "amount": 8,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["PowerPoint/Keynote template", "10-15 designed slides"]
+          },
+          {
+            "output": "Brochure design",
+            "capacity_consumption": {
+              "estimate": "8-12 hours",
+              "amount": 10,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Print-ready PDF", "Source files"]
+          },
+          {
+            "output": "Social media template pack",
+            "capacity_consumption": {
+              "estimate": "4-6 hours",
+              "amount": 5,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Templates for 3 platforms", "Canva/Figma files"]
+          }
+        ],
+        "delivery_method": "remote",
+        "lead_time": "3 days"
+      },
+      "constraints": {
+        "timing": {
+          "available_from": "2026-02-01",
+          "available_until": "2026-04-30"
+        },
+        "minimum_engagement": "4 hours"
+      }
+    },
+    {
+      "id": "offering-dan-bookkeeping",
+      "type": "service",
+      "provider": "participant-dan-accounting",
+      "status": "available",
+      "title": "Bookkeeping and Management Accounts",
+      "description": "Monthly bookkeeping, bank reconciliation, and management accounts preparation.",
+      "surplus_context": {
+        "why_surplus": "New bookkeeper joined, existing team has spare capacity while training completes",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["bookkeeping", "management_accounts", "bank_reconciliation"],
+        "capacity_available": { "amount": 30, "unit": "hours" },
+        "sector_tags": ["accounting", "professional_services", "finance"],
+        "constraint_flags": ["remote_only", "uk_only"]
+      },
+      "service_details": {
+        "available_capacity": "30 hours",
+        "capability_mapping": [
+          {
+            "output": "Monthly bookkeeping",
+            "capacity_consumption": {
+              "estimate": "4-8 hours/month",
+              "amount": 6,
+              "unit": "hours",
+              "confidence": "variable",
+              "requires_confirmation": true
+            },
+            "requirements": ["Bank statements", "Invoices/receipts"],
+            "deliverables": ["Reconciled accounts", "Monthly summary"]
+          },
+          {
+            "output": "Quarterly management accounts",
+            "capacity_consumption": {
+              "estimate": "6-10 hours",
+              "amount": 8,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "requirements": ["Access to accounting system"],
+            "deliverables": ["P&L", "Balance sheet", "Commentary"]
+          }
+        ],
+        "delivery_method": "remote",
+        "lead_time": "1 week"
+      },
+      "constraints": {
+        "geographic": ["UK"],
+        "timing": {
+          "available_from": "2026-02-01",
+          "available_until": "2026-06-30"
+        },
+        "minimum_engagement": "4 hours"
+      }
+    },
+    {
+      "id": "offering-dan-tax-advice",
+      "type": "access",
+      "provider": "participant-dan-accounting",
+      "status": "available",
+      "title": "Tax Planning Advisory",
+      "description": "Advisory sessions on tax planning, structure, and compliance for UK businesses.",
+      "surplus_context": {
+        "why_surplus": "Partner has lighter caseload after year-end filing deadline",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["tax_planning", "vat_advice", "r_and_d_credits", "business_structure_advice"],
+        "capacity_available": { "amount": 4, "unit": "hours" },
+        "sector_tags": ["accounting", "tax", "professional_services"],
+        "constraint_flags": ["remote_only", "uk_only"]
+      },
+      "access_details": {
+        "access_type": "advisory",
+        "availability": "4 hours total",
+        "domain": ["corporation tax", "VAT", "R&D tax credits", "business structure"],
+        "format": "video calls",
+        "duration": "one-off"
+      },
+      "constraints": {
+        "geographic": ["UK"],
+        "timing": {
+          "available_from": "2026-02-15",
+          "available_until": "2026-04-30"
+        }
+      }
+    },
+    {
+      "id": "offering-eve-content",
+      "type": "service",
+      "provider": "participant-eve-marketing",
+      "status": "available",
+      "title": "Content Marketing Strategy",
+      "description": "Content strategy development, blog writing, and social media planning.",
+      "surplus_context": {
+        "why_surplus": "Freelance writer on retainer with unused hours this quarter",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["content_strategy", "blog_posts", "seo_content"],
+        "capacity_available": { "amount": 20, "unit": "hours" },
+        "sector_tags": ["marketing", "content", "digital"],
+        "constraint_flags": ["remote_only"]
+      },
+      "service_details": {
+        "available_capacity": "20 hours",
+        "capability_mapping": [
+          {
+            "output": "Content strategy document",
+            "capacity_consumption": {
+              "estimate": "8-12 hours",
+              "amount": 10,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "requirements": ["Brand guidelines", "Target audience info"],
+            "deliverables": ["Strategy document", "Content calendar", "Topic clusters"]
+          },
+          {
+            "output": "Blog post package (5 posts)",
+            "capacity_consumption": {
+              "estimate": "10-15 hours",
+              "amount": 12.5,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "requirements": ["Topics", "Brand voice guide"],
+            "deliverables": ["5 SEO-optimised blog posts"]
+          }
+        ],
+        "delivery_method": "remote",
+        "lead_time": "1 week"
+      },
+      "constraints": {
+        "timing": {
+          "available_from": "2026-02-10",
+          "available_until": "2026-05-31"
+        },
+        "minimum_engagement": "8 hours"
+      }
+    },
+    {
+      "id": "offering-frank-webapp",
+      "type": "service",
+      "provider": "participant-frank-it",
+      "status": "available",
+      "title": "Web Application Development",
+      "description": "Custom web application development, API integrations, and technical consulting.",
+      "surplus_context": {
+        "why_surplus": "Senior developer between client contracts, available for short-term projects",
+        "alternative_fate": "unused",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["web_application", "api_integration", "technical_architecture"],
+        "capacity_available": { "amount": 60, "unit": "hours" },
+        "sector_tags": ["technology", "software", "professional_services"],
+        "constraint_flags": ["remote_only"]
+      },
+      "service_details": {
+        "available_capacity": "60 hours",
+        "capability_mapping": [
+          {
+            "output": "Small web application",
+            "capacity_consumption": {
+              "estimate": "30-50 hours",
+              "amount": 40,
+              "unit": "hours",
+              "confidence": "estimated",
+              "requires_confirmation": true
+            },
+            "requirements": ["Requirements document", "Design mockups"],
+            "deliverables": ["Deployed application", "Source code", "Documentation"]
+          },
+          {
+            "output": "API integration",
+            "capacity_consumption": {
+              "estimate": "10-20 hours",
+              "amount": 15,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "requirements": ["API specs", "Authentication details"],
+            "deliverables": ["Working integration", "Documentation"]
+          },
+          {
+            "output": "Technical architecture review",
+            "capacity_consumption": {
+              "estimate": "5-10 hours",
+              "amount": 7.5,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Architecture document", "Recommendations"]
+          }
+        ],
+        "delivery_method": "remote",
+        "lead_time": "2 weeks"
+      },
+      "constraints": {
+        "timing": {
+          "available_from": "2026-03-01",
+          "available_until": "2026-06-30"
+        },
+        "minimum_engagement": "10 hours"
+      }
+    },
+    {
+      "id": "offering-frank-support",
+      "type": "service",
+      "provider": "participant-frank-it",
+      "status": "available",
+      "title": "IT Support and Troubleshooting",
+      "description": "Technical support, system troubleshooting, and IT advice for small businesses.",
+      "surplus_context": {
+        "why_surplus": "Junior technician available during quieter support periods",
+        "alternative_fate": "unused",
+        "time_sensitivity": "days"
+      },
+      "capability_matching": {
+        "capability_outputs": ["it_support", "it_health_check", "troubleshooting"],
+        "capacity_available": { "amount": 20, "unit": "hours" },
+        "sector_tags": ["technology", "it_support"],
+        "constraint_flags": ["hybrid", "london_only"]
+      },
+      "service_details": {
+        "available_capacity": "20 hours",
+        "capability_mapping": [
+          {
+            "output": "IT health check",
+            "capacity_consumption": {
+              "estimate": "4-6 hours",
+              "amount": 5,
+              "unit": "hours",
+              "confidence": "typical",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Assessment report", "Recommendations"]
+          },
+          {
+            "output": "Ad-hoc support hours",
+            "capacity_consumption": {
+              "estimate": "flexible",
+              "amount": 1,
+              "unit": "hours",
+              "confidence": "variable",
+              "requires_confirmation": true
+            },
+            "deliverables": ["Issue resolution", "Documentation"]
+          }
+        ],
+        "delivery_method": "hybrid",
+        "lead_time": "2 days"
+      },
+      "constraints": {
+        "geographic": ["Greater London"],
+        "timing": {
+          "available_from": "2026-02-01",
+          "available_until": "2026-04-30"
+        },
+        "minimum_engagement": "2 hours"
+      }
+    },
+    {
+      "id": "offering-grace-printing",
+      "type": "physical_good",
+      "provider": "participant-grace-printing",
+      "status": "available",
+      "title": "Printed Marketing Materials",
+      "description": "Business cards, brochures, banners, and branded merchandise printing.",
+      "surplus_context": {
+        "why_surplus": "Press running below capacity, materials in stock from cancelled order",
+        "alternative_fate": "depreciation",
+        "time_sensitivity": "weeks"
+      },
+      "capability_matching": {
+        "capability_outputs": ["business_cards", "brochure_printing", "banner_printing"],
+        "capacity_available": { "amount": 3, "unit": "projects" },
+        "sector_tags": ["printing", "marketing", "manufacturing"],
+        "constraint_flags": ["physical_goods", "uk_delivery"],
+        "location": { "city": "Birmingham", "region": "West Midlands", "country": "UK" }
+      },
+      "physical_details": {
+        "location": { "city": "Birmingham", "region": "West Midlands", "country": "UK" },
+        "quantity": "Various - depends on item",
+        "transport_included": true,
+        "condition": "new",
+        "transport_matching": {
+          "transport_required": false,
+          "transport_matchable": true,
+          "transport_requirements": {
+            "weight": "5-20kg depending on order",
+            "volume": "small parcels to 1 pallet",
+            "handling": "standard",
+            "timing_flexibility": "within 1 week of production"
+          }
+        }
+      },
+      "service_details": {
+        "available_capacity": "3 print runs",
+        "capability_mapping": [
+          {
+            "output": "Business cards (500)",
+            "capacity_consumption": {
+              "estimate": "1 run",
+              "amount": 1,
+              "unit": "projects",
+              "confidence": "exact",
+              "requires_confirmation": true
+            },
+            "requirements": ["Print-ready artwork"],
+            "deliverables": ["500 premium business cards"]
+          },
+          {
+            "output": "Brochure printing (200)",
+            "capacity_consumption": {
+              "estimate": "1 run",
+              "amount": 1,
+              "unit": "projects",
+              "confidence": "exact",
+              "requires_confirmation": true
+            },
+            "requirements": ["Print-ready PDF"],
+            "deliverables": ["200 A4 tri-fold brochures"]
+          },
+          {
+            "output": "Pull-up banner",
+            "capacity_consumption": {
+              "estimate": "1 run",
+              "amount": 1,
+              "unit": "projects",
+              "confidence": "exact",
+              "requires_confirmation": true
+            },
+            "requirements": ["Artwork"],
+            "deliverables": ["850x2000mm pull-up banner with stand"]
+          }
+        ],
+        "lead_time": "1 week"
+      },
+      "constraints": {
+        "geographic": ["UK"],
+        "timing": {
+          "available_from": "2026-02-01",
+          "available_until": "2026-04-30"
+        }
+      }
+    },
+    {
+      "id": "offering-haulage-ltd-transport",
+      "type": "service",
+      "provider": "participant-haulage-ltd",
+      "status": "available",
+      "title": "Spare Logistics Capacity - Leeds to Birmingham Corridor",
+      "description": "Regular delivery run with spare capacity on Leeds-Birmingham route, can accommodate additional loads.",
+      "surplus_context": {
+        "why_surplus": "Vehicle returning partially empty after regular delivery",
+        "alternative_fate": "unused",
+        "time_sensitivity": "days"
+      },
+      "capability_matching": {
+        "capability_outputs": ["goods_transport"],
+        "capacity_available": { "amount": 8, "unit": "trips" },
+        "sector_tags": ["logistics", "transport"],
+        "constraint_flags": ["physical_transport", "leeds_birmingham_corridor"],
+        "location": { "city": "Leeds", "region": "West Yorkshire", "country": "UK" }
+      },
+      "service_details": {
+        "available_capacity": "8 trips (twice weekly for 4 weeks)",
+        "capability_mapping": [
+          {
+            "output": "goods_transport",
+            "capacity_consumption": {
+              "estimate": "1 trip",
+              "amount": 1,
+              "unit": "trips",
+              "confidence": "exact",
+              "requires_confirmation": true
+            },
+            "transport_route": {
+              "from": { "city": "Leeds", "region": "West Yorkshire", "country": "UK" },
+              "to": { "city": "Birmingham", "region": "West Midlands", "country": "UK" },
+              "route_type": "corridor",
+              "frequency": "twice weekly",
+              "capacity_per_trip": {
+                "weight": "500kg",
+                "volume": "2 cubic metres",
+                "units": "4 pallets"
+              }
+            },
+            "requirements": ["48 hours notice", "Collection point access"],
+            "deliverables": ["Safe delivery to destination", "Proof of delivery"]
+          }
+        ],
+        "delivery_method": "onsite",
+        "lead_time": "48 hours"
+      },
+      "constraints": {
+        "geographic": ["Leeds", "Birmingham", "M1 corridor"],
+        "timing": {
+          "available_from": "2026-02-10",
+          "available_until": "2026-03-31"
+        },
+        "chain_participation": {
+          "max_chain_length": 4,
+          "min_chain_length": 2,
+          "can_be_intermediate": true,
+          "prefers_direct": false
+        }
+      }
+    }
+  ]
+}

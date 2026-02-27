@@ -1,0 +1,236 @@
+[
+  {
+    "id": "offer-design-2026-01",
+    "type": "service",
+    "provider": "participant-studio-abc",
+    "status": "available",
+    "title": "Senior Designer Capacity",
+    "description": "Experienced visual designer with 15 years in branding, print, and digital design. Available for project work.",
+    "service_details": {
+      "available_capacity": "20 hours",
+      "capability_mapping": [
+        {
+          "output": "pitch deck design",
+          "typical_effort": "4-8 hours",
+          "requirements": ["brand guidelines or discovery session", "content outline"],
+          "deliverables": ["designed slides", "source files", "presenter notes template"]
+        },
+        {
+          "output": "visual brand identity",
+          "typical_effort": "15-25 hours",
+          "requirements": ["discovery session", "competitor examples", "stakeholder access"],
+          "deliverables": ["logo suite", "colour palette", "typography selection", "brand guidelines document"]
+        },
+        {
+          "output": "print collateral suite",
+          "typical_effort": "8-12 hours",
+          "requirements": ["brand guidelines", "content for each piece"],
+          "deliverables": ["business cards", "letterhead", "print-ready files"]
+        }
+      ],
+      "skillset_boundaries": [
+        "motion graphics",
+        "front-end development",
+        "UX research",
+        "3D modelling"
+      ],
+      "delivery_method": "remote",
+      "lead_time": "2 weeks preferred"
+    },
+    "constraints": {
+      "geographic": ["UK", "Europe"],
+      "timing": {
+        "available_from": "2026-02-01",
+        "available_until": "2026-03-31",
+        "blackout_periods": ["2026-02-14 to 2026-02-21"]
+      },
+      "excluded_sectors": ["gambling", "tobacco", "weapons"],
+      "minimum_engagement": "4 hours"
+    },
+    "track_record": {
+      "exchanges_completed": 12,
+      "satisfaction_rating": 4.8,
+      "repeat_exchange_rate": 0.42,
+      "on_time_delivery_rate": 0.92
+    }
+  },
+  {
+    "id": "offer-accounting-2026-01",
+    "type": "service",
+    "provider": "participant-firm-xyz",
+    "status": "available",
+    "title": "Junior Accountant Capacity",
+    "description": "ACCA-qualified junior accountant available for bookkeeping, management accounts, and tax preparation support.",
+    "service_details": {
+      "available_capacity": "15 hours per month ongoing",
+      "capability_mapping": [
+        {
+          "output": "monthly bookkeeping",
+          "typical_effort": "4-6 hours per month",
+          "requirements": ["access to accounting software", "bank statement access"],
+          "deliverables": ["reconciled accounts", "monthly summary"]
+        },
+        {
+          "output": "quarterly management accounts",
+          "typical_effort": "6-8 hours per quarter",
+          "requirements": ["chart of accounts", "prior period data"],
+          "deliverables": ["P&L statement", "balance sheet", "commentary document"]
+        },
+        {
+          "output": "VAT return preparation",
+          "typical_effort": "2-4 hours per quarter",
+          "requirements": ["sales and purchase records", "VAT scheme details"],
+          "deliverables": ["draft VAT return", "supporting schedules"]
+        }
+      ],
+      "skillset_boundaries": [
+        "tax advisory",
+        "audit",
+        "corporate finance",
+        "international tax"
+      ],
+      "delivery_method": "remote",
+      "lead_time": "1 week"
+    },
+    "constraints": {
+      "geographic": ["UK only"],
+      "timing": {
+        "available_from": "2026-01-15"
+      },
+      "minimum_engagement": "3 months"
+    },
+    "track_record": {
+      "exchanges_completed": 5,
+      "satisfaction_rating": 4.6,
+      "repeat_exchange_rate": 0.80,
+      "on_time_delivery_rate": 1.0
+    }
+  },
+  {
+    "id": "offer-materials-2026-01",
+    "type": "physical_good",
+    "provider": "participant-mfg-123",
+    "status": "available",
+    "title": "Excess Office Furniture - Desks",
+    "description": "20 standing desks from office consolidation. Height-adjustable, good condition, need to be collected or can arrange transport within 50 miles.",
+    "physical_details": {
+      "location": {
+        "city": "Leeds",
+        "country": "UK",
+        "coordinates": {
+          "lat": 53.8008,
+          "lon": -1.5491
+        }
+      },
+      "quantity": "20 units",
+      "weight": "35kg each",
+      "dimensions": "160cm x 80cm x 70-120cm (adjustable height)",
+      "perishability": "none",
+      "transport_included": false,
+      "transport_constraints": "Recipient arranges collection, or network transport match within 50 miles",
+      "storage_available_until": "2026-03-01",
+      "condition": "good"
+    },
+    "constraints": {
+      "geographic": ["UK"],
+      "timing": {
+        "available_until": "2026-03-01"
+      },
+      "minimum_engagement": "5 desks"
+    },
+    "track_record": {
+      "exchanges_completed": 3,
+      "satisfaction_rating": 4.2,
+      "repeat_exchange_rate": 0.33,
+      "on_time_delivery_rate": 1.0
+    }
+  },
+  {
+    "id": "offer-advisory-2026-01",
+    "type": "access",
+    "provider": "participant-consultant-789",
+    "status": "partially_committed",
+    "title": "Pricing Strategy Advisory",
+    "description": "Former McKinsey pricing partner with 20 years experience. Available for advisory calls on pricing strategy, value-based pricing, and price optimization.",
+    "access_details": {
+      "access_type": "advisory",
+      "availability": "2 hours per week",
+      "domain": [
+        "pricing strategy",
+        "value-based pricing",
+        "price optimization",
+        "B2B pricing",
+        "SaaS pricing models"
+      ],
+      "format": "video calls, async messaging between calls",
+      "duration": "3 months engagement"
+    },
+    "constraints": {
+      "geographic": ["English-speaking markets"],
+      "timing": {
+        "available_from": "2026-02-01",
+        "blackout_periods": ["Wednesdays", "August 2026"]
+      },
+      "excluded_sectors": ["competitors to existing clients"],
+      "maximum_engagement": "4 hours per month"
+    },
+    "track_record": {
+      "exchanges_completed": 8,
+      "satisfaction_rating": 4.9,
+      "repeat_exchange_rate": 0.63,
+      "on_time_delivery_rate": 0.88
+    }
+  },
+  {
+    "id": "offer-transport-2026-01",
+    "type": "service",
+    "provider": "participant-logistics-456",
+    "status": "available",
+    "title": "Spare Van Capacity - Yorkshire Region",
+    "description": "Delivery company with spare capacity on Yorkshire routes. Can handle collection and delivery as part of multi-party exchanges.",
+    "service_details": {
+      "available_capacity": "10 deliveries per week",
+      "capability_mapping": [
+        {
+          "output": "same-day local delivery",
+          "typical_effort": "1-2 hours",
+          "requirements": ["collection address", "delivery address", "item dimensions/weight"],
+          "deliverables": ["collected and delivered goods", "proof of delivery"]
+        },
+        {
+          "output": "next-day regional delivery",
+          "typical_effort": "2-4 hours",
+          "requirements": ["collection address", "delivery address", "item details"],
+          "deliverables": ["collected and delivered goods", "tracking updates"]
+        }
+      ],
+      "skillset_boundaries": [
+        "international shipping",
+        "hazardous materials",
+        "refrigerated goods",
+        "oversized items (>2m)"
+      ],
+      "delivery_method": "onsite"
+    },
+    "physical_details": {
+      "location": {
+        "city": "Sheffield",
+        "country": "UK"
+      }
+    },
+    "constraints": {
+      "geographic": ["Yorkshire", "Derbyshire", "Nottinghamshire", "Lincolnshire"],
+      "timing": {
+        "blackout_periods": ["weekends", "bank holidays"]
+      },
+      "minimum_engagement": "3 deliveries",
+      "maximum_engagement": "20 deliveries per week"
+    },
+    "track_record": {
+      "exchanges_completed": 25,
+      "satisfaction_rating": 4.5,
+      "repeat_exchange_rate": 0.56,
+      "on_time_delivery_rate": 0.96
+    }
+  }
+]

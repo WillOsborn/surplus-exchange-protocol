@@ -1,0 +1,94 @@
+{
+  "extractions": [
+    {
+      "id": "ext-1771503208754-vx0h6s",
+      "input": "I am a content designer, who can do copy esiting and speech writing",
+      "source_type": "offering",
+      "extracted_terms": [],
+      "unmatched_fragments": [
+        "content designer",
+        "copy esiting",
+        "speech writing"
+      ],
+      "timestamp": "2026-02-19T12:13:28.754Z"
+    },
+    {
+      "id": "ext-1771503300239-cijxuv",
+      "input": "Looing to find someone who can help set up an automation workflow",
+      "source_type": "need",
+      "extracted_terms": [
+        {
+          "term_id": "consulting_session",
+          "confidence": 0.7,
+          "reasoning": "Automation workflow setup implies a professional consulting or advisory service to help design and implement a workflow"
+        }
+      ],
+      "unmatched_fragments": [
+        "Looing to find someone who can help"
+      ],
+      "timestamp": "2026-02-19T12:15:00.239Z"
+    },
+    {
+      "id": "ext-1771503403956-x5awqy",
+      "input": "I am a web developer who can do business process automation",
+      "source_type": "offering",
+      "extracted_terms": [
+        {
+          "term_id": "consulting_session",
+          "confidence": 0.6,
+          "reasoning": "Web development and business process automation suggests expert consulting capability"
+        }
+      ],
+      "unmatched_fragments": [
+        "web developer",
+        "business process automation"
+      ],
+      "timestamp": "2026-02-19T12:16:43.956Z"
+    },
+    {
+      "id": "ext-1771503442125-hvloqc",
+      "input": "I need someone who can edit and improve the text on my website",
+      "source_type": "need",
+      "extracted_terms": [
+        {
+          "term_id": "consulting_session",
+          "confidence": 0.7,
+          "reasoning": "Input suggests a professional service involving text editing and improvement, which aligns with a consulting or advisory session"
+        }
+      ],
+      "unmatched_fragments": [
+        "website text editing"
+      ],
+      "timestamp": "2026-02-19T12:17:22.125Z"
+    }
+  ],
+  "matches": [
+    {
+      "id": "match-1771503446359-lwo112",
+      "offering_id": "off-1771503412552",
+      "need_id": "need-1771503446359",
+      "matched_terms": [
+        "consulting_session"
+      ],
+      "confidence": 0.6499999999999999,
+      "explanation": "Provider offers consulting session, which matches what the recipient needs (65% confidence)."
+    }
+  ],
+  "feedback": [
+    {
+      "match_id": "match-1771503446359-lwo112",
+      "outcome": "confirmed",
+      "notes": "I think these are a good match, but I need to check exact skills alignment",
+      "timestamp": "2026-02-19T12:18:04.060Z"
+    }
+  ],
+  "term_stats": {
+    "consulting_session": {
+      "extraction_count": 3,
+      "match_count": 1,
+      "confirmation_count": 1,
+      "decline_count": 0
+    }
+  },
+  "last_updated": "2026-02-19T12:18:04.061Z"
+}

@@ -1,0 +1,184 @@
+{
+  "id": "need-2026-089",
+  "type": "physical_good",
+  "participant": "participant-charity-def",
+  "status": "partially_fulfilled",
+  "title": "Office Furniture for New Community Hub",
+  "description": "Local charity opening a community hub in Leeds city centre. Need desks, chairs, and storage units to furnish a 500 sqft open-plan office space. Ideally looking for matching or coordinated furniture but will consider mixed sets. Hub opens mid-March so need delivery before then.",
+  "outcome_sought": "A functional, welcoming workspace that serves community members and volunteer staff without depleting our limited capital",
+  "capability_links": {
+    "explicit_matches": [
+      {
+        "capability_output": "office desks",
+        "fit_notes": "Need approximately 8-10 desks for the open-plan area"
+      },
+      {
+        "capability_output": "office chairs",
+        "fit_notes": "Need ergonomic seating for staff who work full days"
+      }
+    ],
+    "inferred_matches": [
+      {
+        "capability_output": "same-day local delivery",
+        "confidence": 0.85,
+        "reasoning": "Physical goods in Leeds area may need local transport support",
+        "participant_confirmed": true
+      },
+      {
+        "capability_output": "storage units",
+        "confidence": 0.72,
+        "reasoning": "Office setup typically requires filing and storage solutions",
+        "participant_confirmed": false
+      }
+    ],
+    "excluded_capabilities": [
+      "outdoor furniture",
+      "restaurant furniture"
+    ]
+  },
+  "physical_need_details": {
+    "quantity": "8-10 desks, 15 chairs, 4 storage units",
+    "specifications": [
+      {
+        "attribute": "desk width",
+        "requirement": "120-160cm",
+        "flexibility": "approximate"
+      },
+      {
+        "attribute": "chair type",
+        "requirement": "ergonomic with lumbar support",
+        "flexibility": "flexible"
+      },
+      {
+        "attribute": "storage height",
+        "requirement": "under 180cm",
+        "flexibility": "exact"
+      }
+    ],
+    "condition_accepted": ["new", "like_new", "good"],
+    "delivery_location": {
+      "city": "Leeds",
+      "region": "West Yorkshire",
+      "country": "UK",
+      "postcode": "LS1 4AP"
+    },
+    "can_collect": true,
+    "collection_radius_km": 30,
+    "storage_constraints": "Limited on-site storage; prefer delivery within one week of hub opening"
+  },
+  "constraints": {
+    "geographic": {
+      "accepted_regions": ["Yorkshire", "North of England"],
+      "excluded_regions": []
+    },
+    "timing": {
+      "needed_by": "2026-03-10",
+      "needed_after": "2026-02-20",
+      "blackout_periods": ["2026-02-28 to 2026-03-02"]
+    },
+    "provider_requirements": {
+      "min_exchanges_completed": 1,
+      "min_satisfaction_rating": 3.5,
+      "verification_required": false,
+      "required_certifications": []
+    },
+    "excluded_sectors": [],
+    "excluded_participants": []
+  },
+  "preferences": {
+    "preferred_sectors": ["office supplies", "facilities management", "social enterprise"],
+    "preferred_experience_level": "any",
+    "relationship_preference": "new_connection",
+    "chain_participation": {
+      "max_chain_length": 4,
+      "prefer_direct": false
+    },
+    "communication_style": "casual"
+  },
+  "urgency": {
+    "declared_priority": "high",
+    "deadline": "2026-03-10",
+    "deadline_type": "hard",
+    "contextual_factors": [
+      {
+        "factor": "blocking_other_work",
+        "description": "Cannot open community hub to public without basic furniture"
+      },
+      {
+        "factor": "external_commitment",
+        "description": "Launch event scheduled for 15 March with council representatives"
+      },
+      {
+        "factor": "seasonal_window",
+        "description": "Grant funding must be utilised before end of financial year"
+      }
+    ],
+    "flexibility_for_speed": {
+      "accept_partial": true,
+      "accept_less_experienced": true,
+      "accept_longer_chain": true,
+      "accept_different_format": true
+    },
+    "computed_urgency_score": 0.78
+  },
+  "fulfilment_history": {
+    "total_fulfilled_percentage": 25,
+    "fulfilment_events": [
+      {
+        "exchange_id": "exchange-2026-156",
+        "fulfilled_at": "2026-02-05",
+        "portion_fulfilled": "4 office chairs received",
+        "satisfaction": "satisfied"
+      }
+    ],
+    "declined_matches": [
+      {
+        "offering_id": "offer-furniture-2026-03",
+        "declined_at": "2026-02-03",
+        "reason": "Furniture in poor condition, not suitable for public-facing space"
+      }
+    ]
+  },
+  "inferred_signals": {
+    "similar_needs_pattern": [
+      "need-2025-412",
+      "need-2025-398"
+    ],
+    "sector_affinity": [
+      {
+        "sector": "social enterprise",
+        "affinity_score": 0.92
+      },
+      {
+        "sector": "facilities management",
+        "affinity_score": 0.68
+      },
+      {
+        "sector": "logistics",
+        "affinity_score": 0.54
+      }
+    ],
+    "timing_patterns": {
+      "typical_lead_time": "4-6 weeks",
+      "seasonal_patterns": ["Q1 grant-funded projects", "September programme launches"]
+    },
+    "quality_sensitivity": 0.65,
+    "last_inference_update": "2026-02-04T14:22:00Z"
+  },
+  "created_at": "2026-01-15T11:00:00Z",
+  "updated_at": "2026-02-05T09:15:00Z",
+  "visibility": "public",
+  "capability_matching": {
+    "capability_sought": ["office_desks", "office_chairs", "storage_units", "goods_transport"],
+    "sector_tags": ["office_supplies", "facilities_management", "social_enterprise"],
+    "constraint_flags": ["physical_goods", "transport_required", "leeds_area"],
+    "location": {
+      "city": "Leeds",
+      "region": "West Yorkshire",
+      "country": "UK"
+    },
+    "chain_acceptable": true,
+    "max_chain_length": 4,
+    "transport_acceptable": true
+  }
+}
