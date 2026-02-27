@@ -1,0 +1,55 @@
+{
+  "$schema": "../../schemas/trust-profile.schema.json",
+  "participant_id": "part_newcomer_01",
+  "current_tier": "newcomer",
+  "track_record": {
+    "chains_completed": 0,
+    "chains_failed": 0,
+    "chains_in_progress": 0,
+    "satisfaction_received": {
+      "total_signals": 0,
+      "satisfied_count": 0,
+      "partially_satisfied_count": 0,
+      "not_satisfied_count": 0,
+      "satisfaction_rate": null
+    },
+    "on_time_rate": null,
+    "average_chain_size": null,
+    "total_value_exchanged": {
+      "as_provider": 0,
+      "as_recipient": 0
+    }
+  },
+  "tier_history": [
+    {
+      "from_tier": null,
+      "to_tier": "newcomer",
+      "changed_at": "2026-02-20T09:00:00Z",
+      "reason": "initial_join",
+      "details": "New member joined network after identity verification",
+      "changed_by": "system"
+    }
+  ],
+  "vouching": {
+    "vouched_by": [],
+    "vouched_for": [],
+    "vouching_capacity": 0,
+    "vouching_reputation": null
+  },
+  "limits": {
+    "max_chain_size": 2,
+    "max_execution_window_days": 14,
+    "max_concurrent_chains": 1,
+    "can_vouch": false,
+    "requires_vouching": false,
+    "limits_overridden": false,
+    "override_reason": null
+  },
+  "timestamps": {
+    "joined_at": "2026-02-20T09:00:00Z",
+    "tier_updated_at": "2026-02-20T09:00:00Z",
+    "last_activity_at": "2026-02-20T09:00:00Z",
+    "last_vouched_at": null,
+    "profile_updated_at": "2026-02-20T09:00:00Z"
+  }
+}

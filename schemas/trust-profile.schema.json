@@ -41,8 +41,8 @@
   "$defs": {
     "trustTier": {
       "type": "string",
-      "enum": ["probationary", "established", "anchor"],
-      "description": "Trust tier levels: PROBATIONARY (new, limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)"
+      "enum": ["newcomer", "probationary", "established", "anchor"],
+      "description": "Trust tier levels: NEWCOMER (identity verified, bilateral only), PROBATIONARY (limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)"
     },
     "trackRecord": {
       "type": "object",

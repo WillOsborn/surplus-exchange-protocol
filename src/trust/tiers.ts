@@ -10,7 +10,7 @@ import type { TrustScore } from './calculator.js';
 /**
  * Trust tier levels in the SEP network.
  */
-export type TrustTier = 'probationary' | 'established' | 'anchor';
+export type TrustTier = 'newcomer' | 'probationary' | 'established' | 'anchor';
 
 /**
  * Definition of requirements for each tier.
@@ -82,13 +82,21 @@ export interface TierAssessmentInput {
  * Default tier definitions.
  */
 export const TIER_DEFINITIONS: Record<TrustTier, TierDefinition> = {
-  probationary: {
-    name: 'probationary',
+  newcomer: {
+    name: 'newcomer',
     minScore: 0.0,
     minExchanges: 0,
     minNetworkAge: 0,
     minPartners: 0,
-    requiresVouch: true, // Need vouch to join network
+    requiresVouch: false, // Identity verification is the gate, not vouching
+  },
+  probationary: {
+    name: 'probationary',
+    minScore: 0.0,
+    minExchanges: 3,
+    minNetworkAge: 14,
+    minPartners: 2,
+    requiresVouch: false, // Reached by completing exchanges OR by being vouched for
   },
   established: {
     name: 'established',
@@ -111,7 +119,7 @@ export const TIER_DEFINITIONS: Record<TrustTier, TierDefinition> = {
 /**
  * Tier ordering from lowest to highest.
  */
-const TIER_ORDER: TrustTier[] = ['probationary', 'established', 'anchor'];
+const TIER_ORDER: TrustTier[] = ['newcomer', 'probationary', 'established', 'anchor'];
 
 /**
  * Grace period for demotion (percentage below threshold before flagging).
@@ -131,18 +139,25 @@ export function qualifiesForTier(
 ): boolean {
   const def = TIER_DEFINITIONS[tier];
 
-  // Check vouch requirement (only for probationary entry)
-  if (tier === 'probationary' && def.requiresVouch && !input.hasActiveVouch) {
-    return false;
+  // Newcomer: everyone qualifies (identity verification is external)
+  if (tier === 'newcomer') {
+    return true;
   }
 
-  // For higher tiers, check all metrics
-  if (tier !== 'probationary') {
-    if (input.score.overall < def.minScore) return false;
-    if (input.completedExchanges < def.minExchanges) return false;
-    if (input.networkAgeDays < def.minNetworkAge) return false;
-    if (input.uniquePartners < def.minPartners) return false;
+  // Probationary: qualify by meeting exchange requirements OR by having an active vouch
+  if (tier === 'probationary') {
+    const meetsRequirements =
+      input.completedExchanges >= def.minExchanges &&
+      input.networkAgeDays >= def.minNetworkAge &&
+      input.uniquePartners >= def.minPartners;
+    return meetsRequirements || input.hasActiveVouch;
   }
+
+  // Higher tiers: check all metrics
+  if (input.score.overall < def.minScore) return false;
+  if (input.completedExchanges < def.minExchanges) return false;
+  if (input.networkAgeDays < def.minNetworkAge) return false;
+  if (input.uniquePartners < def.minPartners) return false;
 
   return true;
 }
@@ -184,7 +199,7 @@ export function calculateProgress(
  */
 export function assessTier(input: TierAssessmentInput): TierAssessment {
   // Determine current tier (highest qualified)
-  let currentTier: TrustTier = 'probationary';
+  let currentTier: TrustTier = 'newcomer';
 
   for (const tier of TIER_ORDER) {
     if (qualifiesForTier(tier, input)) {
@@ -223,8 +238,8 @@ function checkDemotionRisk(
   currentTier: TrustTier,
   input: TierAssessmentInput
 ): { atRisk: boolean; reason?: string } {
-  // Probationary can't be demoted (only removed from network)
-  if (currentTier === 'probationary') {
+  // Newcomer and Probationary can't be demoted (only removed from network)
+  if (currentTier === 'newcomer' || currentTier === 'probationary') {
     return { atRisk: false };
   }
 
@@ -278,6 +293,8 @@ export function getHigherTier(tier: TrustTier): TrustTier | null {
  */
 export function describeTier(tier: TrustTier): string {
   switch (tier) {
+    case 'newcomer':
+      return 'Newcomer - Identity verified, bilateral exchanges only';
     case 'probationary':
       return 'Probationary - New participant with limited exchange capacity';
     case 'established':
@@ -308,6 +325,12 @@ export function getTierRequirements(tier: TrustTier): string {
   }
   if (def.requiresVouch) {
     parts.push('Active vouch required');
+  }
+
+  if (tier === 'probationary') {
+    // Special case: can be reached by exchanges OR vouching
+    const exchangePath = parts.join(', ');
+    return `${exchangePath} — OR active vouch from Established/Anchor participant`;
   }
 
   return parts.length > 0 ? parts.join(', ') : 'No requirements';

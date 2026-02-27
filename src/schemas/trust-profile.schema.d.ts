@@ -6,9 +6,9 @@
  */
 
 /**
- * Trust tier levels: PROBATIONARY (new, limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
+ * Trust tier levels: NEWCOMER (identity verified, bilateral only), PROBATIONARY (limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
  */
-export type TrustTier = "probationary" | "established" | "anchor";
+export type TrustTier = "newcomer" | "probationary" | "established" | "anchor";
 
 /**
  * Comprehensive trust profile for a participant in the surplus exchange network, tracking tier status, track record, vouching relationships, and exposure limits
@@ -21,7 +21,7 @@ export interface TrustProfile {
   /**
    * Current trust tier determining exposure limits and capabilities
    */
-  current_tier: "probationary" | "established" | "anchor";
+  current_tier: "newcomer" | "probationary" | "established" | "anchor";
   track_record: TrackRecord;
   /**
    * Chronological record of tier changes with reasons
@@ -108,9 +108,9 @@ export interface TierChange {
    */
   from_tier: TrustTier | null;
   /**
-   * Trust tier levels: PROBATIONARY (new, limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
+   * Trust tier levels: NEWCOMER (identity verified, bilateral only), PROBATIONARY (limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
    */
-  to_tier: "probationary" | "established" | "anchor";
+  to_tier: "newcomer" | "probationary" | "established" | "anchor";
   /**
    * When the tier change occurred
    */
@@ -170,9 +170,9 @@ export interface VouchReceived {
    */
   voucher_id: string;
   /**
-   * Trust tier levels: PROBATIONARY (new, limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
+   * Trust tier levels: NEWCOMER (identity verified, bilateral only), PROBATIONARY (limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
    */
-  voucher_tier_at_time?: "probationary" | "established" | "anchor";
+  voucher_tier_at_time?: "newcomer" | "probationary" | "established" | "anchor";
   /**
    * Date the vouch was given
    */
@@ -208,9 +208,9 @@ export interface VouchGiven {
    */
   vouchee_current_status?: "active" | "suspended" | "withdrawn";
   /**
-   * Trust tier levels: PROBATIONARY (new, limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
+   * Trust tier levels: NEWCOMER (identity verified, bilateral only), PROBATIONARY (limited), ESTABLISHED (proven track record), ANCHOR (high-trust, can vouch)
    */
-  vouchee_current_tier?: "probationary" | "established" | "anchor";
+  vouchee_current_tier?: "newcomer" | "probationary" | "established" | "anchor";
   /**
    * Assessment of whether this vouch was well-placed
    */

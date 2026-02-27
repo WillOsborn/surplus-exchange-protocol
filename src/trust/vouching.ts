@@ -104,6 +104,7 @@ export interface VouchingConfig {
   defaultDurationDays: number;
   /** Maximum active vouches per tier */
   maxVouchesPerTier: {
+    newcomer: number;
     probationary: number;
     established: number;
     anchor: number;
@@ -123,6 +124,7 @@ export interface VouchingConfig {
 export const DEFAULT_VOUCHING_CONFIG: VouchingConfig = {
   defaultDurationDays: 90,
   maxVouchesPerTier: {
+    newcomer: 0,
     probationary: 0,
     established: 2,
     anchor: 5,

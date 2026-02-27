@@ -83,6 +83,14 @@ export interface ExposureCheckInput {
  * would be determined by the specific exchange context.
  */
 export const TIER_EXPOSURE_LIMITS: Record<TrustTier, ExposureLimits> = {
+  newcomer: {
+    maxSingleExchangeValue: 5,
+    maxOutstandingValue: 5,
+    maxChainLength: 2,      // Bilateral only
+    maxConcurrentChains: 1,  // One at a time
+    requiresEscrow: true,
+    cooldownAfterDispute: 60,
+  },
   probationary: {
     maxSingleExchangeValue: 10,
     maxOutstandingValue: 20,
@@ -307,7 +315,7 @@ export function summariseCurrentExposure(
  */
 export function validateLimitsConfiguration(): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  const tiers: TrustTier[] = ['probationary', 'established', 'anchor'];
+  const tiers: TrustTier[] = ['newcomer', 'probationary', 'established', 'anchor'];
 
   for (let i = 1; i < tiers.length; i++) {
     const lower = TIER_EXPOSURE_LIMITS[tiers[i - 1]];
