@@ -15,7 +15,7 @@ Run a comprehensive audit of the codebase for terminology changes, schema update
 ### Options
 
 - `--replacement <new>` - Specify the replacement term for the report
-- `--exclude <folder>` - Exclude a folder from the audit (e.g., `--exclude Website`)
+- `--exclude <folder>` - Exclude a folder from the audit (e.g., `--exclude archive`)
 - `--fix` - After generating the report, proceed to make the changes
 - `--verify-only` - Only run verification steps (build, validate, test)
 
@@ -27,9 +27,9 @@ Run a comprehensive audit of the codebase for terminology changes, schema update
 Finds all occurrences of `offering_type` (and `OfferingType`, `offeringType`) and generates a prioritised update plan.
 
 ```
-/audit "type": "organisation" --exclude Website
+/audit "type": "organisation" --exclude archive
 ```
-Finds old-format participant types, excluding the Website folder.
+Finds old-format participant types, excluding the archive folder.
 
 ```
 /audit --verify-only

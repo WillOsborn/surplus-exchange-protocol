@@ -1,6 +1,6 @@
 # Project Status
 
-*Last updated: 2026-02-27*
+*Last updated: 2026-03-04*
 
 ## Current State
 
@@ -39,6 +39,177 @@
 ---
 
 ## Recent Session Summary
+
+*Session: 2026-03-04 (website alignment execution — how-it-works.html and technical.html)*
+
+**What was done:**
+- **Executed the 16-change website alignment plan** (`.claude/plans/wise-stargazing-meadow.md`) across both pages using parallel sub-agents
+- **how-it-works.html (changes 1-8)**:
+  - Restructured from 3 to 4 components: Describe → Match → Trust → Exchange
+  - Moved Subjective Value to concise framing section at top (2-3 sentences + Philosophy link)
+  - New "Describe" section: capability translation, natural language interpretation, why AI makes cross-industry matching feasible
+  - Refocused Matching section on algorithm (moved "what you describe" content to Describe)
+  - Added surplus urgency and relationship diversity to ranking factors
+  - Added concentration limits sentence and algorithm transparency paragraph
+  - Trust section: added network position decay
+  - Exchange section: explicit stuck state escalation path, counter-proposal language, "commitment delivery" terminology
+  - Summary table: 4 components + Foundation row
+  - Fixed band alternation (Summary band changed to `--bg` after Subjective Value section removal)
+- **technical.html (changes 9-16)**:
+  - Architecture Overview: 4 components including Capability Description
+  - Exchange Orchestration description updated (adjustments, stuck state, escalation)
+  - Matching section: capability translation mention in Graph Construction, new "Network Health and Transparency" subsection (concentration limits dual defence + algorithm transparency)
+  - Trust section: 180-day half-life decay bullet, updated vouching/cold-start trade-off
+  - Design Decisions: 2 new collapsible subsections (Algorithm Transparency, Commitment-Based Accountability), updated count to "Six foundational decisions"
+- **Cross-reference review**: checked all overlapping topics (capability translation, concentration limits, transparency, stuck state, counter-proposals, trust decay, commitment-based accountability) — consistent between pages with appropriate detail levels
+- **Browser review**: both pages verified visually, all sections render correctly, collapsible subsections work
+
+**Key decisions:**
+- "Describe" / "Capability Description" naming split (narrative vs technical) works well
+- Band alternation fix: Summary section changed from `--surface` to `--bg` since removing old Subjective Value band left two adjacent same-colored bands
+- No CSS changes needed — all content uses existing patterns
+
+**Files modified (website repo — surplus-exchange-protocol-website):**
+- `site/how-it-works.html` (changes 1-8: structural restructure + content additions)
+- `site/technical.html` (changes 9-16: architecture update + new subsections + design decisions)
+
+**Next priorities:**
+1. Check the-idea.html Foundations section renders correctly (label column width, prose styles)
+2. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+3. Developer Guide (WP7) — may be reframed given "conceptual provocation" positioning
+4. Journey demo pages — fix rating scale and terminology
+5. Add GitHub design doc links to questions.html
+
+---
+
+*Session: 2026-03-04 (website alignment review — how-it-works.html and technical.html)*
+
+**What was done:**
+- **Reviewed how-it-works.html against current SEP state** — identified 7 gaps where recent design work (Q1-Q7, demos, capability translation) isn't reflected on the website
+- **Reviewed technical.html** — identified 7 additional gaps (stale design decisions, missing network health/transparency, vouching framing)
+- **Discussed and decided on each gap** — where content belongs (how-it-works vs technical), level of detail for each page
+- **Key structural decision**: Restructure how-it-works from 3 components to 4 (Describe → Match → Trust → Exchange). The new "Describe" section gives capability translation a proper home and explains why AI makes multi-party matching feasible now. Matching section becomes focused on the algorithm.
+- **Key structural decision**: Move Subjective Value from last section to a concise framing section at the top (reminder, not lecture)
+- **Developed implementation plan** with 16 changes across both pages, execution strategy using parallel sub-agents
+
+**Key decisions:**
+- "Describe" as the name for the new first component
+- Subjective Value: 2-3 sentence framing at top, not full section
+- Concentration limits + algorithm transparency grouped into one "Network Health and Transparency" subsection on technical.html (avoids section bloat)
+- Capability translation included in this round (fills a narrative gap in the matching flow)
+- "Satisfaction" terminology kept on website (conscious decision from earlier session)
+
+**Plan file:** `.claude/plans/wise-stargazing-meadow.md` — 16 changes, execution strategy with parallel agents, verification steps
+
+**No files modified** (planning session only, except STATUS.md)
+
+**Next:** Execute the plan in a new session using parallel sub-agents
+
+---
+
+*Session: 2026-03-04 (website — homepage value prop rewrite and the-idea.html Foundations section)*
+
+**What was done:**
+- **Rewrote the homepage value proposition** from scratch across several iterations — the old text opened with a confusing "you" and buried the concept behind an example chain nobody could follow on first read
+- **New structure**: problem (the matching problem) → solution (algorithm finds chains directly) → context (money was the old workaround, with its own problems) → "We can do better."
+- **Visual improvements to value prop section**: added "PROPOSITION" eyebrow, left-aligned text (was centered), added thin top border for visual separation from hero, reduced from 3 to 2 typography levels
+- **Renamed "Key Principles" to "Foundations"** on the-idea.html — "Key Principles" conflicted with "Design Principles" on philosophy.html; "Foundations" is distinct and accurate
+- **Reformatted Foundations section** using the existing `principle-item` layout (title left, body right, no numbers) — matches the philosophy page's Design Principles layout for easier skimming
+- Updated bridging paragraph: "These principles" → "These foundations"
+
+**Key decisions:**
+- "PROPOSITION" as eyebrow label — honest, fits PoC positioning, doesn't overclaim
+- "We can do better." as closing line for money paragraph — punchy, action-oriented
+- "Foundations" as section name (not "Key Principles", "Project Scope", etc.)
+- Reused existing `principle-item` CSS rather than creating new classes
+- Left-aligning the value prop text was the single most impactful visual fix
+
+**Files modified (website repo — surplus-exchange-protocol-website):**
+- `site/index.html` (value prop text rewrite, eyebrow, left-align)
+- `site/css/styles.css` (value-prop: text-align left, border-top, padding-top)
+- `site/the-idea.html` (Foundations section rename and principle-item layout)
+
+**Issues encountered:**
+- Centered value prop text was making the section feel adrift — left-align resolved it
+- No visual distinction between hero and value prop sections — eyebrow + top border resolved it
+
+**Next priorities:**
+1. Check the-idea.html Foundations section renders correctly (label column width, prose styles inside principle-item)
+2. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+3. Developer Guide (WP7) — may be reframed given "conceptual provocation" positioning
+4. Journey demo pages — fix rating scale and terminology
+5. Add GitHub design doc links to questions.html
+
+---
+
+*Session: 2026-02-27 (website deployment prep and homepage layout redesign)*
+
+**What was done:**
+- **Prepared website for deployment** to Hostinger at sep.willosborn.xyz — walkthrough of subdomain setup, file manager upload, SSL, and post-upload verification checklist
+- **Applied user feedback**: moved interactive demo section above audience pathways on homepage (friend's suggestion — visitors should interact with the demo before choosing a deeper path)
+- **Redesigned homepage layout**: pathway cards now stack vertically in the demo section's left column, filling the dead space below the intro text; separate Audience Pathways section removed
+- **Added "Go deeper" eyebrow** to introduce the stacked pathway cards
+- **Compacted pathway cards** for narrower column — smaller type, hidden meta text on desktop (restored on mobile)
+- **Differentiated "Chain discovered" result box** — plain border instead of orange accent bar, so it reads as explanation rather than navigation
+
+**Key decisions:**
+- Pathway cards integrated into demo section rather than being a separate page section — uses vertical space more efficiently
+- Result box visual language deliberately different from pathway cards (full border vs accent left-border)
+- Card body copy slightly shortened for the narrower column width
+
+**Files modified (website repo — surplus-exchange-protocol-website):**
+- `site/index.html` (layout redesign — pathways in demo column, inline style overrides, result box differentiation)
+
+**Issues encountered:**
+- Port 8080 already in use for local preview server — used 8091
+
+**Next priorities:**
+1. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+2. Developer Guide (WP7) — may be reframed given "conceptual provocation" positioning
+3. Journey demo pages — fix rating scale and terminology
+4. Add GitHub design doc links to questions.html
+
+---
+
+*Session: 2026-02-27 (website update — demo content, cleanup, GitHub URLs)*
+
+**What was done:**
+- **Updated technical.html** to reflect enriched demos — matching section now describes multi-dimensional scoring, constraint filtering, surplus urgency, and relationship diversity; trust section corrected vouching (Established or Anchor); Start Here section updated with capability translation entry points, demo commands, and repository structure
+- **Updated code.html** with enriched demo descriptions (subsequently deleted — see below)
+- **Discovered code.html was orphaned** — no page linked to it. Migrated the experimental warning to technical.html and deleted code.html
+- **Added experimental warning** to technical.html with polished styling (accent left-border, generous padding) matching the site's callout pattern
+- **Updated all GitHub URLs site-wide** from `github.com/surplus-exchange/protocol` to `github.com/WillOsborn/surplus-exchange-protocol` across all 7 HTML pages (nav, footer, exit points, CTAs, license links)
+- **Tidied tooling references** — updated `.claude/commands/audit.md` examples (removed stale `--exclude Website`), updated `CLAUDE.md` website repo link
+
+**Key decisions:**
+- Keep "satisfaction" on the website rather than renaming to "fulfilment" — more accessible to non-technical readers
+- Use qualitative descriptions of demos (not exact dimension counts) to avoid staleness
+- Journey demo pages (`journey-demo.html`, `journey-demo-a.html`, `journey-demo-b.html`) excluded — they have deeper issues (1-5 rating scale doesn't match signal model) that need a separate pass
+- code.html deleted rather than maintained — all useful content captured on technical.html or GitHub
+
+**Files modified (website repo — surplus-exchange-protocol-website):**
+- `site/technical.html` (demo content updates + experimental warning + GitHub URLs)
+- `site/index.html`, `site/the-idea.html`, `site/philosophy.html`, `site/how-it-works.html`, `site/scenarios.html`, `site/questions.html` (GitHub URLs)
+- `site/css/styles.css` (experimental warning CSS)
+
+**Files deleted (website repo):**
+- `site/code.html`
+
+**Files modified (main repo):**
+- `.claude/commands/audit.md` (removed stale Website references)
+- `CLAUDE.md` (updated website repo link)
+
+**Issues encountered:**
+- Browser CSS caching caused new styles not to appear until cache was busted
+- `--radius-md` CSS variable didn't exist in the design system — fixed by switching to the site's established callout pattern (thick left border)
+
+**Next priorities:**
+1. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+2. Developer Guide (WP7) — may be reframed given "conceptual provocation" positioning
+3. Journey demo pages — need separate pass to fix rating scale and terminology
+4. Add links to GitHub design docs from questions.html
+
+---
 
 *Session: 2026-02-27 (demo enrichment — executable protocol documentation)*
 
@@ -212,9 +383,11 @@
 
 ## Next Priority
 
-1. **Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance)** — remaining unanalysed questions
-2. **Developer Guide** (WP7) — may be reframed given "conceptual provocation" positioning
-3. **Website content review** against updated diagrams
+1. **Check the-idea.html Foundations section** — verify label column width and prose styles render correctly in browser
+2. **Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance)** — remaining unanalysed questions
+3. **Developer Guide** (WP7) — may be reframed given "conceptual provocation" positioning
+4. **Journey demo pages** — fix rating scale and terminology (separate website repo)
+5. **Add GitHub design doc links** to questions.html
 
 ---
 

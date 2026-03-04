@@ -74,7 +74,7 @@ surplus-exchange-protocol/
     └── prototypes/              # Early prototypes (superseded)
 ```
 
-> **Website**: The project website lives in a separate repository ([SEPWebsite](https://github.com/WillOsborn/SEPWebsite)).
+> **Website**: The project website lives in a separate repository ([surplus-exchange-protocol-website](https://github.com/WillOsborn/surplus-exchange-protocol-website)).
 
 ## Current Focus Areas
 
