@@ -1,3 +1,8 @@
+---
+name: bulk-update
+description: "Execute large-scale codebase updates using coordinated agents with built-in verification. Use this skill when the user needs to apply changes across many files — terminology renames, schema property changes, or any cross-cutting update that touches schemas, TypeScript, examples, and documentation together. Works from an audit report (from the codebase-audit skill) or inline instructions."
+---
+
 # Bulk Update Skill
 
 Execute large-scale codebase updates using a coordinated agent team with built-in verification.

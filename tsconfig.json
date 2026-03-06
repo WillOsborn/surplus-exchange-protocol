@@ -28,6 +28,8 @@
   "exclude": [
     "node_modules",
     "dist",
-    "examples"
+    "examples",
+    "src/**/*.test.ts",
+    "src/__test-helpers__/**"
   ]
 }

@@ -1,3 +1,8 @@
+---
+name: security-review
+description: "Assess security risks in a specific file, schema, or component using STRIDE methodology plus SEP-specific threat vectors. Use this skill when the user asks to check, review, or assess security of any file, schema, component, or feature. Trigger for any mention of vulnerabilities, exploits, attack vectors, injection, spoofing, manipulation, gaming, abuse, DoS, replay attacks, forgery, or collusion in this project's context. Also trigger when the user asks 'could someone...', 'is there a way to exploit...', 'what are the security risks of...', or is adding new input fields and wants to know about security implications. For broader component-level threat modelling with attack trees, use the threat-model skill instead."
+---
+
 # Security Review Skill
 
 Assess security risks in a specific file or component.

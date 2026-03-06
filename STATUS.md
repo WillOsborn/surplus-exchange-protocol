@@ -1,6 +1,6 @@
 # Project Status
 
-*Last updated: 2026-03-06*
+*Last updated: 2026-03-07*
 
 ## Current State
 
@@ -12,17 +12,17 @@
 - Protocol trace with 3 scenarios (`npm run trace`)
 - Capability translation — offline (`npm run capability`) and interactive (`npm run capability:live`)
 - All example data validates against schemas
+- Test suite — 252 tests across 17 files (`npm test`), covering matching, trust, protocol, validation, and capability modules
 
 ### What's In Progress
-- **Developer Documentation** (WP7) — Developer guide for agent integration
+- None — Phase 1 complete
 
 ### Known Issues
-- No test suite yet (`npm test` is placeholder)
-- Some documentation may reference deprecated `agent_matching` terminology
+- None currently tracked
 
 ---
 
-## Phase 1 Readiness: 95% Complete
+## Phase 1 Readiness: 100% Complete
 
 **Completed:**
 - [x] Core schemas (need, offering, participant, exchange-chain, trust-profile)
@@ -32,13 +32,119 @@
 - [x] Terminology clarification (`agent_matching` → `capability_matching`)
 - [x] User journey diagrams (human, delegated, autonomous)
 - [x] **Capability Translation System** (WP8) — Core matching proven; schemas contain capacity, constraints, capability outputs
-
-**Remaining:**
-- [ ] Developer guide for agent integration (WP7)
+- [x] **Developer Documentation** (WP7) — Reference implementation guide ([docs/developer-guide.md](docs/developer-guide.md))
 
 ---
 
 ## Recent Session Summary
+
+*Session: 2026-03-07 (priority review and website questions.html links)*
+
+**What was done:**
+- **Added GitHub design doc links** to all 8 analysed question cards on questions.html — each card now has a "Full analysis on GitHub" link pointing to its corresponding design document
+- **Added CSS styling** for `.question-card__link` (accent colour, small text, medium weight)
+- **Reviewed and cleaned up priorities** — dropped completed/retired items from STATUS.md
+- **Deployed** updated questions.html and styles.css to Hostinger
+
+**Key decisions:**
+- the-idea.html Foundations section confirmed visually correct — dropped from priorities
+- DEPLOYMENT.md tech debt retired — developer guide already covers setup, website deployed manually
+- Q8 (Agent Integration) card linked to `agent-integration-plan.md` with distinct link text ("Integration plan on GitHub")
+
+**Files modified (website repo — surplus-exchange-protocol-website):**
+- `site/questions.html` (8 GitHub design doc links added)
+- `site/css/styles.css` (`.question-card__link` styles)
+
+**Files modified (main repo):**
+- `STATUS.md` (priority cleanup, session summary)
+
+**Next priorities:**
+1. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+2. Deployment architecture decision — analysis complete, decision pending
+
+---
+
+*Session: 2026-03-06 (developer guide — Phase 1 completion)*
+
+**What was done:**
+- **Created Developer Guide** ([docs/developer-guide.md](docs/developer-guide.md)) — reference implementation guide for developers exploring the project via GitHub
+  - "What to Expect" section surfacing 5 key conceptual surprises (no prices/balances, cycles not trades, no network layer, asymmetric satisfaction, trust gates everything)
+  - Quick start (5-command path), architecture overview with data flow diagram
+  - Module guide for all 5 modules with key exports tables
+  - Schemas section, imports guidance, testing, and further reading pointers
+- **Completed Phase 1** — all 8 work packages now done; STATUS.md, README.md, CLAUDE.md, CHANGELOG.md updated to 100%
+- **Updated work-packages.md** — WP7 marked complete; WP9 (Agent Participation Guide) added as future work
+- **Updated INDEX.md** — developer guide added to "Where to Start" table and as its own section
+- **Updated README.md** — developer guide linked, Phase 1 status updated
+- **Ran documentation health check** — found and fixed 3 stale percentage/status references across STATUS.md, CHANGELOG.md
+
+**Key decisions:**
+- Developer guide framed as "Reference Implementation Guide" (practical, PoC-honest) rather than "Agent Participation Guide" (deferred to WP9 for when a live network exists)
+- Newcomer bilateral-only constraint highlighted as important conceptual point in the guide
+- 5 unindexed operational files in `docs/plans/` left unindexed (working documents, not reference docs)
+
+**Files created:**
+- `docs/developer-guide.md`
+
+**Files modified:**
+- `docs/design/work-packages.md` (WP7 complete, WP9 added)
+- `docs/INDEX.md` (developer guide added)
+- `README.md` (developer guide linked, Phase 1 → 100%)
+- `CLAUDE.md` (Phase 1 → 100%, test command updated, developer guide in task table)
+- `STATUS.md` (Phase 1 → 100%, in-progress cleared)
+- `CHANGELOG.md` (WP7 checked off, 95% → 100%)
+
+**Next priorities:**
+1. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+2. Check the-idea.html Foundations section renders correctly (label column width, prose styles)
+3. Add GitHub design doc links to questions.html
+4. Deployment architecture decision (pending)
+
+---
+
+*Session: 2026-03-06 (comprehensive test suite implementation)*
+
+**What was done:**
+- **Implemented comprehensive test suite** — 252 tests across 17 files in 6 phases using Vitest
+  - Phase 1: Vitest setup, mocking spike (extractor, feedback, schemas)
+  - Phase 2: Matching module — scorer (31), graph (20), cycles (17), chain-scorer (15)
+  - Phase 3: Trust module — calculator (21), tiers (20), exposure (16), vouching (16)
+  - Phase 4: Protocol module — state-machine (25), message-handler (10)
+  - Phase 5: Validation module — validate (12), schemas (6), schemas-mock (5)
+  - Phase 6: Capability module — seed-vocabulary (10), matcher (11), feedback (12), extractor (5)
+- **Fixed schema path resolution bug** in `src/validation/schemas.ts` — `../../..` resolved one level too high; changed to `../..`
+- **Fixed `loadSchemas()` runtime bug** — `createValidator()` used `strict: true` without `validateSchema: false`, causing Ajv to silently reject all draft-2020-12 schemas; replaced with schema-loading-specific Ajv config
+- **Created shared test helpers** — `src/__test-helpers__/graphs.ts` with graph builders and topology assertions
+- **Updated `tsconfig.json`** — added test file exclusions so `tsc` doesn't type-check test files
+- **Updated `package.json`** — `npm test` now runs `vitest run`; added `test:watch` and `test:coverage` scripts
+
+**Key decisions:**
+- Vitest chosen for native ESM support and esbuild-powered TypeScript
+- `vi.hoisted()` + `vi.mock()` pattern for all SDK and fs mocking
+- Separate `schemas-mock.test.ts` file because mixing `vi.mock('fs')` with real filesystem reads in one file is problematic
+- Plain `function MockAnthropic()` for constructor mocks (arrow functions aren't constructible)
+
+**Files created:**
+- `vitest.config.ts`
+- `src/__test-helpers__/graphs.ts`
+- 14 test files across `src/matching/`, `src/trust/`, `src/protocol/`, `src/validation/`, `src/capability/`
+
+**Files modified:**
+- `package.json` (vitest dependency, test scripts)
+- `tsconfig.json` (test exclusions)
+- `src/validation/schemas.ts` (path resolution fix + loadSchemas Ajv config fix)
+
+**Bugs found and fixed:**
+- Schema path resolution: `../../..` overshoots project root from `src/validation/` — fixed to `../..`
+- `loadSchemas()` effectively broken at runtime: strict mode Ajv rejects draft-2020-12 `$schema` — fixed with `validateSchema: false`
+
+**Next priorities:**
+1. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+2. Developer Guide (WP7) — may be reframed given "conceptual provocation" positioning
+3. Check the-idea.html Foundations section renders correctly (label column width, prose styles)
+4. Add GitHub design doc links to questions.html
+
+---
 
 *Session: 2026-03-06 (website critical review, polish, accessibility, mobile fix)*
 
@@ -435,9 +541,7 @@
 ## Next Priority
 
 1. **Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance)** — remaining unanalysed questions
-2. **Developer Guide** (WP7) — may be reframed given "conceptual provocation" positioning
-3. **Check the-idea.html Foundations section** — verify label column width and prose styles render correctly in browser
-4. **Add GitHub design doc links** to questions.html
+2. **Deployment architecture decision** — analysis complete, decision pending
 
 ---
 
@@ -447,11 +551,7 @@
 - [ ] Animated UX prototype for website — Demonstrate the matching/exchange flow visually
 
 ### Technical Debt
-- [ ] Test suite for matching algorithm (`src/matching/`)
-- [ ] Test suite for trust calculation (`src/trust/`)
-- [ ] Schema validation tests
-- [ ] Integration tests for protocol flows
-- [ ] DEPLOYMENT.md with setup instructions
+- None currently tracked (developer guide covers setup; website deployed manually to Hostinger)
 
 ### Phase 2 Roadmap
 - Explicit delegation bounds implementation

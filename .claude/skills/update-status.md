@@ -1,3 +1,8 @@
+---
+name: update-status
+description: "Update STATUS.md with session information following the project's standardised format. Use this skill at the end of a session, after completing significant work, or when project state changes. Handles the session summary, readiness percentage, priority reordering, and syncing dependent documents (README.md, CLAUDE.md, CHANGELOG.md)."
+---
+
 # Update Status Skill
 
 Standardised way to update STATUS.md with session information.

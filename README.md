@@ -72,8 +72,8 @@ Start with [PHILOSOPHY.md](PHILOSOPHY.md) — the insight, the scope, the design
 **Want to understand the design decisions?**
 See [docs/design/decisions.md](docs/design/decisions.md) for architectural choices with rationale, and [docs/design/open-questions.md](docs/design/open-questions.md) for the harder questions.
 
-**Want to look at the technical implementation?**
-Browse [schemas/](schemas/) for the data model, [src/](src/) for the TypeScript implementation, and [docs/specs/](docs/specs/) for formal protocol specifications.
+**Want to explore the code?**
+The [Developer Guide](docs/developer-guide.md) covers architecture, modules, and how to run things. Or browse [schemas/](schemas/) for the data model, [src/](src/) for the TypeScript implementation, and [docs/specs/](docs/specs/) for formal protocol specifications.
 
 **Want to challenge assumptions?**
 [docs/design/unintended-consequences-analysis.md](docs/design/unintended-consequences-analysis.md) is an honest assessment of structural vulnerabilities, and [PHILOSOPHY.md](PHILOSOPHY.md) names eight active tensions the project is navigating.
@@ -103,7 +103,7 @@ npm run generate:types     # Generate TypeScript types from schemas
 
 ## Project status
 
-**Phase 1: 95% complete** — See [STATUS.md](STATUS.md) for current state and priorities.
+**Phase 1: 100% complete** — See [STATUS.md](STATUS.md) for current state and priorities.
 
 ## License
 

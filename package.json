@@ -19,7 +19,9 @@
     "trust": "npm run build && node dist/examples/trust-demo.js",
     "capability": "npm run build && node dist/examples/capability-offline-demo.js",
     "capability:live": "npm run build && node dist/examples/capability-demo.js",
-    "test": "echo \"No tests yet\" && exit 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "tsc --noEmit"
   },
   "keywords": [
@@ -42,7 +44,8 @@
     "ajv-cli": "^5.0.0",
     "json-schema-to-typescript": "^15.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -6,10 +6,10 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import Ajv from 'ajv';
-import { createValidator } from './validate.js';
+import addFormats from 'ajv-formats';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SCHEMAS_DIR = join(__dirname, '../../..', 'schemas');
+const SCHEMAS_DIR = join(__dirname, '../..', 'schemas');
 
 /**
  * Schema names that can be loaded.
@@ -65,7 +65,13 @@ export function loadSchemas(
   ajv?: Ajv,
   names?: SchemaName[]
 ): Ajv {
-  const instance = ajv ?? createValidator();
+  // Project schemas use draft-2020-12, which Ajv 8 does not recognise as a
+  // meta-schema. Disable validateSchema so addSchema() doesn't reject them.
+  const instance = ajv ?? (() => {
+    const a = new Ajv({ allErrors: true, strict: false, validateSchema: false });
+    addFormats(a);
+    return a;
+  })();
   const schemasToLoad = names ?? [
     'participant',
     'capability-offering',

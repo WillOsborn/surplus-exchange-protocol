@@ -27,7 +27,7 @@ The project is a **conceptual provocation**, not a product roadmap. The protocol
 | Architecture and system design | [diagrams/c4-model.md](diagrams/c4-model.md) |
 | The matching algorithm | [design/chain-discovery.md](design/chain-discovery.md) |
 | The trust model | [design/trust-implementation-plan.md](design/trust-implementation-plan.md) |
-| Running the code | [../README.md](../README.md) → Development section |
+| Running the code and exploring the implementation | [developer-guide.md](developer-guide.md) |
 | Current project status | [../STATUS.md](../STATUS.md) |
 
 ---
@@ -77,6 +77,12 @@ The most intellectually substantial part of the project. An unintended consequen
 | [design/work-packages.md](design/work-packages.md) | Work package status (authoritative source) |
 | [design/scenarios.md](design/scenarios.md) | Failure modes and edge cases |
 | [design/unintended-consequences-analysis.md](design/unintended-consequences-analysis.md) | The risk analysis that surfaced the 10 questions |
+
+### Developer Guide
+
+| Document | What it covers |
+|----------|---------------|
+| [developer-guide.md](developer-guide.md) | Architecture, module guide, quick start, and further reading for developers exploring the codebase |
 
 ### Implementation Design
 

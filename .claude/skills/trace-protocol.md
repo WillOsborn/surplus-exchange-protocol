@@ -1,3 +1,8 @@
+---
+name: trace-protocol
+description: "Walk through SEP protocol flows step by step, showing state transitions, message sequences, and decision points. Use this skill whenever the user asks to trace, walk through, follow, or step through any scenario in the protocol — including happy paths, failure cases, disputes, timeouts, compensation, or custom scenarios. Trigger when the user asks 'what happens when...', 'show me the flow for...', 'how does X work in the protocol', wants a sequence diagram or mermaid diagram, needs to understand message ordering, or asks about chain lifecycle events like confirmation, execution, failure, or dispute resolution. If the user mentions state transitions, message sequences, participant notifications, or step-by-step protocol behaviour, use this skill."
+---
+
 # Trace Protocol Skill
 
 Walk through SEP protocol flows for specific scenarios, showing state transitions and message sequences.

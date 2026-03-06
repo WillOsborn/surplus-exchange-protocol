@@ -1,3 +1,8 @@
+---
+name: compare-schemas
+description: "Compare schema designs from different systems against SEP requirements. Use this skill whenever the user wants to evaluate how external systems (like LETS, time banks, barter platforms, or any exchange/marketplace protocol) represent needs, offerings, trust, or exchanges — and assess how those approaches apply to SEP. Also trigger when comparing two internal schema design options or evaluating trade-offs between schema representations."
+---
+
 # Compare Schemas
 
 Compare schema designs from different systems against SEP requirements.

@@ -1,3 +1,8 @@
+---
+name: threat-model
+description: "Generate comprehensive threat models for SEP components using STRIDE methodology with attack trees and risk summaries. Use this skill when the user wants a full threat model for a component like chain confirmation, trust calculation, compensation, message handling, or matching. Produces OWASP-format documents with assets, trust boundaries, entry points, and prioritised mitigations. For quick file-level security checks, use the security-review skill instead."
+---
+
 # Threat Model Skill
 
 Generate comprehensive threat models for SEP components using STRIDE methodology.

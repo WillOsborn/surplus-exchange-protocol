@@ -1,3 +1,8 @@
+---
+name: synthesise-research
+description: "Synthesise research findings from multiple sources into actionable design recommendations for SEP. Use this skill whenever the user has gathered research from multiple subagents, sessions, or external sources and needs to produce coherent design guidance — especially when results need to be distilled into ADR-format decisions with evidence. Also trigger when the user asks to combine, consolidate, or make sense of findings from different research threads."
+---
+
 # Synthesise Research
 
 Synthesise research findings from multiple sources into actionable recommendations for SEP design.

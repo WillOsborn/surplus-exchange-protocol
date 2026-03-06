@@ -1,3 +1,8 @@
+---
+name: check-docs-health
+description: "Audit project documentation for staleness, inconsistency, and completeness. Use this skill any time the user mentions documentation health, doc staleness, doc consistency, out-of-date docs, or wants to verify documentation accuracy. Trigger when the user asks 'are the docs up to date', 'is INDEX.md complete', 'do the docs match the code', 'are the percentages consistent', or mentions checking docs before a release, after schema changes, or at session start. Also trigger when the user asks about specific doc issues like work package sync, open question currency, terminology consistency, design doc headers, README accuracy, or phase readiness alignment — even if they don't say 'audit' or 'health check'. If documentation accuracy or completeness is in question, use this skill."
+---
+
 # Check Documentation Health Skill
 
 Audit documentation for staleness, inconsistency, and completeness.

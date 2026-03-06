@@ -1,3 +1,8 @@
+---
+name: verify-codebase
+description: "Run comprehensive codebase verification — TypeScript build, schema validation, and runtime demo checks. Use this skill after making changes to schemas, TypeScript code, or examples to ensure everything still works together. Also trigger when the user says 'verify', 'check the build', 'does it still compile', or wants to confirm codebase consistency before committing."
+---
+
 # Verify Codebase Skill
 
 Run comprehensive verification to ensure codebase consistency after changes.

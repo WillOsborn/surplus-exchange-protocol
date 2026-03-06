@@ -1,3 +1,8 @@
+---
+name: validate-schema
+description: "Validate JSON schemas and example documents against JSON Schema 2020-12 using ajv. Use this skill whenever the user wants to check schema correctness, validate example JSON files against their schemas, or audit schemas for best-practice issues like missing descriptions, single-value enums, or overly permissive constraints. Also trigger when the user mentions schema validation, broken examples, or ajv."
+---
+
 # Validate Schema Skill
 
 Validate JSON schemas and example documents using ajv.

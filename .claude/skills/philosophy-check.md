@@ -1,3 +1,8 @@
+---
+name: philosophy-check
+description: "Check decisions, proposals, or directions against the project philosophy (PHILOSOPHY.md) to identify alignment, conflicts, or needed additions. Use this skill any time the user proposes a design change, considers a new feature, debates an architectural direction, evaluates trade-offs, or questions whether the project should do X or Y. Trigger when someone asks 'should we...', 'what if we...', 'does this fit...', 'is this aligned with...', or describes something that 'feels off'. Also trigger for any discussion about centralisation vs decentralisation, trust approaches, human oversight, participant types, value philosophy, or removing/adding protocol features — even if the user doesn't explicitly mention 'philosophy'. When in doubt about whether a proposal aligns with project values, use this skill."
+---
+
 # Philosophy Check Skill
 
 Check thinking, decisions, or proposals against the project philosophy to identify alignment, conflicts, or needed additions.

@@ -78,7 +78,7 @@ surplus-exchange-protocol/
 
 ## Current Focus Areas
 
-### Phase 1 Readiness: 95% Complete
+### Phase 1 Readiness: 100% Complete
 
 > **Source**: [STATUS.md](STATUS.md) — See for current state and session summaries.
 
@@ -102,7 +102,7 @@ npm run generate:types     # Generate TypeScript types from schemas
 npm run trace              # Run chain tracing demo
 npm run match              # Run matching algorithm demo
 npm run trust              # Run trust calculation demo
-npm test                   # (Placeholder - no tests yet)
+npm test                   # Run 252 tests (vitest)
 ```
 
 ### Claude Code Commands
@@ -127,7 +127,7 @@ npm test                   # (Placeholder - no tests yet)
 | Open questions | [docs/design/open-questions.md](docs/design/open-questions.md) |
 | Documentation index | [docs/INDEX.md](docs/INDEX.md) |
 | Schema work | [schemas/](schemas/) |
-| TypeScript implementation | [src/](src/) |
+| TypeScript implementation | [docs/developer-guide.md](docs/developer-guide.md), [src/](src/) |
 | Running demos | `npm run match`, `npm run trust`, `npm run trace` |
 | Agent integration | [docs/design/agent-integration-plan.md](docs/design/agent-integration-plan.md) |
 | Trust system | [docs/design/trust-implementation-plan.md](docs/design/trust-implementation-plan.md), [src/trust/](src/trust/) |

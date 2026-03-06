@@ -1,3 +1,8 @@
+---
+name: codebase-audit
+description: "Audit the codebase for terminology, naming conventions, and cross-cutting patterns across all file types. Use this skill when the user wants to find all occurrences of a term (in snake_case, PascalCase, camelCase, etc.), plan a rename operation, or check whether an old term still lingers after a bulk update. Produces a prioritised report showing every file that needs attention, grouped by severity."
+---
+
 # Codebase Audit Skill
 
 Comprehensive audit for terminology renames, schema changes, and cross-cutting updates across the codebase.

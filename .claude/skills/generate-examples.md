@@ -1,3 +1,8 @@
+---
+name: generate-examples
+description: "Generate realistic example JSON data from SEP schemas — minimal, typical, and maximal variants. Use this skill whenever the user wants to create example data for needs, exchange chains, protocol messages, or trust profiles. Also trigger when the user needs test fixtures, sample data for demos, or wants to populate the examples/ directory after schema changes."
+---
+
 # Generate Examples Skill
 
 Generate realistic example data from JSON schemas.
