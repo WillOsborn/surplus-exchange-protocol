@@ -1,6 +1,6 @@
 # Project Status
 
-*Last updated: 2026-03-04*
+*Last updated: 2026-03-06*
 
 ## Current State
 
@@ -39,6 +39,57 @@
 ---
 
 ## Recent Session Summary
+
+*Session: 2026-03-06 (website critical review, polish, accessibility, mobile fix)*
+
+**What was done:**
+- **Critical review of SEP website** against `docs/website-brief.md` — identified 10 polish items across accessibility, content, and housekeeping
+- **Accessibility improvements** across all 7 pages:
+  - Skip-to-content links with keyboard-visible focus styling
+  - `<main id="main">` landmarks wrapping page content
+  - ARIA labels on hero SVG, demo SVG, and 4 scenario chain diagram SVGs
+- **Open Graph meta tags** on all 7 pages (URL: `sep.willosborn.xyz`)
+- **Favicon** — SVG with accent-coloured "S" mark, added to all pages
+- **Reading progress bars** added to the-idea.html and questions.html
+- **Counter-proposal language** strengthened on how-it-works.html
+- **Relocated inline styles** from index.html `<style>` block into stylesheet (demo pathways, result box border)
+- **Fixed mobile horizontal overflow** on homepage demo section — `aspect-ratio: 16/10` combined with `min-height: 280px` forced a 480px minimum width at 375px viewport; fixed by dropping aspect-ratio at 768px breakpoint and adding `min-width: 0` on grid child
+- **Deleted 4 orphaned demo pages** (chain-demo, journey-demo variants) and feedback-screenshots directory
+- **Updated `docs/website-brief.md`** — corrected Fulfilment → Satisfaction terminology with explanatory note
+- **Playwright browser testing** at 375px, 768px, 900px, 1024px, and 1440px — all pages verified
+
+**Key decisions:**
+- "Satisfaction" is the correct term (not "Fulfilment") — fulfilment is ambiguous (could mean practical action of fulfilling an order vs. participant assessment)
+- OG URL set to `sep.willosborn.xyz` (actual deployment)
+- Orphaned demo pages deleted (nothing linked to them)
+- No `og:image` for now — acceptable for PoC, noted as future work
+
+**Files modified (website repo — surplus-exchange-protocol-website):**
+- `site/css/styles.css` (skip-link CSS, relocated inline styles, mobile overflow fix)
+- `site/images/favicon.svg` (new)
+- All 7 HTML pages (skip link, main landmark, OG tags, favicon)
+- `site/index.html` additionally: inline style block removed, ARIA on 2 SVGs
+- `site/the-idea.html`, `site/questions.html` additionally: reading progress bars
+- `site/how-it-works.html` additionally: counter-proposal text
+- `site/scenarios.html` additionally: ARIA on 4 SVGs
+
+**Files deleted (website repo):**
+- `site/demo/chain-demo.html`, `site/journey-demo.html`, `site/journey-demo-a.html`, `site/journey-demo-b.html`
+- `feedback-screenshots/` directory (23 PNG screenshots + 1 SVG)
+
+**Files modified (main repo):**
+- `docs/website-brief.md` (satisfaction terminology update)
+
+**Issues encountered:**
+- Mobile text clipping on homepage initially attributed to our changes but traced to pre-existing bug: `aspect-ratio: 16/10` + `min-height: 280px` on `.demo-widget__network` forced implicit 448px width
+
+**Next priorities:**
+1. Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance) — remaining unanalysed questions
+2. Developer Guide (WP7) — may be reframed given "conceptual provocation" positioning
+3. Check the-idea.html Foundations section renders correctly (label column width, prose styles)
+4. Add GitHub design doc links to questions.html
+
+---
 
 *Session: 2026-03-04 (website alignment execution — how-it-works.html and technical.html)*
 
@@ -383,11 +434,10 @@
 
 ## Next Priority
 
-1. **Check the-idea.html Foundations section** — verify label column width and prose styles render correctly in browser
-2. **Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance)** — remaining unanalysed questions
-3. **Developer Guide** (WP7) — may be reframed given "conceptual provocation" positioning
-4. **Journey demo pages** — fix rating scale and terminology (separate website repo)
-5. **Add GitHub design doc links** to questions.html
+1. **Q8 (Network Bootstrapping) and Q9 (Taxation & Compliance)** — remaining unanalysed questions
+2. **Developer Guide** (WP7) — may be reframed given "conceptual provocation" positioning
+3. **Check the-idea.html Foundations section** — verify label column width and prose styles render correctly in browser
+4. **Add GitHub design doc links** to questions.html
 
 ---
 

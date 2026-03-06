@@ -39,6 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Trust sections updated** — 4-tier model (Newcomer → Anchor), vouching as accelerator, commitment-based accountability
 - **Navigation updated** — Philosophy added to all pages, "Open Questions" → "Hard Questions" site-wide
 - **Homepage pathway** — New "See the Thinking" card linking to Philosophy for thinkers/critics audience
+- **Website accessibility polish** — Skip-to-content links, `<main>` landmarks, ARIA labels on SVGs, OG meta tags, favicon, reading progress bars on long pages
+- **Fixed mobile horizontal overflow** on homepage — demo widget `aspect-ratio` + `min-height` forced 480px width at 375px viewport
+- **Counter-proposal language** strengthened on how-it-works.html Exchange section
+- **Relocated inline styles** from index.html to stylesheet; deleted 4 orphaned demo pages
+- **Website brief** (`docs/website-brief.md`) — Corrected Fulfilment → Satisfaction terminology
 
 ### Added
 
