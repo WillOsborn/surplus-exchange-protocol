@@ -17,7 +17,8 @@
 
 ### What's In Progress
 - **Phase 1b: Enforce the Design.** The reference implementation does not yet enforce most of what the approved designs rely on. See the [Phase 1b decision](docs/design/decisions.md#decision-phase-1b--enforce-the-design), the [code review](docs/design/analysis/code-review-2026-10.md) and [work-packages.md](docs/design/work-packages.md) (WP10–WP14)
-- **WP10 (Stage A: Make it honest)**: all work done, awaiting publication. The website has a new Progress page, a Tax and VAT explainer, a "Why a protocol" section and corrected claims (website repo, branch `progress-and-tax-explainer`). To publish: merge and push this repo's `phase-1b-wp10` branch first, because the site links to the new docs on GitHub `main`; then deploy the site
+- **WP10 (Stage A: Make it honest)**: code and docs merged to `main` and pushed (2026-10-10). Website content is done on branch `progress-and-tax-explainer` but not deployed; it feeds into the website rework
+- **Website rework**: decided 2026-10-10; brief agreed; design not started (backlog B16)
 - **Q9 Taxation & Compliance**: accepted (declared values at the tax boundary, VAT handling built in, UK pilot first). Implementation is B1 in WP13; [16 questions for a tax adviser](docs/design/tax-adviser-questions.md) are pending (B2)
 
 ### Known Issues
@@ -72,7 +73,8 @@ Full list with evidence in the [code review](docs/design/analysis/code-review-20
   - Whole-token term matching (no more "UK" matching "Ukraine"); timing no longer penalises long availability and can judge expiry against an `asOf` date (M7, M8)
   - Guards against invalid exchange values, chain lengths and trust scores (M9, T6)
 - **Documentation corrected**: Johnson's algorithm claim, `scoreMatch` signature, unenforced tier limits flagged, test counts
-- **Website** (separate repo, branch `progress-and-tax-explainer`): March's uncommitted GitHub-link changes committed; new Progress page and Tax and VAT explainer; Questions, Idea and Technical pages updated with honest status; Progress added to every page's nav and footer; checked at 375px and 1440px
+- **Website** (separate repo, branch `progress-and-tax-explainer`, not merged or deployed): March's uncommitted GitHub-link changes committed; new Progress page and Tax and VAT explainer; Questions, Idea and Technical pages updated with honest status; Progress added to every page's nav and footer; checked at 375px and 1440px
+- **Website design review**: the site reads as AI-generated (cream, Playfair, vermilion, all-caps labels), plus mobile, contrast and alignment problems. Decision: complete rework of identity and structure as one project, in a new session. Brief and findings saved in the website repo
 
 **Key decisions:**
 - New phase named **Phase 1b** (not "Phase 2", which already means Delegation)
@@ -89,7 +91,7 @@ Full list with evidence in the [code review](docs/design/analysis/code-review-20
 - Put the [tax adviser questions](docs/design/tax-adviser-questions.md) to an adviser before the pilot
 
 **Next priorities:**
-1. Publish WP10: merge and push `phase-1b-wp10`, then deploy the website branch
+1. **Website rework (new session)**: a complete new visual identity and restructure, decided 2026-10-10 because the current design reads as AI-generated. Start from the brief and design review in the website repo: `design/2026-10-10-design-review-and-rework-brief.md` (branch `progress-and-tax-explainer`). Continue brainstorming from "propose 2–3 approaches"; architectural path (spec → plan) before any code. Decide whether to deploy the interim branch first.
 2. WP11: matcher rework and simulation harness
 
 ---

@@ -30,7 +30,7 @@ This is the **authoritative source** for work package status. Other documents sh
 
 | WP | Name | Status | Scope | Review refs |
 |----|------|--------|-------|-------------|
-| WP10 | A: Make it honest | ⏳ In Progress | Code fixes, approval-status alignment and website content done 2026-10-10 (website branch `progress-and-tax-explainer`). Remaining: publish — merge and push this repo's `phase-1b-wp10` first (the site links to new docs on GitHub `main`), then deploy the site | C1, C4, S1–S3, P1, P2, P4, M7, M8, M9 (input guards), T6 (input guards), docs |
+| WP10 | A: Make it honest | ⏳ In Progress | Code fixes, approval-status alignment and website content done 2026-10-10 (website branch `progress-and-tax-explainer`). Main repo merged and pushed 2026-10-10. Website content not deployed; folded into the website rework (B16) | C1, C4, S1–S3, P1, P2, P4, M7, M8, M9 (input guards), T6 (input guards), docs |
 | WP11 | B: Matcher as thesis | 📋 Planned | Top-k cycle search with per-participant limits; non-overlapping chain selection (capacity, concurrency, concentration); simulation harness with bilateral and money baselines; Imas & Krishnan replication | M1–M6, B11, B12 |
 | WP12 | Capability translation for current models | 📋 Planned | Candidate retrieval plus LLM pairwise judgement with caching; vocabulary grows from judgements; prompt-injection hardening; connect to matching | C2, C3, C5, B13 |
 | WP13 | C: Enforce the designs | 📋 Planned | Q5 threshold alignment and anti-collusion diversity rule; tier enforcement in matching; Q1 fulfilment signal; Q9 implementation; settle the exposure-unit question | T1–T5, T7, S4, B1, B14 |
@@ -76,6 +76,7 @@ These are decision items tracked separately from work packages:
 | B12 | *(now in WP11)* **Replicate the Imas & Krishnan barter simulation** through the SEP matcher | Later | — | Landscape scan §2 |
 | B13 | **Capability translation threat model**: prompt injection and manipulation via offering text | Later | — | Magentic Marketplace |
 | B14 | **Agent diversity** as a governance consideration (monoculture collusion risk) | Later | — | Collusion research |
+| B16 | **Website rework**: new visual identity and restructure as one project (current design reads as AI-generated). Brief and design review: website repo `design/2026-10-10-design-review-and-rework-brief.md`. Architectural path: approaches → spec → plan | Soon (next session) | — | 2026-10-10 design review |
 | B15 | **Cite Emek & Shpiro** in chain-discovery.md for chain-length caps | Later | — | Landscape scan §3 |
 
 ## Related
