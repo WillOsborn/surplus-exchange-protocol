@@ -44,6 +44,7 @@ Historical research that informed the design. The deep dive into real-world non-
 | [research/needs-research-findings.md](research/needs-research-findings.md) | How to represent what participants need |
 | [research/execution-research-findings.md](research/execution-research-findings.md) | How exchanges actually get executed |
 | [research/agentic-protocols-analysis.md](research/agentic-protocols-analysis.md) | Analysis of A2A and MCP protocols |
+| [research/landscape-scan-2026-10.md](research/landscape-scan-2026-10.md) | What changed Jan–Oct 2026: agent protocols, negotiation research, tax and regulation |
 
 ---
 
@@ -65,7 +66,10 @@ The most intellectually substantial part of the project. An unintended consequen
 | Q5: Trust Mechanisms & Gatekeeping | [plans/2026-02-26-trust-and-openness-design.md](plans/2026-02-26-trust-and-openness-design.md) |
 | Q6: Bad Actor Scenarios | [plans/2026-02-26-bad-actor-scenarios-design.md](plans/2026-02-26-bad-actor-scenarios-design.md) |
 | Q7: Algorithm Transparency & Systemic Risk | [plans/2026-02-26-algorithm-transparency-design.md](plans/2026-02-26-algorithm-transparency-design.md) |
+| Q9: Taxation & Compliance | [plans/2026-10-10-taxation-and-compliance-design.md](plans/2026-10-10-taxation-and-compliance-design.md) |
 | Q10: Labour Market Effects | [plans/2026-02-26-labour-market-effects-design.md](plans/2026-02-26-labour-market-effects-design.md) |
+
+**Questions for a tax adviser:** [design/tax-adviser-questions.md](design/tax-adviser-questions.md): 16 VAT, direct tax and reporting questions to settle before a UK pilot.
 
 **Consolidated view:** [plans/2026-02-26-consolidated-design-impact.md](plans/2026-02-26-consolidated-design-impact.md) — synthesises all analysed questions into combined architectural and implementation impact.
 

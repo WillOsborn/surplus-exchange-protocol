@@ -384,7 +384,7 @@ Option B provides a pragmatic middle ground:
 ## Decision: Deployment Architecture (Managed Service → Federation)
 
 **Date**: 2026-02-09
-**Status**: Proposed (Decision Required)
+**Status**: Accepted (2026-10-10), as resolved by the [Deployment & Federation Design](../plans/2026-02-26-deployment-and-federation-design.md): a governed managed service with a federation escape hatch. The options analysis below is kept for history.
 
 ### Context
 
@@ -502,5 +502,118 @@ This decision should be finalised before:
 ### Consequences (Once Decided)
 
 To be documented when decision is made.
+
+---
+
+## Decision: Phase 1b — Enforce the Design
+
+**Date**: 2026-10-10
+**Status**: Accepted
+
+### Context
+
+Phase 1 (design work plus a reference implementation) was declared 100% complete in March 2026. A whole-repository review in October 2026 ([code-review-2026-10.md](analysis/code-review-2026-10.md)) found that the reference implementation does not enforce most of the properties the approved designs depend on:
+- matching returns the first cycles found rather than the best, ignores per-participant tier limits, and doesn't select non-overlapping chains
+- the protocol cannot commit a chain through messages and has no authentication
+- trust can be gamed by a ring of colluding accounts
+- several approved February designs are unimplemented or contradicted by the code
+
+At the same time, research published in 2026 ([landscape-scan-2026-10.md](../research/landscape-scan-2026-10.md)) showed that LLM agents bartering on their own fail at scale. That makes SEP's designed clearing mechanism (the matcher) the central claim to prove.
+
+### Decision
+
+Begin Phase 1b with the goal of **making the reference implementation enforce the design and produce evidence**, in four stages:
+
+1. **A: Make it honest.** Quick correctness fixes, and correct the documentation and status records.
+2. **B: Matcher as thesis.** Rework the matcher (top-k search, per-participant limits, non-overlapping chain selection), and build a simulation harness that measures clearing rate, concentration, newcomer inclusion and collusion robustness against bilateral-barter and money baselines.
+3. **C: Enforce the designs.** Align trust with Q5 and add an anti-collusion diversity rule; enforce tiers in matching; implement the Q1 fulfilment signal and Q9.
+4. **D: Protocol on standards.** Write the A2A alignment design note, then rebuild the protocol layer with validation, sender binding, confirmation tallies and edge-derived state.
+
+Capability translation is redesigned for current models alongside Stage B. Each stage ends with a visible, dated progress update on the website.
+
+### Alternatives Considered
+
+1. **Proceed with the post-Phase-1 roadmap** (Q8 analysis, agent participation guide, website). Rejected: it builds on guarantees the code does not provide.
+2. **Patch the review's findings one by one, without restructuring.** Rejected for matching and protocol: the problems are structural (search strategy, missing selection stage, a state machine with no participant model).
+
+### Rationale
+
+SEP's claim is that designed clearing succeeds where agents bartering on their own fail. That claim is only as credible as the matcher and the evidence behind it. Fixing honesty first protects credibility. Simulation turns the argument into evidence and calibrates thresholds that are currently guesses.
+
+### Consequences
+
+- "Phase 1: 100% complete" stays true for its original scope; Phase 1b progress is tracked in [work-packages.md](work-packages.md)
+- Q8 analysis and WP9 are deferred until after Stage B, since both depend on knowing what the matcher can achieve
+- Public claims (website, developer guide) are corrected in Stage A and then updated with evidence after Stage B
+
+### Conditions for Reconsideration
+
+- If simulation shows designed clearing does not materially outperform the bilateral baseline: revisit the core insight before investing in Stages C and D
+
+---
+
+## Decision: February 2026 Design Set (Q1–Q7, Q10)
+
+**Date**: 2026-10-10 (designs written and approved 2026-02-26; formally recorded here)
+**Status**: Accepted
+
+### Context
+
+Eight open questions were analysed in February 2026 and each design document was marked "Approved". Their decisions were never recorded in this file, so under the question lifecycle in [open-questions.md](open-questions.md) they still appeared as pending. This entry records them as accepted.
+
+### Decision
+
+| Question | Decision in brief | Design |
+|---|---|---|
+| Q1: Subjective value vs accountability | Track commitment fulfilment, not balance; graduated, human-judged response | [commitment-based-accountability](../plans/2026-02-26-commitment-based-accountability-design.md) |
+| Q2: Enterprise capture vs peer vision | Behaviour not identity; structural prevention (concentration limits, relationship diversity) plus behaviour monitoring | [peer-exchange-protection](../plans/2026-02-26-peer-exchange-protection-design.md) |
+| Q3/Q4: Deployment and federation | Governed managed service with binding governance commitments and a federation escape hatch | [deployment-and-federation](../plans/2026-02-26-deployment-and-federation-design.md) |
+| Q5: Trust mechanisms and gatekeeping | Four tiers with defined thresholds, vouching, decay and failure attribution | [trust-and-openness](../plans/2026-02-26-trust-and-openness-design.md) |
+| Q6: Bad actor scenarios | Staged response, chain freezing, partner notification; anti-harvesting | [bad-actor-scenarios](../plans/2026-02-26-bad-actor-scenarios-design.md) |
+| Q7: Algorithm transparency and systemic risk | Full transparency; concentration hard cap; algorithm changelog; advisory-body governance | [algorithm-transparency](../plans/2026-02-26-algorithm-transparency-design.md) |
+| Q10: Labour market effects | Governance concern informed by design: transparency norm, sector monitoring | [labour-market-effects](../plans/2026-02-26-labour-market-effects-design.md) |
+
+### Consequences
+
+- These questions move to RESOLVED in open-questions.md
+- **Accepted is not implemented.** Much of what these designs require is not yet in the code (see [code review](analysis/code-review-2026-10.md), "Designed but not implemented"). Implementation is tracked in Phase 1b, mainly WP11 and WP13.
+- Where the code contradicts an accepted design (for example the Q5 tier thresholds), the design is authoritative until it is formally revised.
+
+---
+
+## Decision: Taxation and Compliance — Declared Values at the Tax Boundary
+
+**Date**: 2026-10-10
+**Status**: Accepted
+
+### Context
+
+Q1 left tax as a participant responsibility, with the network providing no valuations. Since then, Italy has made barter VAT depend on a value the parties set in their contract, and VAT-registered UK participants need a value on each VAT invoice regardless. Without support from SEP, those values move outside the protocol, where nothing keeps them consistent between counterparties or away from matching.
+
+### Decision
+
+1. **Declared values at the tax boundary.** Each supplier declares a money value for each supply. It is shared only with that supply's recipient and is never read by matching, trust or governance, a rule enforced structurally and by test.
+2. **VAT handling built in.** Participants record their VAT status. Before approving a chain, each participant sees their VAT position, including any VAT they cannot reclaim. SEP generates VAT invoice data and a settlement statement. SEP never holds or moves money.
+3. **UK pilot first.** More complex jurisdictions (for example Italy's agreed-value rule) come later, along with the bilateral agreement step they need. No US participants until operator reporting duties are assessed.
+
+Full design: [Taxation and Compliance Design](../plans/2026-10-10-taxation-and-compliance-design.md). Questions for an adviser: [tax-adviser-questions.md](tax-adviser-questions.md).
+
+### Alternatives Considered
+
+1. **Status quo** (participants value privately): purest to Principle 1, but values move outside SEP unmanaged, and it fails agreed-value regimes
+2. **Network-assigned market value**: rejected; reintroduces a shared currency in all but name
+
+### Consequences
+
+- Refines Q1's "Tax Compliance (Out of Scope)"
+- Adds a tension to PHILOSOPHY.md: subjective value vs the monetary state
+- "No money" needs a footnote: VAT amounts are normally settled in cash between participants
+- The operator holds commercially sensitive figures, which needs access control and retention rules
+- Implementation: backlog B1 (WP13). Open legal questions: B2
+
+### Conditions for Reconsideration
+
+- If adviser review finds that multi-party cycles cannot be treated as supplies for consideration on the per-supply model
+- If declaring values measurably erodes the surplus-sharing culture in the pilot
 
 ---

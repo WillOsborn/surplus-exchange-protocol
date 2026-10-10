@@ -166,7 +166,15 @@ Philosophy provides direction, not answers to every question. These are the tens
 
 Subjective value ledgers avoid valuation disputes and respect contextual differences in worth. But they also create blind spots: How do we detect exploitation without shared metrics? How do we handle tax compliance when authorities require valuations? What basis exists for claims when exchanges fail?
 
-We believe subjective value is correct for the surplus context. The [Commitment-Based Accountability Design](docs/plans/2026-02-26-commitment-based-accountability-design.md) addresses this by reframing accountability as **commitment fulfilment rather than balance tracking** — the system tracks whether participants do what they say they'll do, not whether they give as much as they receive. This preserves generous surplus-sharing culture while providing accountability for bad faith behaviour. Tax compliance remains a participant responsibility.
+We believe subjective value is correct for the surplus context. The [Commitment-Based Accountability Design](docs/plans/2026-02-26-commitment-based-accountability-design.md) addresses this by reframing accountability as **commitment fulfilment rather than balance tracking** — the system tracks whether participants do what they say they'll do, not whether they give as much as they receive. This preserves generous surplus-sharing culture while providing accountability for bad faith behaviour. Tax compliance is handled at the boundary with the monetary state; see the next tension.
+
+---
+
+### Subjective value vs the monetary state
+
+SEP's interior has no shared currency, but its participants live in a monetary legal system. Tax authorities need a money value for each supply, and VAT is normally settled in cash even when the exchange itself isn't. Surplus may cost little to give, but it still carries a tax value.
+
+We accept declared money values **at that boundary** and refuse to let them leak inward. Each supplier declares a value that only its recipient sees; matching, trust and governance never read it; SEP handles the VAT paperwork so participants don't carry the burden, but never holds or moves money. See the [Taxation and Compliance Design](docs/plans/2026-10-10-taxation-and-compliance-design.md). The risk we watch for is that writing down money figures, even privately, nudges participants towards score-keeping.
 
 ---
 

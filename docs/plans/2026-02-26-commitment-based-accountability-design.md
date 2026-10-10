@@ -115,6 +115,8 @@ The system learns what "normal" looks like. Early on, any pattern might trigger 
 
 ### 4. Tax Compliance (Out of Scope)
 
+> **Superseded 2026-10-10** by the [Taxation and Compliance Design (Q9)](2026-10-10-taxation-and-compliance-design.md): the network still never *provides* valuations, but now carries supplier-declared values at the tax boundary and handles VAT paperwork.
+
 Tax compliance remains a participant responsibility. The network does not provide valuations.
 
 **Rationale:**

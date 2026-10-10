@@ -1,6 +1,6 @@
 # Open Design Questions
 
-*Last updated: 2026-02-26 (reordered by dependency)*
+*Last updated: 2026-10-10 (Q1–Q7, Q9, Q10 accepted)*
 
 ---
 
@@ -18,9 +18,11 @@ Questions progress through these stages:
 
 ## ✅ RESOLVED
 
+**Recorded as accepted on 2026-10-10** (see [February 2026 Design Set](decisions.md#decision-february-2026-design-set-q1q7-q10)): Q1, Q2, Q3, Q4, Q5, Q6, Q7 and Q10 below; Q9 accepted the same day. They stay in their dependency tiers for context. Accepted is not the same as implemented; implementation is tracked in Phase 1b ([work-packages.md](work-packages.md)).
+
 ### Capability Description Schema
 
-**Status**: In Progress as WP8
+**Status**: Complete (WP8)
 
 **Original Question**: How do we structure capability descriptions so agents can match effectively?
 
@@ -58,7 +60,7 @@ See:
 
 **Original Question**: How do agents identify and propose complex exchange chains?
 
-**Resolution**: Implemented using Johnson's algorithm for cycle detection in directed graphs.
+**Resolution**: Implemented as a depth-first cycle search (the design specifies a pruned Johnson's algorithm; the implementation is reworked in WP11, see [code review](analysis/code-review-2026-10.md)).
 
 See:
 - Design: [chain-discovery.md](chain-discovery.md)
@@ -93,7 +95,9 @@ See:
 
 ---
 
-## 🔴 OPEN
+## 🔴 Design Questions by Dependency Tier
+
+Open: Q8 (Network Bootstrapping). All others in this section are resolved.
 
 Questions are ordered by dependency — earlier questions constrain later ones.
 
@@ -105,7 +109,7 @@ These questions must be answered first as they constrain all subsequent decision
 
 ### 1. Subjective Value vs Accountability Trade-off
 
-**Status**: ANALYSED
+**Status**: RESOLVED (accepted 2026-10-10)
 
 **Question**: How do we maintain accountability without reintroducing currency-like shared valuation?
 
@@ -131,7 +135,7 @@ These questions must be answered first as they constrain all subsequent decision
 
 ### 2. Enterprise Capture vs Peer Vision
 
-**Status**: ANALYSED
+**Status**: RESOLVED (accepted 2026-10-10)
 
 **Question**: Should we actively limit enterprise/procurement use to preserve peer exchange dynamics?
 
@@ -165,7 +169,7 @@ These depend on Tier 1 decisions and shape how the system is deployed and govern
 
 ### 3. Deployment Architecture
 
-**Status**: ANALYSED
+**Status**: RESOLVED (accepted 2026-10-10)
 
 **Question**: Should we deploy as a managed service or federated network?
 
@@ -193,7 +197,7 @@ See also: [Federation Exploration](./federation-exploration.md) for detailed tec
 
 ### 4. Federation Commitment Mechanisms
 
-**Status**: ANALYSED
+**Status**: RESOLVED (accepted 2026-10-10)
 
 **Question**: How do we ensure federation actually happens rather than being perpetually deferred?
 
@@ -227,7 +231,7 @@ These depend on Tier 1 & 2 decisions and define how trust, detection, and transp
 
 ### 5. Trust Mechanisms and Gatekeeping
 
-**Status**: ANALYSED
+**Status**: RESOLVED (accepted 2026-10-10)
 
 **Question**: How do we maintain trust accountability without creating insider/outsider dynamics?
 
@@ -258,11 +262,11 @@ These depend on Tier 1 & 2 decisions and define how trust, detection, and transp
 
 ---
 
-### 6. Bad Actor Scenarios — ANALYSED
+### 6. Bad Actor Scenarios
 
 **Question**: How do we handle malicious or exploitative participants?
 
-**Status**: Analysed in [Bad Actor Scenarios Design](../plans/2026-02-26-bad-actor-scenarios-design.md).
+**Status**: RESOLVED (accepted 2026-10-10). Design: [Bad Actor Scenarios Design](../plans/2026-02-26-bad-actor-scenarios-design.md).
 
 **Resolution**: Most bad actor types are already addressed by Q1-Q5 decisions through three reinforcing layers: structural prevention (exposure limits, bilateral-only newcomer tier, concentration limits), detection (fulfilment signals, behaviour monitoring, network health metrics), and graduated human-judged response. Three genuine gaps were identified and addressed:
 
@@ -286,7 +290,7 @@ These depend on Tier 1 & 2 decisions and define how trust, detection, and transp
 
 ### 7. Algorithm Transparency and Systemic Risk
 
-**Status**: ANALYSED
+**Status**: RESOLVED (accepted 2026-10-10)
 
 **Question**: What transparency and oversight should constrain the matching algorithm?
 
@@ -344,6 +348,10 @@ These can be resolved closer to launch, once earlier decisions are made.
 
 ### 9. Taxation and Compliance
 
+**Status**: RESOLVED (accepted 2026-10-10)
+
+**Design document**: [Taxation and Compliance Design](../plans/2026-10-10-taxation-and-compliance-design.md). Supplier-declared values per supply, shared only with the recipient and walled off from matching, trust and governance; SEP handles VAT paperwork and shows each participant their VAT position, without holding money; UK pilot first. Open legal questions: [tax-adviser-questions.md](tax-adviser-questions.md).
+
 **Question**: How do we handle tax treatment of exchanges?
 
 **Context**:
@@ -367,7 +375,7 @@ These can be resolved closer to launch, once earlier decisions are made.
 
 ### 10. Labour Market Effects
 
-**Status**: ANALYSED
+**Status**: RESOLVED (accepted 2026-10-10)
 
 **Question**: How might SEP affect employees of participant businesses, and should this influence design?
 

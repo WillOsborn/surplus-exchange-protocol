@@ -2,6 +2,7 @@
 
 *Design document for Open Question #7*
 *Date: 2026-02-26*
+*Status: Approved*
 
 ---
 
