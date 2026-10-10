@@ -144,6 +144,14 @@ export function checkExposure(input: ExposureCheckInput): ExposureCheck {
   const limits = getExposureLimits(input.tier);
   const reasons: string[] = [];
 
+  // Refuse malformed proposals outright rather than letting NaN comparisons pass
+  if (!Number.isFinite(input.proposedValue) || input.proposedValue < 0) {
+    reasons.push(`Invalid exchange value (${input.proposedValue})`);
+  }
+  if (!Number.isInteger(input.proposedChainLength) || input.proposedChainLength < 2) {
+    reasons.push(`Invalid chain length (${input.proposedChainLength})`);
+  }
+
   // Check dispute cooldown
   if (input.currentExposure.daysSinceLastDispute !== null &&
       input.currentExposure.daysSinceLastDispute < limits.cooldownAfterDispute) {

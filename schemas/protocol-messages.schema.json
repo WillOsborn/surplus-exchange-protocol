@@ -3,7 +3,7 @@
   "$id": "https://surplus-exchange-protocol.org/schemas/protocol-messages.schema.json",
   "title": "SEP Protocol Messages",
   "description": "Message formats for communication between participants, agents, and brokers in the Surplus Exchange Protocol. All messages follow a common header structure with type-specific payloads.",
-  "version": "1.0.0",
+  "$comment": "Schema version 1.0.0. Messages are dispatched on message_type: each oneOf branch below fixes message_type to a single value.",
 
   "$defs": {
     "messageHeader": {
@@ -1043,22 +1043,5 @@
     {
       "$ref": "#/$defs/HealthCheck"
     }
-  ],
-
-  "discriminator": {
-    "propertyName": "message_type",
-    "mapping": {
-      "ChainProposal": "#/$defs/ChainProposal",
-      "ParticipantConfirmation": "#/$defs/ParticipantConfirmation",
-      "ChainCommitment": "#/$defs/ChainCommitment",
-      "ExecutionStart": "#/$defs/ExecutionStart",
-      "ExecutionCompletion": "#/$defs/ExecutionCompletion",
-      "SatisfactionSignal": "#/$defs/SatisfactionSignal",
-      "DisputeRaised": "#/$defs/DisputeRaised",
-      "ChainCompletion": "#/$defs/ChainCompletion",
-      "ChainFailure": "#/$defs/ChainFailure",
-      "MessageAcknowledgment": "#/$defs/MessageAcknowledgment",
-      "HealthCheck": "#/$defs/HealthCheck"
-    }
-  }
+  ]
 }

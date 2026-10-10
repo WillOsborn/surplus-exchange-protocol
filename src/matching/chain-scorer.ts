@@ -173,14 +173,14 @@ function computeTrustRisk(
   let lowTrustParticipants: string[] = [];
 
   for (const nodeId of cycle.nodeIds) {
-    const node = graph.getNode(nodeId);
-    if (node) {
-      if (node.trustScore < minTrust) {
-        minTrust = node.trustScore;
-      }
-      if (node.trustScore < options.lowTrustThreshold) {
-        lowTrustParticipants.push(nodeId);
-      }
+    // Unknown or malformed trust counts as no trust, never as safe
+    const raw = graph.getNode(nodeId)?.trustScore;
+    const trust = Number.isFinite(raw) ? (raw as number) : 0;
+    if (trust < minTrust) {
+      minTrust = trust;
+    }
+    if (trust < options.lowTrustThreshold) {
+      lowTrustParticipants.push(nodeId);
     }
   }
 

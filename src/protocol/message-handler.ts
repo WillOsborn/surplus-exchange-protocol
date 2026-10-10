@@ -84,6 +84,10 @@ export interface MessageProcessingResult {
  */
 export class MessageHandler {
   private chainMachines: Map<string, ChainStateMachine> = new Map();
+  /** Participants named on each chain's edges */
+  private chainParticipants: Map<string, Set<string>> = new Map();
+  /** Participants who have confirmed each chain */
+  private chainConfirmations: Map<string, Set<string>> = new Map();
   private processedMessageIds: Set<string> = new Set();
 
   /**
@@ -165,6 +169,14 @@ export class MessageHandler {
   private async handleChainProposal(
     message: ChainProposalMessage
   ): Promise<MessageProcessingResult> {
+    if (this.chainMachines.has(message.chain_id)) {
+      return {
+        success: false,
+        error: `Chain ${message.chain_id} already exists`,
+        actions: [],
+      };
+    }
+
     // Create new chain state machine
     const machine = new ChainStateMachine('draft');
 
@@ -179,8 +191,13 @@ export class MessageHandler {
       };
     }
 
-    // Store the machine
+    // Store the machine and who must confirm
     this.chainMachines.set(message.chain_id, machine);
+    this.chainParticipants.set(
+      message.chain_id,
+      new Set(message.edges.flatMap((e) => [e.provider_id, e.recipient_id]))
+    );
+    this.chainConfirmations.set(message.chain_id, new Set());
 
     return {
       success: true,
@@ -204,6 +221,25 @@ export class MessageHandler {
       };
     }
 
+    if (!this.chainParticipants.get(message.chain_id)?.has(message.participant_id)) {
+      return {
+        success: false,
+        error: `${message.participant_id} is not a participant in chain ${message.chain_id}`,
+        actions: [],
+      };
+    }
+    if (message.sender_id !== message.participant_id) {
+      return {
+        success: false,
+        error: `sender ${message.sender_id} cannot respond for ${message.participant_id}`,
+        actions: [],
+      };
+    }
+
+    if (message.decision === 'confirm') {
+      return this.recordConfirmation(message.chain_id, message.participant_id, machine);
+    }
+
     // Determine event based on decision
     let event: ChainTransitionEvent;
 
@@ -212,12 +248,6 @@ export class MessageHandler {
         type: 'DECLINE',
         participantId: message.participant_id,
         reason: message.decline_reason ?? 'No reason provided',
-      };
-    } else if (message.decision === 'confirm') {
-      // This is simplified - real implementation would track confirmations
-      event = {
-        type: 'FIRST_CONFIRMATION',
-        participantId: message.participant_id,
       };
     } else {
       // Counter-proposal handling
@@ -235,6 +265,53 @@ export class MessageHandler {
       error: transition.error,
       actions: transition.actions,
     };
+  }
+
+  /**
+   * Record a participant's confirmation. The first confirmation moves the
+   * chain to confirming; the last outstanding one commits it.
+   */
+  private recordConfirmation(
+    chainId: string,
+    participantId: string,
+    machine: ChainStateMachine
+  ): MessageProcessingResult {
+    const confirmed = this.chainConfirmations.get(chainId)!;
+    if (confirmed.has(participantId)) {
+      return {
+        success: false,
+        error: `${participantId} has already confirmed chain ${chainId}`,
+        actions: [],
+      };
+    }
+
+    const actions: string[] = [];
+    if (machine.state === 'proposed') {
+      const first = machine.transition({ type: 'FIRST_CONFIRMATION', participantId });
+      if (!first.valid) {
+        return { success: false, error: first.error, actions: [] };
+      }
+      actions.push(...first.actions);
+    }
+    if (machine.state !== 'confirming') {
+      return {
+        success: false,
+        error: `Chain ${chainId} is ${machine.state} and cannot accept confirmations`,
+        actions: [],
+      };
+    }
+
+    confirmed.add(participantId);
+
+    if (confirmed.size === this.chainParticipants.get(chainId)!.size) {
+      const all = machine.transition({ type: 'ALL_CONFIRMED' });
+      if (!all.valid) {
+        return { success: false, error: all.error, actions };
+      }
+      actions.push(...all.actions);
+    }
+
+    return { success: true, actions };
   }
 
   /**

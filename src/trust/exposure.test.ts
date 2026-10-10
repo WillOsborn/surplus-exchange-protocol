@@ -246,3 +246,21 @@ describe('validateLimitsConfiguration', () => {
     expect(result.errors).toHaveLength(0);
   });
 });
+
+// =============================================================================
+// checkExposure() — invalid inputs
+// =============================================================================
+
+describe('checkExposure with invalid inputs', () => {
+  it.each([
+    ['a NaN value', { proposedValue: NaN }],
+    ['a negative value', { proposedValue: -100 }],
+    ['a NaN chain length', { proposedChainLength: NaN }],
+    ['a chain shorter than two parties', { proposedChainLength: 1 }],
+  ])('refuses %s', (_label, overrides) => {
+    const result = checkExposure(makeExposureCheckInput(overrides));
+
+    expect(result.allowed).toBe(false);
+    expect(result.reason).toContain('Invalid');
+  });
+});

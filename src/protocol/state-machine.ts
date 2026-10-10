@@ -63,6 +63,7 @@ const CHAIN_TRANSITIONS: Record<ChainState, Partial<Record<ChainTransitionEvent[
   },
   proposed: {
     FIRST_CONFIRMATION: 'confirming',
+    DECLINE: 'declined',
     WITHDRAW: 'abandoned',
     TIMEOUT: 'declined',
   },

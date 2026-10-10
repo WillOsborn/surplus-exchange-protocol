@@ -14,10 +14,47 @@ import { SEED_VOCABULARY, formatVocabularyForPrompt } from './seed-vocabulary.js
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /** Model to use for extraction (Haiku for speed/cost) */
-const EXTRACTION_MODEL = 'claude-3-5-haiku-latest';
+const EXTRACTION_MODEL = 'claude-haiku-5-5';
 
-/** Maximum tokens for extraction response */
-const MAX_TOKENS = 1024;
+/**
+ * Maximum tokens for extraction response. Haiku 5.5 thinks by default and
+ * thinking counts against this limit, so leave headroom beyond the JSON itself.
+ */
+const MAX_TOKENS = 8000;
+
+/** Vocabulary matching is a bounded task — low effort keeps it fast and cheap */
+const EXTRACTION_EFFORT = 'low';
+
+/**
+ * JSON Schema enforced via structured outputs. Restricting term_id to the
+ * vocabulary's IDs means the model cannot invent terms.
+ */
+function buildOutputSchema(): Record<string, unknown> {
+  return {
+    type: 'object',
+    properties: {
+      extracted_terms: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            term_id: { type: 'string', enum: SEED_VOCABULARY.map((t) => t.id) },
+            confidence: { type: 'number' },
+            reasoning: { type: 'string' },
+          },
+          required: ['term_id', 'confidence', 'reasoning'],
+          additionalProperties: false,
+        },
+      },
+      unmatched_fragments: {
+        type: 'array',
+        items: { type: 'string' },
+      },
+    },
+    required: ['extracted_terms', 'unmatched_fragments'],
+    additionalProperties: false,
+  };
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Prompt Construction
@@ -38,9 +75,7 @@ For each match, provide:
 - A confidence score from 0.0 to 1.0
 - Brief reasoning for the match
 
-If parts of the input don't match any known terms, list them as unmatched fragments.
-
-IMPORTANT: Respond with ONLY a JSON object. No explanations, no commentary, no text before or after the JSON. Just the raw JSON object.`;
+If parts of the input don't match any known terms, list them as unmatched fragments.`;
 }
 
 /**
@@ -62,17 +97,7 @@ CONTEXT: ${context}
 INPUT TO ANALYSE:
 "${input}"
 
-Extract capability terms and respond with JSON in this exact format:
-{
-  "extracted_terms": [
-    {
-      "term_id": "exact_term_id_from_vocabulary",
-      "confidence": 0.0-1.0,
-      "reasoning": "Brief explanation"
-    }
-  ],
-  "unmatched_fragments": ["parts that don't match any terms"]
-}
+Extract capability terms.
 
 Rules:
 - Only use term_ids that exist in the vocabulary above
@@ -110,11 +135,12 @@ function extractJsonFromText(text: string): string {
 }
 
 /**
- * Parse and validate the LLM response.
+ * Recover a JSON object from text wrapped in markdown or surrounding prose.
+ * Fallback only: structured outputs return bare JSON, which may legitimately
+ * contain backticks inside string values.
  */
-function parseExtractionResponse(responseText: string): RawExtractionResponse {
-  // Extract JSON from response (handle markdown code blocks and surrounding text)
-  let jsonText = responseText.trim();
+function recoverJsonText(responseText: string): string {
+  let jsonText = responseText;
 
   // Remove markdown code blocks if present
   if (jsonText.includes('```json')) {
@@ -132,10 +158,20 @@ function parseExtractionResponse(responseText: string): RawExtractionResponse {
   }
 
   // Extract just the JSON object (handles text before/after JSON)
-  jsonText = extractJsonFromText(jsonText);
+  return extractJsonFromText(jsonText);
+}
 
+/**
+ * Parse and validate the LLM response.
+ */
+function parseExtractionResponse(responseText: string): RawExtractionResponse {
   try {
-    const parsed = JSON.parse(jsonText) as RawExtractionResponse;
+    let parsed: RawExtractionResponse;
+    try {
+      parsed = JSON.parse(responseText.trim()) as RawExtractionResponse;
+    } catch {
+      parsed = JSON.parse(recoverJsonText(responseText.trim())) as RawExtractionResponse;
+    }
 
     // Validate structure
     if (!Array.isArray(parsed.extracted_terms)) {
@@ -213,7 +249,18 @@ export async function extractTerms(
         content: buildUserPrompt(input, sourceType),
       },
     ],
+    output_config: {
+      effort: EXTRACTION_EFFORT,
+      format: { type: 'json_schema', schema: buildOutputSchema() },
+    },
   });
+
+  if (response.stop_reason === 'refusal') {
+    throw new Error('Extraction request was declined by the model');
+  }
+  if (response.stop_reason === 'max_tokens') {
+    throw new Error('Extraction response was truncated (max_tokens reached)');
+  }
 
   // Extract text from response
   const textContent = response.content.find((block) => block.type === 'text');

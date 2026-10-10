@@ -24,9 +24,10 @@ import type { ExtractionResult } from './types.js';
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Build a mock API response wrapping a text payload. */
-function apiResponse(text: string) {
+function apiResponse(text: string, stop_reason = 'end_turn') {
   return {
     content: [{ type: 'text', text }],
+    stop_reason,
   };
 }
 
@@ -64,6 +65,34 @@ describe('extractTerms', () => {
     expect(result.source_type).toBe('offering');
   });
 
+  it('requests structured output constrained to vocabulary term IDs', async () => {
+    mockCreate.mockResolvedValueOnce(apiResponse(validExtractionJson()));
+
+    await extractTerms('I can design logos', 'offering', 'test-key');
+
+    const request = mockCreate.mock.calls[0][0];
+    expect(request.model).toBe('claude-haiku-5-5');
+    expect(request.output_config.effort).toBe('low');
+    expect(request.output_config.format.type).toBe('json_schema');
+
+    const termIdSchema =
+      request.output_config.format.schema.properties.extracted_terms.items.properties.term_id;
+    expect(termIdSchema.enum).toContain('logo_design');
+    expect(termIdSchema.enum).toContain('contract_review');
+  });
+
+  it('throws a clear error when the model declines the request', async () => {
+    mockCreate.mockResolvedValueOnce(apiResponse('', 'refusal'));
+
+    await expect(extractTerms('test', 'offering', 'test-key')).rejects.toThrow('declined');
+  });
+
+  it('throws a clear error when the response is truncated', async () => {
+    mockCreate.mockResolvedValueOnce(apiResponse('{"extracted_terms": [', 'max_tokens'));
+
+    await expect(extractTerms('test', 'offering', 'test-key')).rejects.toThrow('truncated');
+  });
+
   it('throws when apiKey is empty', async () => {
     await expect(extractTerms('test', 'offering', '')).rejects.toThrow('API key is required');
   });
@@ -83,6 +112,19 @@ describe('extractTerms', () => {
     expect(result.extracted_terms[0].term_id).toBe('contract_review');
     expect(result.extracted_terms[0].confidence).toBe(0.85);
     expect(result.source_type).toBe('need');
+  });
+
+  it('parses structured output whose reasoning contains a code fence', async () => {
+    mockCreate.mockResolvedValueOnce(apiResponse(validExtractionJson({
+      extracted_terms: [
+        { term_id: 'logo_design', confidence: 0.9, reasoning: 'Input mentioned ```svg``` files' },
+      ],
+    })));
+
+    const result = await extractTerms('Logos as ```svg```', 'offering', 'test-key');
+
+    expect(result.extracted_terms).toHaveLength(1);
+    expect(result.extracted_terms[0].reasoning).toContain('```svg```');
   });
 
   it('filters out unknown term_ids and clamps confidence to [0, 1]', async () => {

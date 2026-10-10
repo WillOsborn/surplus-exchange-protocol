@@ -30,6 +30,7 @@
     "dist",
     "examples",
     "src/**/*.test.ts",
+    "src/**/*.test-d.ts",
     "src/__test-helpers__/**"
   ]
 }

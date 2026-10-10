@@ -484,3 +484,18 @@ describe('summariseChainScore', () => {
     expect(summary).toContain('Risks');
   });
 });
+
+// =============================================================================
+// Invalid trust scores
+// =============================================================================
+
+describe('scoreChain with invalid trust scores', () => {
+  it('treats a NaN trust score as untrusted, not as safe', () => {
+    const { graph, cycle } = buildScoringTriangle({
+      matchScores: [0.9, 0.9, 0.9],
+      trustScores: [NaN, 0.9, 0.9],
+    });
+
+    expect(scoreChain(cycle, graph).breakdown.trustRisk).toBe(0);
+  });
+});

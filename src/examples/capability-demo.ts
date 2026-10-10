@@ -36,7 +36,8 @@ import {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUTPUT_PATH = join(__dirname, '../../examples/capability/demo-output.json');
+// Live runs capture participants' free text, so write to a git-ignored file
+const OUTPUT_PATH = join(__dirname, '../../examples/capability/demo-output.local.json');
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Readline Utilities

@@ -108,7 +108,7 @@ for each offering O:
 
 Find all simple cycles in the graph up to maximum length.
 
-**Approach**: Modified Johnson's algorithm for finding all elementary cycles, with pruning:
+**Approach**: Modified Johnson's algorithm for finding all elementary cycles, with pruning. *(Design intent. As of October 2026 the implementation is a plain depth-first search without these pruning rules; see [code review M1–M5](analysis/code-review-2026-10.md) and WP11.)*
 
 ```
 function find_cycles(graph, max_length):

@@ -162,6 +162,29 @@ export interface MatchInput {
   recipientMinTrust: number;
   /** Whether these participants have exchanged before */
   existingPartnership?: boolean;
+  /** Reference date (ISO) for judging expiry; omit to judge only against the deadline */
+  asOf?: string;
+}
+
+/**
+ * Splits a term into lowercase alphanumeric tokens ("UK - London" → uk, london).
+ */
+function tokenise(term: string): string[] {
+  return term.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+/**
+ * Whether two terms match: every token of one appears in the other.
+ * "design" matches "logo_design" and "UK" matches "UK - London",
+ * but "ai" does not match "email" and "UK" does not match "Ukraine".
+ */
+export function termsMatch(a: string, b: string): boolean {
+  const tokensA = tokenise(a);
+  const tokensB = tokenise(b);
+  if (tokensA.length === 0 || tokensB.length === 0) return false;
+  const setA = new Set(tokensA);
+  const setB = new Set(tokensB);
+  return tokensA.every((t) => setB.has(t)) || tokensB.every((t) => setA.has(t));
 }
 
 /**
@@ -250,9 +273,7 @@ function calculateSemanticScore(
 
   if (needMatches.length > 0 && offeringCapabilities.size > 0) {
     const matchingCapabilities = needMatches.filter(match =>
-      [...offeringCapabilities].some(cap =>
-        cap.includes(match) || match.includes(cap)
-      )
+      [...offeringCapabilities].some(cap => termsMatch(cap, match))
     );
     capabilityScore = matchingCapabilities.length / needMatches.length;
 
@@ -294,40 +315,40 @@ function calculateCapacityScore(): { score: number; reasons: string[] } {
  * Calculates the timing alignment score.
  *
  * Scoring rules:
- * - No constraints on either side: 1.0
- * - Offering available before need deadline: 1.0
- * - Offering available within 2 weeks of deadline: 0.7
- * - Offering only available after deadline: 0.0
+ * - Offering expired before the reference date (asOf): 0.0
+ * - Offering only available after the need's deadline: 0.0
+ * - Otherwise: 1.0 (availability that outlasts the deadline is not penalised)
  *
  * @param offering - The offering with timing constraints
  * @param need - The need with timing requirements
+ * @param asOf - Optional reference date for judging expiry
  * @returns Score between 0 and 1, with explanatory reasons
  */
 function calculateTimingScore(
   offering: Offering,
-  need: Need
+  need: Need,
+  asOf?: string
 ): { score: number; reasons: string[] } {
   const reasons: string[] = [];
   const offeringTiming = offering.constraints.timing;
   const needTiming = need.constraints.timing;
 
-  // No constraints - perfect timing
+  // An offering that ended before the reference date can't be used at all
+  if (asOf && offeringTiming?.availableUntil) {
+    if (new Date(offeringTiming.availableUntil) < new Date(asOf)) {
+      reasons.push(`Offering expired on ${offeringTiming.availableUntil}`);
+      return { score: 0.0, reasons };
+    }
+  }
+
   if (!needTiming?.neededBy) {
     reasons.push('No timing deadline specified');
     return { score: 1.0, reasons };
   }
 
-  if (!offeringTiming?.availableUntil && !offeringTiming?.availableFrom) {
-    reasons.push('Offering has open availability');
-    return { score: 1.0, reasons };
-  }
-
-  const neededByDate = new Date(needTiming.neededBy);
-
-  // Check if offering becomes available too late
+  // Usable if the availability window opens on or before the deadline
   if (offeringTiming?.availableFrom) {
-    const availableFromDate = new Date(offeringTiming.availableFrom);
-    if (availableFromDate > neededByDate) {
+    if (new Date(offeringTiming.availableFrom) > new Date(needTiming.neededBy)) {
       reasons.push(
         `Offering not available until ${offeringTiming.availableFrom}, ` +
         `but needed by ${needTiming.neededBy}`
@@ -336,40 +357,14 @@ function calculateTimingScore(
     }
   }
 
-  // Check availability end date against deadline
-  if (offeringTiming?.availableUntil) {
-    const availableUntilDate = new Date(offeringTiming.availableUntil);
-
-    if (availableUntilDate < neededByDate) {
-      // Offering ends before deadline - perfect
-      reasons.push('Offering available well before deadline');
-      return { score: 1.0, reasons };
-    }
-
-    // Calculate days between availability end and deadline
-    const daysDifference = Math.ceil(
-      (availableUntilDate.getTime() - neededByDate.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (daysDifference <= 14) {
-      // Within 2 weeks - acceptable but not ideal
-      reasons.push(`Offering availability ends ${daysDifference} days after deadline`);
-      return { score: 0.7, reasons };
-    }
-
-    // Availability extends well past deadline - still fine
-    reasons.push('Offering has extended availability');
-    return { score: 1.0, reasons };
-  }
-
-  reasons.push('Timing constraints compatible');
+  reasons.push('Offering available before the deadline');
   return { score: 1.0, reasons };
 }
 
 /**
  * Calculates the geographic compatibility score.
  *
- * Uses simple string matching (case-insensitive, includes check).
+ * Uses whole-token matching (see termsMatch), so "UK" matches "UK - London" but not "Ukraine".
  *
  * Scoring rules:
  * - No constraints on either side: 1.0
@@ -399,7 +394,7 @@ function calculateGeographicScore(
     return { score: 1.0, reasons };
   }
 
-  // Check for overlap (case-insensitive, includes check)
+  // Check for overlap (case-insensitive, whole-token match)
   const offeringRegionsLower = offeringRegions.map(r => r.toLowerCase());
   const needRegionsLower = needRegions.map(r => r.toLowerCase());
 
@@ -407,10 +402,7 @@ function calculateGeographicScore(
 
   for (const needRegion of needRegionsLower) {
     for (const offeringRegion of offeringRegionsLower) {
-      if (
-        needRegion.includes(offeringRegion) ||
-        offeringRegion.includes(needRegion)
-      ) {
+      if (termsMatch(needRegion, offeringRegion)) {
         // Find original casing for display
         const originalNeed = needRegions.find(
           r => r.toLowerCase() === needRegion
@@ -448,6 +440,11 @@ function calculateTrustScore(
   recipientMinTrust: number
 ): { score: number; reasons: string[] } {
   const reasons: string[] = [];
+
+  if (!Number.isFinite(providerTrustScore)) {
+    reasons.push('Provider trust score unknown — treated as untrusted');
+    return { score: 0.0, reasons };
+  }
 
   if (providerTrustScore >= recipientMinTrust) {
     reasons.push(
@@ -535,7 +532,7 @@ function scoreSectorOverlap(
 
   const matched = needSectors.filter(s =>
     offeringSectors.has(s) ||
-    [...offeringSectors].some(os => os.includes(s) || s.includes(os))
+    [...offeringSectors].some(os => termsMatch(os, s))
   );
 
   if (matched.length === 0) {
@@ -565,7 +562,7 @@ export function scoreMatch(input: MatchInput): MatchScore {
   // Calculate individual scores
   const semantic = calculateSemanticScore(offering, need);
   const capacity = calculateCapacityScore();
-  const timing = calculateTimingScore(offering, need);
+  const timing = calculateTimingScore(offering, need, input.asOf);
   const geographic = calculateGeographicScore(offering, need);
   const trust = calculateTrustScore(providerTrustScore, recipientMinTrust);
   const surplusSensitivity = scoreSurplusSensitivity(offering, need);

@@ -33,3 +33,6 @@ npm-debug.log*
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Local demo output (may contain free-text business descriptions)
+*.local.json

@@ -27,6 +27,8 @@ If you're coming from a marketplace, payments, or trading background, several th
 | Established | 5 | 5 | No |
 | Anchor | 8 | 10 | No |
 
+> **Current limitation (October 2026):** these limits are defined in `src/trust/exposure.ts` and applied by `checkExposure()`, but **the matcher does not yet enforce them**. `findCycles()` uses a single global maximum length, so a newcomer can currently appear in a longer chain. Tier enforcement in matching is planned in WP11/WP13 (see [work-packages.md](design/work-packages.md)). The values above also differ from the approved [Q5 design](plans/2026-02-26-trust-and-openness-design.md) (4 for Probationary, 6 for Established); aligning them is part of WP13.
+
 ---
 
 ## Quick Start
@@ -53,7 +55,7 @@ npm run capability:live  # AI-assisted extraction (requires ANTHROPIC_API_KEY)
 npm run validate       # Validate all JSON schemas compile
 npm run validate:examples  # Validate example JSON data against schemas
 npm run generate:types     # Regenerate TypeScript types from JSON schemas
-npm test               # Run 252 tests across 17 files
+npm test               # Run all tests, including type tests
 ```
 
 ---
@@ -103,7 +105,7 @@ The core differentiator — finding multi-party exchange chains that humans coul
 - A `NetworkGraph` holds participants as nodes and potential exchanges as weighted edges
 - `scoreMatch()` evaluates how well an offering meets a need across 8 dimensions: semantic fit, capacity, timing, geography, trust, surplus sensitivity, relationship diversity, and sector overlap
 - Trust and geography are "deal-breaker" dimensions — if either fails, the whole score is zero regardless of other dimensions
-- `findCycles()` detects closed loops (Johnson's algorithm) where every participant gives and receives
+- `findCycles()` detects closed loops where every participant gives and receives, using a depth-first search capped at `maxLength`. *Known limitation: it stops at `maxResults` in search order rather than keeping the best cycles, and it is exhaustive rather than Johnson's algorithm, so it slows sharply on large or dense graphs. Rework is planned in WP11.*
 - `rankChains()` scores and sorts cycles by overall viability
 
 **Main exports:**
@@ -111,7 +113,7 @@ The core differentiator — finding multi-party exchange chains that humans coul
 | Export | Purpose |
 |--------|---------|
 | `NetworkGraph` | Graph data structure (nodes = participants, edges = potential exchanges) |
-| `scoreMatch(offering, need, options?)` | Score a single offering-need pair (returns 0–1 with 8-dimension breakdown) |
+| `scoreMatch(input)` | Score a single offering-need pair; `input` holds `offering`, `need`, `providerTrustScore`, `recipientMinTrust` and optional `asOf` (returns 0–1 with 8-dimension breakdown) |
 | `findCycles(graph, options?)` | Detect all closed loops in the graph |
 | `rankChains(cycles, graph, options?)` | Score and sort cycles by viability |
 | `filterViableChains(chains, threshold)` | Keep only chains above a score threshold |
@@ -264,7 +266,7 @@ The project uses ESM (`"type": "module"` in package.json). Source files use `.js
 
 ## Testing
 
-252 tests across 17 files, using [Vitest](https://vitest.dev/).
+287 tests across 19 files (including type-level tests in `*.test-d.ts`), using [Vitest](https://vitest.dev/).
 
 ```bash
 npm test              # Run all tests once

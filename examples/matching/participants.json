@@ -3,7 +3,7 @@
   "participants": [
     {
       "id": "participant-alice-legal",
-      "type": { "category": "organisation", "sub_type": "llp" },
+      "type": { "category": "organisation", "sub_type": "small_business" },
       "status": "active",
       "joined_at": "2025-06-15",
       "identity": {
@@ -39,7 +39,7 @@
     },
     {
       "id": "participant-bob-catering",
-      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "type": { "category": "organisation", "sub_type": "small_business" },
       "status": "active",
       "joined_at": "2025-08-01",
       "identity": {
@@ -74,7 +74,7 @@
     },
     {
       "id": "participant-carol-design",
-      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "type": { "category": "organisation", "sub_type": "small_business" },
       "status": "active",
       "joined_at": "2025-07-10",
       "identity": {
@@ -110,7 +110,7 @@
     },
     {
       "id": "participant-dan-accounting",
-      "type": { "category": "organisation", "sub_type": "llp" },
+      "type": { "category": "organisation", "sub_type": "small_business" },
       "status": "active",
       "joined_at": "2025-05-20",
       "identity": {
@@ -148,7 +148,7 @@
     },
     {
       "id": "participant-eve-marketing",
-      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "type": { "category": "organisation", "sub_type": "small_business" },
       "status": "active",
       "joined_at": "2025-09-01",
       "identity": {
@@ -183,7 +183,7 @@
     },
     {
       "id": "participant-frank-it",
-      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "type": { "category": "organisation", "sub_type": "small_business" },
       "status": "active",
       "joined_at": "2025-04-01",
       "identity": {
@@ -219,7 +219,7 @@
     },
     {
       "id": "participant-grace-printing",
-      "type": { "category": "organisation", "sub_type": "limited_company" },
+      "type": { "category": "organisation", "sub_type": "small_business" },
       "status": "probationary",
       "joined_at": "2026-01-15",
       "identity": {

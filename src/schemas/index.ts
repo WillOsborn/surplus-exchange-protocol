@@ -51,36 +51,21 @@ export type { Participant } from './participant.schema.js';
 
 export type { TrustProfile } from './trust-profile.schema.js';
 
-// Export state types directly for convenience
-export type ChainState =
-  | 'draft'
-  | 'proposed'
-  | 'confirming'
-  | 'committed'
-  | 'executing'
-  | 'completed'
-  | 'discarded'
-  | 'abandoned'
-  | 'declined'
-  | 'cancelled'
-  | 'failed';
+// Convenience aliases, derived from the generated types so they cannot drift
+// from the schemas. Do not hand-write enum unions here.
+import type { ExchangeChain, ChainEdge } from './exchange-chain.schema.js';
+import type { TrustProfile } from './trust-profile.schema.js';
+import type { SurplusOffering } from './capability-offering.schema.js';
+import type { Need } from './need.schema.js';
 
-export type EdgeState =
-  | 'proposed'
-  | 'provider_confirmed'
-  | 'recipient_confirmed'
-  | 'both_confirmed'
-  | 'in_progress'
-  | 'delivered'
-  | 'satisfied'
-  | 'skipped'
-  | 'disputed'
-  | 'resolved';
+export type ChainState = ExchangeChain['status'];
 
-export type SatisfactionSignal = 'satisfied' | 'partially_satisfied' | 'not_satisfied';
+export type EdgeState = ChainEdge['status'];
 
-export type TrustTier = 'probationary' | 'established' | 'anchor';
+export type SatisfactionSignal = NonNullable<NonNullable<ChainEdge['satisfaction']>['provider_signal']>;
 
-export type OfferingType = 'service' | 'physical_good' | 'access' | 'space';
+export type TrustTier = TrustProfile['current_tier'];
 
-export type NeedStatus = 'active' | 'partially_fulfilled' | 'fulfilled' | 'expired' | 'withdrawn';
+export type OfferingType = SurplusOffering['type'];
+
+export type NeedStatus = Need['status'];

@@ -2,9 +2,12 @@
  * Validation utilities wrapping ajv for SEP schema validation.
  */
 
-import Ajv from 'ajv';
+import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import type { ValidateFunction, ErrorObject, AnySchema } from 'ajv';
+
+/** Ajv build for JSON Schema draft 2020-12, the draft all SEP schemas use */
+export type Ajv = Ajv2020;
 
 /**
  * Custom validation error with detailed information.
@@ -27,7 +30,7 @@ export class ValidationError extends Error {
  * Create an ajv instance configured for SEP schemas.
  */
 export function createValidator(): Ajv {
-  const ajv = new Ajv({
+  const ajv = new Ajv2020({
     allErrors: true,
     strict: true,
     validateFormats: true,

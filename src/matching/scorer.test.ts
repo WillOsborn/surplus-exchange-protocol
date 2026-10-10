@@ -247,6 +247,68 @@ describe('scoreMatch', () => {
     });
   });
 
+  describe('timing window', () => {
+    const withTiming = (
+      offeringTiming: { availableFrom?: string; availableUntil?: string },
+      neededBy: string,
+      asOf?: string
+    ) =>
+      scoreMatch(makeMatchInput({
+        offering: makeOffering({ constraints: { timing: offeringTiming } }),
+        need: makeNeed({ constraints: { timing: { neededBy } } }),
+        asOf,
+      })).breakdown.timing;
+
+    it('does not penalise availability that covers the deadline', () => {
+      const endsBefore = withTiming({ availableUntil: '2026-05-20' }, '2026-06-01');
+      const endsJustAfter = withTiming({ availableUntil: '2026-06-05' }, '2026-06-01');
+      const endsLongAfter = withTiming({ availableUntil: '2026-07-30' }, '2026-06-01');
+
+      expect(endsJustAfter).toBe(endsBefore);
+      expect(endsJustAfter).toBe(endsLongAfter);
+    });
+
+    it('scores zero when the offering expired before the reference date', () => {
+      expect(withTiming({ availableUntil: '2020-01-31' }, '2026-06-01', '2026-03-01')).toBe(0);
+    });
+
+    it('scores an unexpired offering as available at the reference date', () => {
+      expect(withTiming({ availableUntil: '2026-04-30' }, '2026-06-01', '2026-03-01')).toBe(1);
+    });
+  });
+
+  describe('term matching uses whole tokens', () => {
+    const semanticFor = (capability: string, explicitMatch: string) =>
+      scoreMatch(makeMatchInput({
+        offering: makeOffering({ capabilities: [capability] }),
+        need: makeNeed({ explicitMatches: [explicitMatch] }),
+      })).breakdown.semantic;
+
+    it('does not match a short capability inside an unrelated word', () => {
+      expect(semanticFor('ai', 'email marketing')).toBe(semanticFor('plumbing', 'email marketing'));
+    });
+
+    it('matches a capability that names part of a compound term', () => {
+      expect(semanticFor('logo_design', 'design')).toBeGreaterThan(semanticFor('plumbing', 'design'));
+    });
+
+    it('does not treat UK as matching Ukraine', () => {
+      const result = scoreMatch(makeMatchInput({
+        offering: makeOffering({ constraints: { geographic: ['UK'] } }),
+        need: makeNeed({ constraints: { geographic: { acceptedRegions: ['Ukraine'] } } }),
+      }));
+      expect(result.breakdown.geographic).toBe(0);
+    });
+
+    it('matches a region that names part of a more specific region', () => {
+      const result = scoreMatch(makeMatchInput({
+        offering: makeOffering({ constraints: { geographic: ['UK'] } }),
+        need: makeNeed({ constraints: { geographic: { acceptedRegions: ['UK - London'] } } }),
+      }));
+      expect(result.breakdown.geographic).toBe(1);
+    });
+  });
+
   describe('geographic dimension (deal-breaker)', () => {
     it('matching regions keeps score intact', () => {
       const matchingGeo = makeMatchInput({
@@ -647,5 +709,14 @@ describe('scoreMatch', () => {
       expect(result.overall).toBeGreaterThanOrEqual(0);
       expect(result.overall).toBeLessThanOrEqual(1);
     });
+  });
+});
+
+describe('scoreMatch with a missing provider trust score', () => {
+  it('fails the trust deal-breaker instead of throwing', () => {
+    const input = makeMatchInput({ providerTrustScore: undefined as unknown as number });
+
+    expect(() => scoreMatch(input)).not.toThrow();
+    expect(scoreMatch(input).overall).toBe(0);
   });
 });

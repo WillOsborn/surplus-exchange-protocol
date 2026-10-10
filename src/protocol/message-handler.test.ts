@@ -56,6 +56,8 @@ function makeConfirmation(overrides: Partial<ParticipantConfirmationMessage> = {
     participant_id: 'p1',
     decision: 'confirm',
     ...overrides,
+    // Participants confirm on their own behalf unless a test says otherwise
+    sender_id: overrides.sender_id ?? overrides.participant_id ?? 'p1',
   };
 }
 
@@ -152,6 +154,67 @@ describe('MessageHandler', () => {
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Unknown chain');
+    });
+  });
+
+  describe('confirmation tally and membership', () => {
+    beforeEach(async () => {
+      await handler.processMessage(makeProposal());
+    });
+
+    it('commits the chain once every participant has confirmed', async () => {
+      await handler.processMessage(makeConfirmation({ message_id: 'c-p1', participant_id: 'p1' }));
+      const result = await handler.processMessage(
+        makeConfirmation({ message_id: 'c-p2', participant_id: 'p2' })
+      );
+
+      expect(result.success).toBe(true);
+      expect(handler.getChainMachine('chain-1')!.state).toBe('committed');
+    });
+
+    it('stays confirming while some participants have not confirmed', async () => {
+      await handler.processMessage(makeConfirmation({ message_id: 'c-p1', participant_id: 'p1' }));
+
+      expect(handler.getChainMachine('chain-1')!.state).toBe('confirming');
+    });
+
+    it('declines the chain when the first response is a decline', async () => {
+      const result = await handler.processMessage(
+        makeConfirmation({ message_id: 'd-p2', participant_id: 'p2', decision: 'decline' })
+      );
+
+      expect(result.success).toBe(true);
+      expect(handler.getChainMachine('chain-1')!.state).toBe('declined');
+    });
+
+    it('rejects a confirmation from a participant who is not in the chain', async () => {
+      const result = await handler.processMessage(
+        makeConfirmation({ message_id: 'c-x', participant_id: 'mallory' })
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('not a participant');
+      expect(handler.getChainMachine('chain-1')!.state).toBe('proposed');
+    });
+
+    it('rejects a confirmation sent on behalf of another participant', async () => {
+      const result = await handler.processMessage(
+        makeConfirmation({ message_id: 'c-spoof', participant_id: 'p1', sender_id: 'p2' })
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('sender');
+      expect(handler.getChainMachine('chain-1')!.state).toBe('proposed');
+    });
+
+    it('rejects a proposal that reuses an existing chain_id', async () => {
+      await handler.processMessage(makeConfirmation({ message_id: 'c-p1', participant_id: 'p1' }));
+
+      const result = await handler.processMessage(makeProposal({ message_id: 'msg-replay' }));
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('already exists');
+      expect(handler.getChainMachine('chain-1')!.state).toBe('confirming');
     });
   });
 

@@ -9,6 +9,7 @@ import {
   validate,
   createTypedValidator,
 } from './validate.js';
+import { getSchema } from './schemas.js';
 
 // ============================================================================
 // ValidationError
@@ -255,5 +256,23 @@ describe('createTypedValidator', () => {
     expect(() => typedValidate({ id: 123 })).toThrow(ValidationError);
     expect(() => typedValidate(null)).toThrow(ValidationError);
     expect(() => typedValidate('not-an-object')).toThrow(ValidationError);
+  });
+});
+
+// ============================================================================
+// createValidator with project schemas
+// ============================================================================
+
+describe('createValidator with project schemas', () => {
+  it.each([
+    'need',
+    'exchange-chain',
+    'capability-offering',
+    'participant',
+    'protocol-messages',
+    'trust-profile',
+  ] as const)('compiles the %s schema', (name) => {
+    const ajv = createValidator();
+    expect(() => ajv.compile(getSchema(name))).not.toThrow();
   });
 });
