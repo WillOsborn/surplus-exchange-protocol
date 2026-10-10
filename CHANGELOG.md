@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Phase 1b: Enforce the Design (started 2026-10-10)
+
+See the [Phase 1b decision](docs/design/decisions.md#decision-phase-1b--enforce-the-design) and [code review](docs/design/analysis/code-review-2026-10.md).
+
+#### Added
+- Landscape scan of January to October 2026 developments (`docs/research/landscape-scan-2026-10.md`)
+- Q9 Taxation & Compliance design (`docs/plans/2026-10-10-taxation-and-compliance-design.md`)
+- Questions for a tax adviser (`docs/design/tax-adviser-questions.md`)
+- Whole-repository code and design review (`docs/design/analysis/code-review-2026-10.md`)
+- Work packages WP10–WP14 and backlog B1–B15 in `docs/design/work-packages.md`
+- Type-level tests (`*.test-d.ts`) run as part of `npm test`
+- Test validating the matching demo datasets against their schemas
+- `termsMatch()` whole-token matching helper in the scorer
+- Optional `asOf` reference date on `scoreMatch()` input
+
+#### Changed
+- February 2026 design set (Q1–Q7, Q10) and Deployment Architecture recorded as Accepted in decisions.md
+- Q9 Taxation & Compliance accepted: supplier-declared values at the tax boundary, VAT handling built in, UK pilot first; Q1's tax section marked superseded
+- PHILOSOPHY.md: new tension, "Subjective value vs the monetary state"
+- Capability extractor: `claude-3-5-haiku-latest` → `claude-haiku-5-5`, structured outputs restricted to vocabulary term IDs, low effort; `@anthropic-ai/sdk` 0.39 → 0.133
+- `createValidator()` and `loadSchemas()` use Ajv's draft 2020-12 build
+- `src/schemas/index.ts` convenience types now derived from the generated types
+- Live capability demo writes to git-ignored `demo-output.local.json`; committed file renamed `demo-output.sample.json`
+- Message schema: non-standard `version` and `discriminator` keywords replaced with `$comment`
+
+#### Fixed
+- Message handler: chains can now reach `committed`; first-response declines accepted; duplicate `chain_id` proposals rejected; confirmations from non-members or spoofed senders rejected
+- `TrustTier` convenience type missing `newcomer`
+- `createValidator()` could not compile any project schema
+- Matching demo participants failed schema validation (`sub_type`)
+- Extractor failed to parse structured output containing backticks
+- Substring matching false positives ("UK" matched "Ukraine"; "ai" matched "email")
+- Timing score penalised availability lasting just past the deadline, and ignored expiry
+- Invalid exchange values, chain lengths and trust scores passed checks or were treated as safe
+
+#### Removed
+- Stale `schemas/participant.examples.json` and `schemas/capability-offering.examples.json` (moved to `archive/schema-examples/`)
+
+
 ### Phase 1 Readiness (Target: MVP Launch)
 
 **Status: 100% Complete**
@@ -19,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [x] User journey diagrams (human, delegated, autonomous)
 - [x] **Capability Translation System** (WP8) — Core matching proven; schemas contain capacity, constraints, capability outputs
 - [x] **Developer Documentation** (WP7) — Reference implementation guide
-- [ ] Deployment architecture decision (Managed Service vs Federation)
+- [x] Deployment architecture decision: governed managed service with federation escape hatch (accepted 2026-10-10)
 
 ### Added (Test Suite)
 

@@ -1,42 +1,97 @@
 # Project Status
 
-*Last updated: 2026-03-07*
+*Last updated: 2026-10-10*
 
 ## Current State
 
 ### What's Working
-- Core schemas compile and validate (`npm run validate`)
-- TypeScript types generated from schemas (`npm run generate:types`)
-- Matching algorithm with 8-dimension scorer (`npm run match`)
-- Trust calculation with 4-tier model (`npm run trust`)
+- Core schemas compile and validate (`npm run validate`), and the runtime validator (`createValidator()`) now compiles all six schemas (draft 2020-12)
+- TypeScript types generated from schemas (`npm run generate:types`); convenience types are derived from them, so they can't drift
+- Matching with an 8-dimension scorer (`npm run match`)
+- Trust calculation with a 4-tier model (`npm run trust`)
 - Protocol trace with 3 scenarios (`npm run trace`)
-- Capability translation — offline (`npm run capability`) and interactive (`npm run capability:live`)
-- All example data validates against schemas
-- Test suite — 252 tests across 17 files (`npm test`), covering matching, trust, protocol, validation, and capability modules
+- Message handler commits a chain once every participant has confirmed
+- Capability translation: offline (`npm run capability`) and live on Claude Haiku 5.5 with structured outputs (`npm run capability:live`)
+- All example data, including the matching demo's datasets, validates against the schemas
+- Test suite: 287 tests across 19 files, including type-level tests (`npm test`)
 
 ### What's In Progress
-- None — Phase 1 complete
+- **Phase 1b: Enforce the Design.** The reference implementation does not yet enforce most of what the approved designs rely on. See the [Phase 1b decision](docs/design/decisions.md#decision-phase-1b--enforce-the-design), the [code review](docs/design/analysis/code-review-2026-10.md) and [work-packages.md](docs/design/work-packages.md) (WP10–WP14)
+- **WP10 (Stage A: Make it honest)**: code fixes and approval-status alignment done; still to do: website progress update
+- **Q9 Taxation & Compliance**: accepted (declared values at the tax boundary, VAT handling built in, UK pilot first). Implementation is B1 in WP13; [16 questions for a tax adviser](docs/design/tax-adviser-questions.md) are pending (B2)
 
 ### Known Issues
-- None currently tracked
+Full list with evidence in the [code review](docs/design/analysis/code-review-2026-10.md). The most significant:
+- The matcher returns the first cycles found rather than the best, ignores per-participant tier limits, and doesn't select non-overlapping chains (WP11)
+- No authentication or signature checks on protocol messages; partial chain failure isn't handled (WP14)
+- Trust can be gamed by a ring of colluding newcomers; tier thresholds differ from the approved Q5 design (WP13)
+- Capability extractor not yet tested live on Haiku 5.5 (needs an API key; backlog B4)
 
 ---
 
-## Phase 1 Readiness: 100% Complete
+## Phase 1 Readiness
+
+**Original Phase 1 scope (design + reference sketch): 100% complete.** Phase 1b makes the reference enforce the design before Phase 2 (Delegation) begins.
 
 **Completed:**
 - [x] Core schemas (need, offering, participant, exchange-chain, trust-profile)
-- [x] Matching algorithm implementation
-- [x] Trust calculation system
+- [x] Matching algorithm implementation (reference sketch; rework in WP11)
+- [x] Trust calculation system (reference sketch; alignment in WP13)
 - [x] Agent integration analysis and boundary definition
 - [x] Terminology clarification (`agent_matching` → `capability_matching`)
 - [x] User journey diagrams (human, delegated, autonomous)
-- [x] **Capability Translation System** (WP8) — Core matching proven; schemas contain capacity, constraints, capability outputs
-- [x] **Developer Documentation** (WP7) — Reference implementation guide ([docs/developer-guide.md](docs/developer-guide.md))
+- [x] **Capability Translation System** (WP8): core matching proven; schemas contain capacity, constraints, capability outputs
+- [x] **Developer Documentation** (WP7): reference implementation guide ([docs/developer-guide.md](docs/developer-guide.md))
+
+**Phase 1b:**
+- [ ] WP10 Stage A: Make it honest (in progress)
+- [ ] WP11 Stage B: Matcher as thesis, plus the simulation harness
+- [ ] WP12 Capability translation for current models
+- [ ] WP13 Stage C: Enforce the designs
+- [ ] WP14 Stage D: Protocol on standards
 
 ---
 
 ## Recent Session Summary
+
+*Session: 2026-10-10 (return after 7 months: landscape scan, review, Phase 1b start)*
+
+**What was done:**
+- **Landscape scan** of January to October 2026 ([landscape-scan-2026-10.md](docs/research/landscape-scan-2026-10.md)): agent protocols (A2A v1.0, MCP 2026-07-28, AP2 at FIDO), LLM negotiation and collusion research, Italy's barter VAT reform, the EU AI Act delay, the UK Jurisdiction Taskforce statement on AI liability
+- **Capability extractor upgraded** to `claude-haiku-5-5` with structured outputs restricted to the vocabulary's term IDs; SDK 0.39 → 0.133
+- **Q9 Taxation & Compliance drafted** ([design](docs/plans/2026-10-10-taxation-and-compliance-design.md)): participant-declared values per exchange, walled off from matching, trust and governance; UK pilot; decisions D1–D3 pending
+- **Backlog created** in [work-packages.md](docs/design/work-packages.md) (B1–B15)
+- **Whole-repository review** ([code-review-2026-10.md](docs/design/analysis/code-review-2026-10.md)), leading to the **Phase 1b decision** and WP10–WP14
+- **WP10 code fixes** (all test-first):
+  - Extractor no longer breaks on backticks inside structured output (C1)
+  - Protocol: a chain commits once every participant has confirmed; decline accepted as the first response; proposals that reuse a chain ID are rejected; confirmations from non-members or on someone else's behalf are rejected (P1, P2, P4)
+  - `createValidator()` uses Ajv 2020; non-standard `version` and `discriminator` keywords replaced with `$comment` (S1, S5 partial)
+  - Matching demo data fixed, with a test that validates it; stale `schemas/*.examples.json` archived (S2)
+  - Convenience types derived from the generated types, fixing the long-standing `TrustTier` issue; type tests added to `npm test` (S3)
+  - Live demo output goes to a git-ignored `*.local.json` (C4)
+  - Whole-token term matching (no more "UK" matching "Ukraine"); timing no longer penalises long availability and can judge expiry against an `asOf` date (M7, M8)
+  - Guards against invalid exchange values, chain lengths and trust scores (M9, T6)
+- **Documentation corrected**: Johnson's algorithm claim, `scoreMatch` signature, unenforced tier limits flagged, test counts
+
+**Key decisions:**
+- New phase named **Phase 1b** (not "Phase 2", which already means Delegation)
+- Website updates must include a visible, dated progress entry
+- Archived the stale schema examples rather than inventing missing data
+
+**Decisions made:**
+- February design set (Q1–Q7, Q10) recorded as Accepted in decisions.md and moved to RESOLVED; Deployment Architecture accepted
+- Q9 accepted: suppliers declare values that only their recipient sees, walled off from the network; SEP handles VAT paperwork and shows each participant their VAT position without holding money; UK pilot first, more complex jurisdictions later
+- PHILOSOPHY.md gains a new tension: subjective value vs the monetary state
+- Website will explain the tax and VAT approach: how it works in practice, costs and benefits, and the open adviser questions
+
+**Pending:**
+- Put the [tax adviser questions](docs/design/tax-adviser-questions.md) to an adviser before the pilot
+
+**Next priorities:**
+1. Finish WP10: website progress update (B5), including the tax and VAT explainer
+2. WP11: matcher rework and simulation harness
+
+---
 
 *Session: 2026-03-07 (priority review and website questions.html links)*
 

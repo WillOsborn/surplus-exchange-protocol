@@ -39,7 +39,7 @@ surplus-exchange-protocol/
 │   ├── research/                # 6 historical systems research files
 │   ├── design/                  # Core design documents
 │   │   └── analysis/            # Supporting analysis
-│   ├── plans/                   # 8 open question design documents
+│   ├── plans/                   # Question design documents and execution plans
 │   ├── specs/                   # 4 protocol specifications
 │   ├── diagrams/                # 4 architecture diagrams
 │   └── explainer-tests/         # 5 explainer test files
@@ -78,7 +78,9 @@ surplus-exchange-protocol/
 
 ## Current Focus Areas
 
-### Phase 1 Readiness: 100% Complete
+### Phase 1 Readiness: 100% Complete (original scope) — Phase 1b in progress
+
+Phase 1b (Enforce the Design) makes the reference implementation enforce the approved designs before Phase 2 (Delegation). See WP10–WP14 in work-packages.md.
 
 > **Source**: [STATUS.md](STATUS.md) — See for current state and session summaries.
 
@@ -102,7 +104,7 @@ npm run generate:types     # Generate TypeScript types from schemas
 npm run trace              # Run chain tracing demo
 npm run match              # Run matching algorithm demo
 npm run trust              # Run trust calculation demo
-npm test                   # Run 252 tests (vitest)
+npm test                   # Run all tests incl. type tests (vitest)
 ```
 
 ### Claude Code Commands
